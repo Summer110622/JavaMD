@@ -5,10 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Javaの基礎・Collection・ラムダ式・Stream・Thread APIを初心者向けに学べる日本語ドキュメント">
 <title>JavaMD — じゃばる！！</title>
+<script src="https://cjrtnc.leaningtech.com/4.3/loader.js"></script>
 <style>
 :root{color-scheme:light;--bg:#f7f8fb;--surface:#fff;--surface2:#f1f4f8;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--green:#087b56;--green2:#eaf8f2;--amber:#9a6700;--amber2:#fff8df;--code:#101722;--shadow:0 10px 30px rgba(31,41,55,.08)}
 [data-theme="dark"]{color-scheme:dark;--bg:#0d1117;--surface:#151b23;--surface2:#1c2430;--text:#e6edf3;--muted:#9ba7b4;--line:#2b3542;--primary:#8aa4ff;--soft:#1b2443;--green:#70d5ae;--green2:#12352b;--amber:#f0c45d;--amber2:#3a2e12;--code:#090d13;--shadow:0 10px 30px rgba(0,0,0,.22)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}a{color:var(--primary)}code,pre{font-family:"SFMono-Regular",Consolas,monospace}.app{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:20px 16px;background:var(--surface);border-right:1px solid var(--line)}.brand{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--text);margin:0 4px 16px}.mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#3157d5,#58a6ff);color:#fff;display:grid;place-items:center;font-weight:900}.brand strong{display:block}.brand small{color:var(--muted)}.search input{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--text)}nav .group{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin:18px 8px 5px}nav a{display:block;text-decoration:none;color:var(--muted);padding:7px 9px;border-radius:8px;font-size:.87rem}nav a:hover,nav a.active{background:var(--soft);color:var(--primary);font-weight:700}.theme{margin-top:18px;border:1px solid var(--line);background:var(--surface2);color:var(--text);padding:7px 10px;border-radius:9px;cursor:pointer}.content{width:min(1040px,calc(100% - 44px));margin:auto;padding:50px 0 90px}.hero,section{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px}.hero{padding:38px 40px;margin-bottom:20px}.eyebrow{font-size:.76rem;letter-spacing:.13em;color:var(--primary);font-weight:850}.hero h1{font-size:clamp(3rem,8vw,6.4rem);line-height:1;margin:10px 0 17px;letter-spacing:-.06em}.lead{color:var(--muted);max-width:72ch;font-size:1.04rem}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.chip{font-size:.76rem;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--surface2);color:var(--muted)}.quick{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:18px 0}.quick a{text-decoration:none;color:var(--text);padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.quick strong{display:block;font-size:.86rem}.quick span{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}section{padding:28px 32px;margin:17px 0;scroll-margin-top:20px}.kicker{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--primary);font-weight:800}h2{font-size:clamp(1.5rem,3vw,2rem);margin:1px 0 13px;line-height:1.25}h3{margin:25px 0 8px;font-size:1.12rem}p{margin:8px 0 14px}.muted{color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.card{padding:15px;border:1px solid var(--line);background:var(--surface2);border-radius:11px}.card strong{display:block}.card p{margin:3px 0 0;color:var(--muted);font-size:.9rem}.callout{padding:12px 14px;border:1px solid var(--line);background:var(--soft);border-radius:10px;margin:13px 0}.callout.good{background:var(--green2)}.callout.warn{background:var(--amber2)}.code{border:1px solid #263243;border-radius:11px;overflow:hidden;background:var(--code);margin:13px 0 17px}.codehead{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#18202c;color:#aeb8c5;font-size:.75rem}.copy{border:0;background:none;color:#cbd5e1;cursor:pointer}pre{margin:0;padding:16px 18px;overflow:auto;color:#e5edf7;font-size:.87rem;line-height:1.62}table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:11px;overflow:hidden;font-size:.88rem;margin:12px 0 18px}th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--surface2)}td{color:var(--muted)}tr:last-child td{border-bottom:0}.tablewrap{overflow:auto}.steps{counter-reset:s;display:grid;gap:9px}.step{counter-increment:s;padding:13px 13px 13px 46px;border:1px solid var(--line);background:var(--surface2);border-radius:10px;position:relative}.step:before{content:counter(s);position:absolute;left:13px;top:12px;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:white;font-size:.75rem;font-weight:900}.api{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;padding:11px 0;border-bottom:1px dashed var(--line)}.api:last-child{border:0}.api code{color:var(--primary);font-weight:800}footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:30px}.mobile{display:none}@media(max-width:950px){.app{display:block}aside{display:none}.mobile{display:flex;position:sticky;top:0;z-index:20;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}.mobile a{text-decoration:none;color:var(--text);font-weight:800}.quick{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding-top:24px}}@media(max-width:620px){.content{width:min(100% - 20px,1040px)}.hero,section{padding:20px 18px;border-radius:13px}.hero h1{font-size:3.2rem}.cards,.quick{grid-template-columns:1fr}.api{grid-template-columns:1fr}table{font-size:.82rem}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}a{color:var(--primary)}code,pre,textarea{font-family:"SFMono-Regular",Consolas,monospace}.app{display:grid;grid-template-columns:270px minmax(0,1fr) 370px;min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:20px 16px;background:var(--surface);border-right:1px solid var(--line)}.brand{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--text);margin:0 4px 16px}.mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#3157d5,#58a6ff);color:#fff;display:grid;place-items:center;font-weight:900}.brand strong{display:block}.brand small{color:var(--muted)}.search input{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--text)}nav .group{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin:18px 8px 5px}nav a{display:block;text-decoration:none;color:var(--muted);padding:7px 9px;border-radius:8px;font-size:.87rem}nav a:hover,nav a.active{background:var(--soft);color:var(--primary);font-weight:700}.theme{margin-top:18px;border:1px solid var(--line);background:var(--surface2);color:var(--text);padding:7px 10px;border-radius:9px;cursor:pointer}.content{width:min(1040px,calc(100% - 44px));margin:auto;padding:50px 0 90px}.hero,section{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px}.hero{padding:38px 40px;margin-bottom:20px}.eyebrow{font-size:.76rem;letter-spacing:.13em;color:var(--primary);font-weight:850}.hero h1{font-size:clamp(3rem,8vw,6.4rem);line-height:1;margin:10px 0 17px;letter-spacing:-.06em}.lead{color:var(--muted);max-width:72ch;font-size:1.04rem}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.chip{font-size:.76rem;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--surface2);color:var(--muted)}.quick{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:18px 0}.quick a{text-decoration:none;color:var(--text);padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.quick strong{display:block;font-size:.86rem}.quick span{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}section{padding:28px 32px;margin:17px 0;scroll-margin-top:20px}.kicker{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--primary);font-weight:800}h2{font-size:clamp(1.5rem,3vw,2rem);margin:1px 0 13px;line-height:1.25}h3{margin:25px 0 8px;font-size:1.12rem}p{margin:8px 0 14px}.muted{color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.card{padding:15px;border:1px solid var(--line);background:var(--surface2);border-radius:11px}.card strong{display:block}.card p{margin:3px 0 0;color:var(--muted);font-size:.9rem}.callout{padding:12px 14px;border:1px solid var(--line);background:var(--soft);border-radius:10px;margin:13px 0}.callout.good{background:var(--green2)}.callout.warn{background:var(--amber2)}.code{border:1px solid #263243;border-radius:11px;overflow:hidden;background:var(--code);margin:13px 0 17px}.codehead{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#18202c;color:#aeb8c5;font-size:.75rem}.copy{border:0;background:none;color:#cbd5e1;cursor:pointer}pre{margin:0;padding:16px 18px;overflow:auto;color:#e5edf7;font-size:.87rem;line-height:1.62}table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:11px;overflow:hidden;font-size:.88rem;margin:12px 0 18px}th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--surface2)}td{color:var(--muted)}tr:last-child td{border-bottom:0}.tablewrap{overflow:auto}.steps{counter-reset:s;display:grid;gap:9px}.step{counter-increment:s;padding:13px 13px 13px 46px;border:1px solid var(--line);background:var(--surface2);border-radius:10px;position:relative}.step:before{content:counter(s);position:absolute;left:13px;top:12px;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:white;font-size:.75rem;font-weight:900}.api{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;padding:11px 0;border-bottom:1px dashed var(--line)}.api:last-child{border:0}.api code{color:var(--primary);font-weight:800}footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:30px}.mobile{display:none}
+.playground{position:sticky;top:0;height:100vh;overflow:auto;padding:16px;background:var(--surface);border-left:1px solid var(--line)}.pg-inner{min-height:calc(100vh - 32px);display:flex;flex-direction:column;gap:11px}.pg-title{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.pg-title h2{font-size:1.08rem;margin:0}.pg-title p{font-size:.76rem;color:var(--muted);margin:2px 0 0}.pg-badge{white-space:nowrap;font-size:.67rem;font-weight:800;padding:4px 7px;border-radius:999px;background:var(--soft);color:var(--primary)}.pg-status{font-size:.75rem;color:var(--muted);padding:8px 10px;border:1px solid var(--line);background:var(--surface2);border-radius:9px}.pg-status.ready{color:var(--green);background:var(--green2)}.pg-status.error{color:#b42318;background:#fff0ee}.pg-label{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.pg-editor{width:100%;min-height:330px;resize:vertical;border:1px solid #263243;border-radius:11px;background:var(--code);color:#e5edf7;padding:13px 14px;font-size:.82rem;line-height:1.55;outline:none;tab-size:4}.pg-editor:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--soft)}.pg-actions{display:flex;gap:8px}.pg-btn{border:1px solid var(--line);background:var(--surface2);color:var(--text);border-radius:9px;padding:8px 12px;font-weight:750;cursor:pointer}.pg-btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.pg-btn:disabled{opacity:.55;cursor:not-allowed}.pg-output{min-height:145px;max-height:260px;overflow:auto;white-space:pre-wrap;word-break:break-word;border:1px solid #263243;border-radius:11px;background:#080d14;color:#d7e2ef;padding:12px 13px;font-size:.8rem;line-height:1.55;margin:0}.pg-note{font-size:.72rem;color:var(--muted);line-height:1.55}.pg-note strong{color:var(--text)}.pg-link{font-size:.72rem}.pg-divider{height:1px;background:var(--line);margin:1px 0}
+@media(max-width:1380px){.app{grid-template-columns:250px minmax(0,1fr) 330px}.content{width:min(920px,calc(100% - 34px))}.playground{padding:13px}.pg-editor{min-height:300px}}
+@media(max-width:1120px){.app{grid-template-columns:250px minmax(0,1fr)}.playground{grid-column:2;position:static;height:auto;border-left:0;border-top:1px solid var(--line);background:transparent;padding:0 22px 36px}.pg-inner{min-height:0;max-width:1040px;margin:auto;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}.pg-editor{min-height:250px}}
+@media(max-width:950px){.app{display:block}aside{display:none}.mobile{display:flex;position:sticky;top:0;z-index:20;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)}.mobile a{text-decoration:none;color:var(--text);font-weight:800}.quick{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding-top:24px}.playground{display:block;padding:0 10px 28px}.pg-inner{border-radius:13px}}
+@media(max-width:620px){.content{width:min(100% - 20px,1040px)}.hero,section{padding:20px 18px;border-radius:13px}.hero h1{font-size:3.2rem}.cards,.quick{grid-template-columns:1fr}.api{grid-template-columns:1fr}table{font-size:.82rem}.pg-actions{display:grid;grid-template-columns:1fr 1fr}.pg-editor{min-height:230px}}
 </style>
 </head>
 <body>
@@ -194,10 +200,117 @@ b.join();</code></pre></div><div class="callout"><strong>ポイント:</strong> 
 
 <section id="cheat"><div class="kicker">Reference</div><h2>16. 迷ったときのチートシート</h2><div class="api"><strong>一覧</strong><span><code>ArrayList</code></span></div><div class="api"><strong>重複排除</strong><span><code>HashSet</code></span></div><div class="api"><strong>ソート済みSet</strong><span><code>TreeSet</code></span></div><div class="api"><strong>キー→値</strong><span><code>HashMap</code></span></div><div class="api"><strong>ソート済みMap</strong><span><code>TreeMap</code></span></div><div class="api"><strong>FIFO / Stack</strong><span><code>ArrayDeque</code></span></div><div class="api"><strong>条件</strong><span><code>Predicate&lt;T&gt;</code></span></div><div class="api"><strong>変換</strong><span><code>Function&lt;T,R&gt;</code></span></div><div class="api"><strong>別スレッド開始</strong><span><code>new Thread(task).start()</code></span></div><div class="api"><strong>終了を待つ</strong><span><code>thread.join()</code></span></div></section>
 <footer>JavaMD — じゃばる！！</footer>
-</div></main></div>
+</div></main>
+
+<div class="playground" id="playground">
+  <div class="pg-inner">
+    <div class="pg-title">
+      <div><h2>Java 実験場</h2><p>main不要の簡単なスニペット</p></div>
+      <span class="pg-badge">EXPERIMENTAL</span>
+    </div>
+    <div id="pgStatus" class="pg-status">未起動 — ▶ 実行でJava環境を読み込みます</div>
+    <div class="pg-label">Code</div>
+    <textarea id="javaEditor" class="pg-editor" spellcheck="false" aria-label="Javaコード入力">System.out.println("Hello, Java!");
+
+int a = 10;
+int b = 20;
+System.out.println("a + b = " + (a + b));
+
+for (int i = 1; i <= 3; i++) {
+    System.out.println("loop: " + i);
+}</textarea>
+    <div class="pg-actions">
+      <button id="runJava" class="pg-btn primary">▶ 実行</button>
+      <button id="resetJava" class="pg-btn">↺ リセット</button>
+    </div>
+    <div class="pg-label">Output</div>
+    <pre id="javaOutput" class="pg-output">ここに実行結果が表示されます。</pre>
+    <div class="pg-divider"></div>
+    <div class="pg-note"><strong>Powered by CheerpJ 4.3</strong><br>ブラウザ内のJVMで実行します。入力は初心者向けのJava文・式を想定しています。完全な複数ファイルプロジェクトや最新構文のすべてをコンパイルするIDEではありません。</div>
+    <a class="pg-link" href="https://cheerpj.com/docs/overview.html" target="_blank" rel="noreferrer">CheerpJ documentation ↗</a>
+  </div>
+</div>
+</div>
 <script>
 const root=document.documentElement;const saved=localStorage.getItem('javAMD-theme');if(saved)root.dataset.theme=saved;else if(matchMedia('(prefers-color-scheme: dark)').matches)root.dataset.theme='dark';function toggleTheme(){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('javAMD-theme',root.dataset.theme)}
 document.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',async()=>{const code=btn.closest('.code').querySelector('code').innerText;await navigator.clipboard.writeText(code);const old=btn.textContent;btn.textContent='コピー済み';setTimeout(()=>btn.textContent=old,1200)}));
 const links=[...document.querySelectorAll('#nav a')],sections=[...document.querySelectorAll('section')];const observer=new IntersectionObserver(entries=>{entries.filter(e=>e.isIntersecting).forEach(e=>{links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))})},{rootMargin:'-20% 0px -70%'});sections.forEach(s=>observer.observe(s));document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.toLowerCase();links.forEach(a=>a.style.display=a.textContent.toLowerCase().includes(q)?'block':'none')});
+
+const JAVA_STARTER=`System.out.println("Hello, Java!");
+
+int a = 10;
+int b = 20;
+System.out.println("a + b = " + (a + b));
+
+for (int i = 1; i <= 3; i++) {
+    System.out.println("loop: " + i);
+}`;
+const editor=document.getElementById('javaEditor');
+const output=document.getElementById('javaOutput');
+const statusEl=document.getElementById('pgStatus');
+const runBtn=document.getElementById('runJava');
+let cjLib=null;
+let cjLoading=null;
+function setPgStatus(text,type=''){statusEl.textContent=text;statusEl.className='pg-status'+(type?' '+type:'')}
+async function initPlayground(){
+  if(cjLib)return cjLib;
+  if(cjLoading)return cjLoading;
+  cjLoading=(async()=>{
+    if(typeof cheerpjInit!=='function')throw new Error('CheerpJ loaderを読み込めませんでした');
+    setPgStatus('CheerpJ JVMを起動中…');
+    await cheerpjInit({version:17,status:'none'});
+    setPgStatus('Javaスニペット実行環境を準備中…');
+    const jarUrl='https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/2.1.1/bsh-2.1.1.jar';
+    const response=await fetch(jarUrl,{cache:'force-cache'});
+    if(!response.ok)throw new Error('Javaスニペットエンジンを取得できませんでした: HTTP '+response.status);
+    const bytes=new Uint8Array(await response.arrayBuffer());
+    cheerpOSAddStringFile('/str/bsh-2.1.1.jar',bytes);
+    cjLib=await cheerpjRunLibrary('/str/bsh-2.1.1.jar');
+    setPgStatus('準備完了 — Javaコードを実行できます','ready');
+    return cjLib;
+  })().catch(err=>{cjLoading=null;setPgStatus('起動失敗: '+(err?.message||err),'error');throw err});
+  return cjLoading;
+}
+async function runJavaSnippet(){
+  runBtn.disabled=true;
+  output.textContent='実行準備中…';
+  try{
+    const lib=await initPlayground();
+    const Interpreter=await lib.bsh.Interpreter;
+    const ByteArrayOutputStream=await lib.java.io.ByteArrayOutputStream;
+    const PrintStream=await lib.java.io.PrintStream;
+    const System=await lib.java.lang.System;
+    const buffer=await new ByteArrayOutputStream();
+    const ps=await new PrintStream(buffer);
+    const oldOut=System.out;
+    const oldErr=System.err;
+    await System.setOut(ps);
+    await System.setErr(ps);
+    try{
+      const interpreter=await new Interpreter();
+      await interpreter.setOut(ps);
+      await interpreter.setErr(ps);
+      const result=await interpreter.eval(editor.value);
+      await ps.flush();
+      let text=await buffer.toString();
+      text=text==null?'':String(text);
+      if(!text.trim()&&result!=null)text=String(result);
+      output.textContent=text||'(出力なし)';
+      setPgStatus('実行完了','ready');
+    }finally{
+      await System.setOut(oldOut);
+      await System.setErr(oldErr);
+      await ps.close();
+    }
+  }catch(err){
+    let message=err?.message||String(err);
+    try{if(err?.getMessage)message=String(await err.getMessage())}catch(_){ }
+    output.textContent='Error:\n'+message;
+    setPgStatus('実行エラー — コードを確認してください','error');
+  }finally{runBtn.disabled=false}
+}
+runBtn.addEventListener('click',runJavaSnippet);
+document.getElementById('resetJava').addEventListener('click',()=>{editor.value=JAVA_STARTER;output.textContent='ここに実行結果が表示されます。';if(cjLib)setPgStatus('準備完了 — Javaコードを実行できます','ready');else setPgStatus('未起動 — ▶ 実行でJava環境を読み込みます')});
+editor.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runJavaSnippet()}if(e.key==='Tab'){e.preventDefault();const s=editor.selectionStart,t=editor.selectionEnd;editor.value=editor.value.slice(0,s)+'    '+editor.value.slice(t);editor.selectionStart=editor.selectionEnd=s+4}});
 </script>
 </body></html>
