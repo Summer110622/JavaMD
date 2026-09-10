@@ -17,14 +17,14 @@ Javaの基礎からCollection Framework、ラムダ式、Stream API、スレッ�
 
 - Powered by CheerpJ 4.3
 - 初回実行時にブラウザ内Javaランタイムを遅延ロード
-- BeanShellをCheerpJ JVM上で実行して初心者向けJavaスニペットを評価
+- BeanShell 2.1.1をCheerpJ JVM上で実行して初心者向けJavaスニペットを評価
 - `System.out.println`、変数、演算、if / for などの簡単なコード向け
 - 実行結果を右側のOutputへ表示
 - 実行 / リセット
 - `Ctrl + Enter` / `Cmd + Enter` で実行
 - 狭い画面ではドキュメント本文の下へ移動
 
-完全なJava IDEや複数ファイルプロジェクト用のコンパイラではなく、学習用の簡易スニペット実行環境です。
+完全なJava IDEや複数ファイルプロジェクト用のコンパイラではなく、学習用の簡易スニペット実行環境です。CheerpJランタイムとBeanShell JARは実行時に外部配信元から読み込みます。
 
 ## 内容
 
