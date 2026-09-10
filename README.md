@@ -95,4 +95,4 @@ https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/featu
 スレッド・並行処理:
 https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/threads.html
 
-CheerpJ実験場は `http://` または `https://` で配信されたページ上で利用してください。
+CheerpJ実験場は `http://` または `https://` で配信されたページ上で利用してください。初回実行はランタイムを読み込むため、その後の実行より重くなります。
