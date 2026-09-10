@@ -10,12 +10,32 @@ import zipfile
 
 repo = Path(__file__).resolve().parent.parent
 site = Path(sys.argv[1]) if len(sys.argv) > 1 else repo / "_site"
-for asset in ("index.html", "threads.html", "README.md", "LICENSE", "favicon.svg", "favicon.ico"):
+
+# Assets that must be copied byte-for-byte.
+for asset in ("threads.html", "quiz.html", "README.md", "LICENSE", "favicon.svg", "favicon.ico"):
     path = site / asset
     if not path.is_file() or not path.stat().st_size:
         raise SystemExit(f"Missing or empty Pages asset: {path}")
     if path.read_bytes() != (repo / asset).read_bytes():
         raise SystemExit(f"Pages asset differs from source: {asset}")
+
+# Every generated quiz batch must be included in the Pages artifact.
+quiz_batches = sorted(repo.glob("quiz-batch-*.html"))
+if not quiz_batches:
+    raise SystemExit("No quiz batch files found in repository")
+for source in quiz_batches:
+    deployed = site / source.name
+    if not deployed.is_file() or deployed.read_bytes() != source.read_bytes():
+        raise SystemExit(f"Missing or altered quiz batch in Pages artifact: {source.name}")
+
+# index.html is intentionally enhanced at build time with the practice section/navigation.
+index = site / "index.html"
+if not index.is_file() or not index.stat().st_size:
+    raise SystemExit("Missing Pages index.html")
+index_text = index.read_text(encoding="utf-8")
+for required in ('id="quiz"', 'href="quiz.html"', 'href="quiz-batch-001.html"', '>検定チェック<'):
+    if required not in index_text:
+        raise SystemExit(f"Beginner document is missing certification link/content: {required}")
 
 expected_digest, jar_name = (repo / "scripts/ecj.sha256").read_text().split()
 jar = site / jar_name
@@ -53,4 +73,5 @@ for name, entry_point in jars.items():
 if (site / "vendor/checksums.sha256").read_text() != manifest:
     raise SystemExit("Pages JAR checksum manifest does not match the artifact")
 print(f"Pinned ECJ SHA-256: {actual_digest}")
-print("Source HTML, README, license, and both favicon formats are present unchanged.")
+print(f"Published quiz pages: quiz.html + {len(quiz_batches)} batch file(s).")
+print("Beginner document contains certification practice links.")
