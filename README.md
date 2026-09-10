@@ -106,12 +106,40 @@ public class Main {
 - Files / NIO.2
 - 用途別チートシート
 
-## プレビュー
+## 公開サイトとローカル確認
 
-Main.java実行 + 横幅リサイズ + 補完版:
-https://htmlpreview.github.io/?https://raw.githubusercontent.com/Summer110622/JavaMD/feature/playground-resize-autocomplete/index.html
+- [JavaMD / Java実験場](https://summer110622.github.io/JavaMD/)
+- [スレッド・並行処理](https://summer110622.github.io/JavaMD/threads.html)
 
-スレッド・並行処理:
-https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/threads.html
+Pages の Source は **GitHub Actions** を使用します。ワークフローは `main` の更新時に公開し、PR では同じ公開物のビルドと検証だけを行います。
 
-CheerpJ実験場は `http://` または `https://` で配信されたページ上で利用してください。
+```sh
+bash scripts/build-pages.sh
+npx --yes http-server _site -p 8000 -c-1
+```
+
+`http://localhost:8000/` を開いて Run を押すと、`Main.java` をコンパイルして実行できます。
+ビルドには JDK 17、Bash、curl、Python 3、Node.js が必要です。ローカル配信には HTTP Range 対応のサーバーを使います（上の例は `http-server`）。初回実行には CheerpJ と Monaco の CDN への接続も必要です。
+HTML 単体の htmlpreview や `file://` では、同梱した JAR を同一サイトから読み込めないため、Java実験場の実行確認には上記の公開サイトかビルド済み `_site` を使ってください。
+
+### ECJ の配信パス
+
+ECJ 3.44.0 はビルド時に取得し、SHA-256 とコンパイラーのクラスを検証して `_site/vendor/ecj-3.44.0.jar` に配置します。公開する HTML はリポジトリのソースと同一で、ビルド時の文字列置換は行いません。
+
+| 用途 | パス |
+| --- | --- |
+| Pages 公開物内 | `vendor/ecj-3.44.0.jar` |
+| 公開 URL | `https://summer110622.github.io/JavaMD/vendor/ecj-3.44.0.jar` |
+| CheerpJ クラスパス | `/app/JavaMD/vendor/ecj-3.44.0.jar` |
+
+[CheerpJ の `/app/` はオリジンのルートに対応](https://cheerpj.com/docs/explanation/File-System-support#app-mount-point)するため、プロジェクトサイトの `/JavaMD/` を含める必要があります。ページの URL からこのパスを組み立てることで、ローカルのルート配信と Pages のプロジェクト配信の両方に対応します。
+
+PR #6 時点でも JAR は公開物に含まれていましたが、`/app/vendor/...` が `/JavaMD/` を省略し、サイト直下を読み込んで 404 になっていました。`ClassNotFoundException: org.eclipse.jdt.internal.compiler.batch.Main` が出る場合は、まず上記の JAR URL と Pages ワークフローの検証結果を確認してください。
+
+favicon は `index.html` と `threads.html` の両方から相対 URL で読み込み、プロジェクトサイト内の `favicon.svg` / `favicon.ico` を配信します。
+
+### CheerpJ と ECJ の Java 17 互換処理
+
+`vendor/playground-runner.jar` は `src/javamd/PlaygroundRunner.java` からビルドします。CheerpJ 4.3 の Java 17 にはデスクトップ JDK の `release` と `lib/jrt-fs.jar` がありません。補助処理は、固定した ECJ 3.44.0 の内部キャッシュに現在の `jrt:/` ファイルシステムを設定し、CheerpJ が実際に提供する Java 17 の標準クラスでコンパイルします。ECJ 本体の JAR は変更しません。ECJ を更新する場合は、この互換処理と実ブラウザーでの実行を再検証してください。
+
+`cheerpjRunMain` は毎回別の Java 実行環境を作るため、出力の取得もその実行環境内で行います。補助処理は ECJ でコンパイルしたクラスの `main(String[] args)` を呼び出し、標準出力・標準エラーを `/files/` 内に記録して Output に表示します。コンパイルエラー、例外、`System.exit()` の終了コードも表示します。

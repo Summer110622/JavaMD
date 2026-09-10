@@ -3,72 +3,78 @@ name: Deploy JavaMD Pages
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build static site with same-origin ECJ
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf _site
-          mkdir -p _site/vendor
-          cp index.html README.md LICENSE _site/
-          if [ -f threads.html ]; then cp threads.html _site/; fi
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
-          curl --fail --location --retry 3 \
-            https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.44.0/ecj-3.44.0.jar \
-            --output _site/vendor/ecj-3.44.0.jar
+      - name: Build and verify static site
+        run: bash scripts/build-pages.sh
 
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('_site/index.html')
-          s = p.read_text(encoding='utf-8')
+      - name: Verify root and project-site asset paths
+        run: node scripts/test-pages-paths.mjs
 
-          start = s.find("const ECJ_PATH='/str/ecj-3.44.0.jar';")
-          marker = 'async function initPlayground()'
-          end = s.find(marker, start)
-          if start == -1 or end == -1:
-              raise SystemExit('ECJ loader block not found')
-
-          s = s[:start] + "const ECJ_PATH='/app/vendor/ecj-3.44.0.jar';" + s[end:]
-          s = s.replace(
-              "const ecjBytes=await fetchEcj();cheerpOSAddStringFile(ECJ_PATH,ecjBytes);",
-              "",
-              1,
-          )
-          s = s.replace(
-              "statusText('ECJを取得中…');",
-              "statusText('同一オリジンのECJを読み込み中…');",
-          )
-          p.write_text(s, encoding='utf-8')
-          PY
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - name: Verify Main.java compile and run behavior
+        run: python3 scripts/test-runner.py
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
+  deploy:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout verification scripts
+        uses: actions/checkout@v4
+
+      - name: Download the exact built Pages artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: _artifact
+
+      - name: Extract the expected JAR checksums
+        run: |
+          mkdir -p _expected
+          tar -xf _artifact/artifact.tar -C _expected ./vendor/checksums.sha256
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify deployed HTML, compiler, and favicon
+        env:
+          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+        run: bash scripts/verify-deployment.sh "$PAGES_URL" _expected/vendor/checksums.sha256
