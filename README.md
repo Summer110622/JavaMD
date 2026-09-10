@@ -1,5 +1,5 @@
 # JavaMD
-
+　
 Javaの基礎からCollection Framework、ラムダ式、Stream API、スレッド・並行処理までを、比較表とコード例で体系的に学べる日本語ドキュメントです。
 
 ## 特徴
