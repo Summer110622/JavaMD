@@ -9,22 +9,41 @@ Javaの基礎からCollection Framework、ラムダ式、Stream API、スレッ�
 - ライト / ダークテーマ
 - コード例のコピーボタン
 - 右側に初心者向けJava実験場
+- 実験場の横幅をドラッグで変更可能
+- Monaco EditorによるJava補完
 - モバイル対応
 
 ## Java実験場
 
-メインドキュメントの右側に、簡単なJavaコードをその場で試せる実験場を用意しています。
+メインドキュメントの右側に、`Main.java` をそのまま書いてコンパイル・実行できる実験場を用意しています。
 
 - Powered by CheerpJ 4.3
-- 初回実行時にブラウザ内Javaランタイムを遅延ロード
-- BeanShell 2.0b6をCheerpJ JVM上で実行して初心者向けJavaスニペットを評価
-- `System.out.println`、変数、演算、if / for などの簡単なコード向け
-- 実行結果を右側のOutputへ表示
-- 実行 / リセット
+- Java 17ランタイムをブラウザ内で起動
+- Eclipse Java Compiler (ECJ) 3.44.0で `Main.java` をコンパイル
+- コンパイル成功後に `Main.main(String[] args)` を実行
+- `public class Main { ... }` の完全なクラス形式に対応
+- import、メソッド、if / for、Collection、ラムダ式、Threadなど通常のJavaコードを記述可能
+- コンパイルエラーと実行結果をOutputへ表示
+- `pubric` など初心者によくあるタイプミスには追加ヒントを表示
 - `Ctrl + Enter` / `Cmd + Enter` で実行
-- 狭い画面ではドキュメント本文の下へ移動
+- Monaco Editorの文脈補完
+- 実験場の左端をドラッグして320〜900pxで横幅変更、幅はブラウザに保存
 
-完全なJava IDEや複数ファイルプロジェクト用のコンパイラではなく、学習用の簡易スニペット実行環境です。CheerpJランタイムとBeanShell JARは実行時に外部配信元から読み込みます。初回実行はランタイム読み込みのため、その後より重くなります。
+初回実行時はCheerpJランタイムとECJ JARを読み込むため、その後の実行より時間がかかります。複数ファイル・Maven/Gradle依存関係を扱う完全なIDEではなく、単一の `Main.java` を学習用途でコンパイル・実行する環境です。
+
+### 実行例
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, Java!");
+
+        for (int i = 1; i <= 3; i++) {
+            System.out.println(i);
+        }
+    }
+}
+```
 
 ## 内容
 
@@ -89,8 +108,8 @@ Javaの基礎からCollection Framework、ラムダ式、Stream API、スレッ�
 
 ## プレビュー
 
-メインドキュメント + Java実験場:
-https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/index.html
+Main.java実行 + 横幅リサイズ + 補完版:
+https://htmlpreview.github.io/?https://raw.githubusercontent.com/Summer110622/JavaMD/feature/playground-resize-autocomplete/index.html
 
 スレッド・並行処理:
 https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/threads.html
