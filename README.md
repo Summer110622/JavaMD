@@ -1,10 +1,10 @@
 # JavaMD
 
-Javaの基礎からCollection Framework、ラムダ式、Stream APIまでを、比較表とコード例で体系的に学べる日本語ドキュメントです。
+Javaの基礎からCollection Framework、ラムダ式、Stream API、スレッド・並行処理までを、比較表とコード例で体系的に学べる日本語ドキュメントです。
 
 ## 特徴
 
-- 1ページで基礎から実務基礎まで参照可能
+- 基礎から実務基礎まで参照可能
 - 固定サイドバー + 目次検索 + 読了進捗
 - ライト / ダークテーマ
 - コード例のコピーボタン
@@ -57,16 +57,38 @@ Javaの基礎からCollection Framework、ラムダ式、Stream APIまでを、�
 - parallelStream の注意点
 - Optional
 
+### Threads / Concurrency
+
+詳細版は `threads.html` に分離しています。
+
+- Thread / Runnable / start / run / join
+- Thread state / lifecycle
+- race condition / atomicity / visibility
+- synchronized / monitor lock
+- volatile
+- ReentrantLock / AtomicInteger / LongAdder
+- wait / notify / notifyAll
+- ExecutorService / thread pool
+- Future / CompletableFuture
+- ConcurrentHashMap / CopyOnWriteArrayList / BlockingQueue
+- Virtual Threads (Java 21)
+- interrupt / cooperative cancellation
+- deadlock と回避策
+- 用途別使い分け
+
 ### Practical
 
 - java.time
 - Files / NIO.2
-- ExecutorService と並行Collectionの基礎
 - 頻出ミス集
 - 用途別チートシート
 
 ## プレビュー
 
+メインドキュメント:
 https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/index.html
 
-`index.html` を直接ブラウザで開いても表示できます。
+スレッド・並行処理:
+https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/threads.html
+
+HTMLファイルを直接ブラウザで開いても表示できます。
