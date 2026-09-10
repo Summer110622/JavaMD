@@ -129,7 +129,7 @@ const JAVA_STARTER=`public class Main {
         }
     }
 }`;
-let monacoEditor=null;const fallback=document.getElementById('javaEditorFallback');fallback.value=JAVA_STARTER;const output=document.getElementById('javaOutput'),statusEl=document.getElementById('pgStatus'),runBtn=document.getElementById('runJava');let cjLib=null,cjLibrary=null,cjLoading=null,cjInitialized=false,runCounter=0,runInProgress=false;const mobileRunQuery=matchMedia('(max-width: 768px)');function editorValue(){return monacoEditor?monacoEditor.getValue():fallback.value}function setEditorValue(v){if(monacoEditor)monacoEditor.setValue(v);else fallback.value=v}function statusText(text,type=''){statusEl.firstElementChild.textContent=text;statusEl.className='pg-statusbar'+(type?' pg-status '+type:'')}function updateMobileRunState(){if(mobileRunQuery.matches){runBtn.disabled=true;runBtn.title='スマホではJava実行を利用できません';statusText('Mobile: Java実行はPCのみ','error')}else{runBtn.disabled=runInProgress;runBtn.title='';if(runInProgress)return;statusText(monacoEditor?'Monaco ready · Main.java mode':'Ready',monacoEditor?'ready':'')}}
+let monacoEditor=null;const fallback=document.getElementById('javaEditorFallback');fallback.value=JAVA_STARTER;const output=document.getElementById('javaOutput'),statusEl=document.getElementById('pgStatus'),runBtn=document.getElementById('runJava');let cjLib=null,cjLibrary=null,cjLoading=null,cjInitialized=false,runCounter=0,runInProgress=false,lastCompilation=null;const mobileRunQuery=matchMedia('(max-width: 768px)');function editorValue(){return monacoEditor?monacoEditor.getValue():fallback.value}function setEditorValue(v){if(monacoEditor)monacoEditor.setValue(v);else fallback.value=v}function statusText(text,type=''){statusEl.firstElementChild.textContent=text;statusEl.className='pg-statusbar'+(type?' pg-status '+type:'')}function updateMobileRunState(){if(mobileRunQuery.matches){runBtn.disabled=true;runBtn.title='スマホではJava実行を利用できません';statusText('Mobile: Java実行はPCのみ','error')}else{runBtn.disabled=runInProgress;runBtn.title='';if(runInProgress)return;statusText(monacoEditor?'Monaco ready · Main.java mode':'Ready',monacoEditor?'ready':'')}}
 const TYPE_ALIASES={ArrayList:'List',LinkedList:'List',HashSet:'Set',LinkedHashSet:'Set',HashMap:'Map',LinkedHashMap:'Map'};const MEMBER_API={String:[['length()','文字数'],['isBlank()','空白だけか'],['substring(${1:0}, ${2:end})','部分文字列'],['contains(${1:text})','文字列を含むか'],['toUpperCase()','大文字化'],['equals(${1:other})','内容比較']],List:[['add(${1:value})','追加'],['get(${1:index})','取得'],['set(${1:index}, ${2:value})','置換'],['remove(${1:value})','削除'],['size()','要素数'],['contains(${1:value})','存在確認'],['stream()','Stream化']],Set:[['add(${1:value})','追加'],['remove(${1:value})','削除'],['contains(${1:value})','存在確認'],['size()','要素数'],['stream()','Stream化']],TreeSet:[['first()','最小要素'],['last()','最大要素'],['lower(${1:value})','より小さい最大要素'],['higher(${1:value})','より大きい最小要素'],['ceiling(${1:value})','以上の最小要素']],Map:[['put(${1:key}, ${2:value})','保存'],['get(${1:key})','取得'],['getOrDefault(${1:key}, ${2:defaultValue})','既定値付き取得'],['putIfAbsent(${1:key}, ${2:value})','未登録時のみ追加'],['containsKey(${1:key})','キー存在確認'],['entrySet()','Entry一覧'],['computeIfAbsent(${1:key}, k -> ${2:new ArrayList<>()})','未登録時に生成'],['merge(${1:key}, ${2:value}, ${3:Integer::sum})','値をマージ']],Stream:[['filter(${1:x} -> ${2:condition})','絞り込み'],['map(${1:x} -> ${2:value})','変換'],['flatMap(${1:x} -> ${2:stream})','平坦化'],['distinct()','重複除去'],['sorted()','ソート'],['toList()','List化'],['count()','件数'],['forEach(${1:x} -> ${2:{}})','各要素を処理']],Thread:[['start()','開始'],['join()','終了待ち'],['getName()','名前取得'],['setName(${1:name})','名前設定'],['isAlive()','実行中か'],['interrupt()','割り込み要求']]};const STATIC_API={'System.out':[['println(${1:value})','改行付き出力'],['print(${1:value})','出力'],['printf(${1:format}, ${2:args})','書式付き出力']],Math:[['max(${1:a}, ${2:b})','最大値'],['min(${1:a}, ${2:b})','最小値'],['abs(${1:value})','絶対値'],['sqrt(${1:value})','平方根'],['random()','乱数']],Thread:[['sleep(${1:1000})','待機'],['currentThread()','現在のThread']],List:[['of(${1:values})','不変List']],Set:[['of(${1:values})','不変Set']],Map:[['of(${1:key}, ${2:value})','不変Map']],Integer:[['parseInt(${1:text})','String→int']]};const GLOBAL_SNIPPETS=[['classmain','public class Main {\n    public static void main(String[] args) {\n        ${1:System.out.println("Hello, Java!");}\n    }\n}','Main.java 全体'],['sout','System.out.println(${1:"Hello"});','System.out.println'],['fori','for (int i = 0; i < ${1:10}; i++) {\n    ${2:System.out.println(i);}\n}','for loop'],['if','if (${1:condition}) {\n    ${2:// code}\n}','if'],['list','List<${1:String}> ${2:list} = new ArrayList<>();','ArrayList'],['map','Map<${1:String}, ${2:Integer}> ${3:map} = new HashMap<>();','HashMap'],['thread','Thread ${1:worker} = new Thread(() -> {\n    ${2:System.out.println("running");}\n});\n${1:worker}.start();','Thread']];function inferVariableTypes(text){const vars={};const pattern=/(String|List|ArrayList|LinkedList|Set|HashSet|LinkedHashSet|TreeSet|Map|HashMap|LinkedHashMap|TreeMap|Stream|Thread)(?:\s*<[^;=\n]+>)?\s+([A-Za-z_$][\w$]*)\s*(?:=|;)/g;let m;while((m=pattern.exec(text)))vars[m[2]]=TYPE_ALIASES[m[1]]||m[1];return vars}function toItems(monaco,rows,range){return rows.map(([insertText,detail])=>({label:insertText.replace(/\(.*/,''),detail,kind:monaco.languages.CompletionItemKind.Method,insertText,insertTextRules:monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,range}))}
 if(typeof require==='function'){require.config({paths:{vs:'https://cdn.jsdelivr.net/npm/monaco-editor@0.56.0/min/vs'}});require(['vs/editor/editor.main'],()=>{fallback.style.display='none';monaco.languages.registerCompletionItemProvider('java',{triggerCharacters:['.'],provideCompletionItems(model,position){const line=model.getLineContent(position.lineNumber).slice(0,position.column-1),word=model.getWordUntilPosition(position),range={startLineNumber:position.lineNumber,endLineNumber:position.lineNumber,startColumn:word.startColumn,endColumn:word.endColumn},member=line.match(/([A-Za-z_$][\w$]*(?:\.out)?)\.([A-Za-z_$\w]*)$/);if(member){const receiver=member[1];if(STATIC_API[receiver])return{suggestions:toItems(monaco,STATIC_API[receiver],range)};const type=inferVariableTypes(model.getValue())[receiver];return{suggestions:toItems(monaco,MEMBER_API[type]||[],range)}}return{suggestions:GLOBAL_SNIPPETS.map(([label,insertText,detail])=>({label,detail,kind:monaco.languages.CompletionItemKind.Snippet,insertText,insertTextRules:monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,range}))}}});monacoEditor=monaco.editor.create(document.getElementById('monacoEditor'),{value:JAVA_STARTER,language:'java',theme:'vs-dark',automaticLayout:true,fontSize:14,lineHeight:22,fontFamily:'Consolas, "SFMono-Regular", monospace',minimap:{enabled:true},lineNumbers:'on',folding:true,scrollBeyondLastLine:false,tabSize:4,insertSpaces:true,bracketPairColorization:{enabled:true},autoClosingBrackets:'always',autoClosingQuotes:'always',suggestOnTriggerCharacters:true,quickSuggestions:{other:true,comments:false,strings:false},snippetSuggestions:'top',parameterHints:{enabled:true},padding:{top:10,bottom:10}});monacoEditor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.Enter,()=>runJavaSource());updateMobileRunState()},()=>statusText('Monaco load failed — textarea fallback','error'))}else statusText('Monaco loader failed — textarea fallback','error');
 const playground=document.getElementById('playground'),resizer=document.getElementById('pgResizer');const savedWidth=parseInt(localStorage.getItem('javaPlaygroundWidth')||'520',10);if(Number.isFinite(savedWidth))root.style.setProperty('--pg-width',Math.min(900,Math.max(320,savedWidth))+'px');let resizeState=null;resizer.addEventListener('pointerdown',e=>{if(innerWidth<=1180)return;resizeState={x:e.clientX,width:playground.getBoundingClientRect().width};resizer.classList.add('dragging');resizer.setPointerCapture(e.pointerId);document.body.style.userSelect='none'});resizer.addEventListener('pointermove',e=>{if(!resizeState)return;const width=Math.min(900,Math.max(320,resizeState.width+(resizeState.x-e.clientX)));root.style.setProperty('--pg-width',width+'px');monacoEditor?.layout()});function finishResize(e){if(!resizeState)return;localStorage.setItem('javaPlaygroundWidth',String(Math.round(playground.getBoundingClientRect().width)));resizeState=null;resizer.classList.remove('dragging');document.body.style.userSelect='';try{resizer.releasePointerCapture(e.pointerId)}catch(_){}}resizer.addEventListener('pointerup',finishResize);resizer.addEventListener('pointercancel',finishResize);resizer.addEventListener('dblclick',()=>{root.style.setProperty('--pg-width','520px');localStorage.setItem('javaPlaygroundWidth','520');monacoEditor?.layout()});
@@ -144,27 +144,36 @@ function beginnerHints(source){const hints=[];if(/\bpubric\b/.test(source))hints
 async function runJavaSource(){
   if(mobileRunQuery.matches){output.textContent='スマホではJavaコードの実行を利用できません。PCから開いて実行してください。';return}
   if(runInProgress)return;
-  const source=editorValue();
+  const source=editorValue(),started=performance.now();
   runInProgress=true;runBtn.disabled=true;output.textContent='Compiling Main.java…';
   try{
     const lib=await initPlayground(),Files=await lib.java.nio.file.Files,Paths=await lib.java.nio.file.Paths;
-    const sourcePath='/str/Main.java',outDir='/files/javamd-run-'+Date.now()+'-'+(++runCounter);
-    const logPath=outDir+'/output.txt',phasePath=outDir+'/phase.txt';
-    cheerpOSAddStringFile(sourcePath,new TextEncoder().encode(source));
-    const pkg=source.match(/^\s*package\s+([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*;/m);
-    const mainClass=(pkg?pkg[1]+'.':'')+'Main';
-    statusText('Compiling / Running Main.java…');
-    // Capture output inside the fresh JVM created by cheerpjRunMain.
-    const exitCode=await cheerpjRunMain('javamd.PlaygroundRunner',RUNTIME_PATH,sourcePath,outDir,logPath,phasePath,mainClass);
+    const Runner=await lib.javamd.PlaygroundRunner;
     const readText=async path=>String(await Files.readString(await Paths.get(path,[])));
-    const text=await readText(logPath),phase=await readText(phasePath);
-    if(phase==='compile'){
-      output.textContent=(text||'コンパイルに失敗しました。')+beginnerHints(source);
-      statusText('Compile error','error');
-    }else{
-      output.textContent=(text||'(出力なし)')+'\n\nProcess finished with exit code '+exitCode;
-      statusText(exitCode===0?'Run completed':'Program exited with '+exitCode,exitCode===0?'ready':'error');
+    const runId=Date.now()+'-'+(++runCounter);
+    // Only compiled classes and diagnostics are cached; the program always runs again.
+    if(!lastCompilation||lastCompilation.source!==source){
+      const sourcePath='/str/Main.java',outDir='/files/javamd-compile-'+runId;
+      const compileLog=outDir+'/compiler.txt';
+      cheerpOSAddStringFile(sourcePath,new TextEncoder().encode(source));
+      statusText('Compiling Main.java…');
+      const compiled=await Runner.compile(sourcePath,outDir,compileLog);
+      const diagnostics=await readText(compileLog);
+      if(!compiled){
+        output.textContent=(diagnostics||'コンパイルに失敗しました。')+beginnerHints(source);
+        statusText('Compile error','error');return;
+      }
+      lastCompilation={source,outDir,diagnostics};
     }
+    const pkg=source.match(/^\s*package\s+([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*;/m);
+    const mainClass=(pkg?pkg[1]+'.':'')+'Main',logPath='/files/javamd-run-'+runId+'/output.txt';
+    statusText('Running Main.main()…');
+    // The fresh execution JVM only needs the tiny runner, not ECJ or its module index.
+    const exitCode=await cheerpjRunMain('javamd.PlaygroundRunner',RUNNER_PATH,'--run',lastCompilation.outDir,logPath,mainClass);
+    const text=await readText(logPath),diagnostics=lastCompilation.diagnostics;
+    output.textContent=(diagnostics?diagnostics+'\n':'')+(text||'(出力なし)')+'\n\nProcess finished with exit code '+exitCode;
+    const elapsed=((performance.now()-started)/1000).toFixed(2)+' s';
+    statusText((exitCode===0?'Run completed':'Program exited with '+exitCode)+' · '+elapsed,exitCode===0?'ready':'error');
   }catch(err){
     let message=err?.message||String(err);
     try{if(err?.getMessage)message=String(await err.getMessage())}catch(_){}
