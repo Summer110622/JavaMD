@@ -24,7 +24,7 @@ Javaの基礎からCollection Framework、ラムダ式、Stream API、スレッ�
 - `Ctrl + Enter` / `Cmd + Enter` で実行
 - 狭い画面ではドキュメント本文の下へ移動
 
-完全なJava IDEや複数ファイルプロジェクト用のコンパイラではなく、学習用の簡易スニペット実行環境です。CheerpJランタイムとBeanShell JARは実行時に外部配信元から読み込みます。
+完全なJava IDEや複数ファイルプロジェクト用のコンパイラではなく、学習用の簡易スニペット実行環境です。CheerpJランタイムとBeanShell JARは実行時に外部配信元から読み込みます。初回実行はランタイム読み込みのため、その後より重くなります。
 
 ## 内容
 
@@ -95,4 +95,4 @@ https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/featu
 スレッド・並行処理:
 https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/threads.html
 
-CheerpJ実験場は `http://` または `https://` で配信されたページ上で利用してください。初回実行はランタイムを読み込むため、その後の実行より重くなります。
+CheerpJ実験場は `http://` または `https://` で配信されたページ上で利用してください。
