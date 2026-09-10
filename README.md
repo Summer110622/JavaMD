@@ -1,23 +1,72 @@
 # JavaMD
 
-Javaの基礎を、初心者向けに細かく説明する静的学習サイトです。
+Javaの基礎からCollection Framework、ラムダ式、Stream APIまでを、比較表とコード例で体系的に学べる日本語ドキュメントです。
+
+## 特徴
+
+- 1ページで基礎から実務基礎まで参照可能
+- 固定サイドバー + 目次検索 + 読了進捗
+- ライト / ダークテーマ
+- コード例のコピーボタン
+- モバイル対応
+- 外部ライブラリ・ビルド不要
 
 ## 内容
 
-- Java / JDK / JVM / バイトコード
-- 開発環境とコンパイル・実行
-- 変数・プリミティブ型・参照型・キャスト
-- 演算子・条件分岐・ループ
-- 配列・List / Set / Map
-- メソッド・オーバーロード
-- クラス・オブジェクト・コンストラクタ
-- 継承・interface
-- アクセス修飾子・package
-- 例外処理
-- Generics
-- ラムダ式・Stream API
-- 初心者がつまずきやすいポイント
+### Java / Language
+
+- Java / JVM / JDK / バイトコード / GC
+- コンパイルと実行
+- 変数、プリミティブ型、参照型、null、var、final、キャスト
+- String / StringBuilder / Wrapper / equals
+- 演算子、if、switch、for、while
+- 配列、メソッド、overload、可変長引数
+- class / constructor / static / final
+- record / enum
+- 継承 / abstract class / interface / polymorphism
+- アクセス修飾子 / package / import
+- checked / unchecked exception / try-with-resources
+- Generics / wildcard / PECS
+
+### Collection Framework
+
+- Collection / Map の全体像と選び方
+- ArrayList / LinkedList / Vector
+- HashSet / LinkedHashSet / TreeSet / EnumSet
+- HashMap / LinkedHashMap / TreeMap / EnumMap / ConcurrentHashMap
+- Hashtable の位置づけ
+- Queue / Deque / ArrayDeque / PriorityQueue
+- Comparable / Comparator / sort
+- equals / hashCode とHash系Collectionの関係
+- NavigableSet / NavigableMap の範囲検索
+- 主要実装の計算量比較
+
+### Lambda / Functional / Stream
+
+- ラムダ式の全構文
+- ターゲット型とeffectively final
+- メソッド参照 / constructor参照
+- Predicate / Function / Consumer / Supplier
+- UnaryOperator / BinaryOperator / BiFunction
+- 関数合成
+- プリミティブ特化型
+- Streamの遅延評価
+- filter / map / flatMap / distinct / sorted / limit / skip / peek
+- forEach / count / min / max / find / match / reduce
+- Collectors.groupingBy / partitioningBy / joining / toMap
+- parallelStream の注意点
+- Optional
+
+### Practical
+
+- java.time
+- Files / NIO.2
+- ExecutorService と並行Collectionの基礎
+- 頻出ミス集
+- 用途別チートシート
 
 ## プレビュー
 
-`index.html` をブラウザで開くだけで表示できます。外部依存はありません。
+https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/index.html
+
+`index.html` を直接ブラウザで開いても表示できます。
