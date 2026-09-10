@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問</h1><p>既存Q1〜Q15と重複しないように、同じ出題論点から新規作成した確認問題です。答えを決めてから開いてください。</p><p><a href="quiz.html">← 最初の15問へ</a></p></header>
+
+<div class="q"><span class="tag">static</span><h2>Q16. 次のコードはコンパイルできる？</h2><pre><code>class Box {
+    int value = 10;
+    static void show() {
+        System.out.println(value);
+    }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> staticメソッドから、特定のオブジェクトに属する非staticフィールドを直接参照することはできません。</div></details></div>
+
+<div class="q"><span class="tag">static</span><h2>Q17. 次の説明として正しいものは？</h2><pre><code>class Book {
+    static String size = "A5";
+    int pages = 100;
+    void print() {
+        System.out.println(size + " " + pages);
+    }
+}</code></pre><div class="choices"><div class="choice">A. print()からstatic変数sizeは参照できない</div><div class="choice">B. print()からsizeもpagesも参照できる</div></div><details><summary>答え・解説</summary><div><b>B。</b> 非staticメソッドからは、staticメンバもインスタンスメンバも参照できます。</div></details></div>
+
+<div class="q"><span class="tag">overload</span><h2>Q18. このstaticメソッド定義は有効？</h2><pre><code>class Calc {
+    static void f(int n) {}
+    static void f(double n) {}
+}</code></pre><div class="choices"><div class="choice">A. 有効</div><div class="choice">B. 重複定義でエラー</div></div><details><summary>答え・解説</summary><div><b>A。</b> 引数の型が異なるためオーバーロードとして成立します。staticかどうかはオーバーロード可否の基準ではありません。</div></details></div>
+
+<div class="q"><span class="tag">overload</span><h2>Q19. 次の2メソッドはオーバーロードになる？</h2><pre><code>int g(int n) { return n; }
+double g(int n) { return n; }</code></pre><div class="choices"><div class="choice">A. なる</div><div class="choice">B. ならず、コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。</b> 引数の並びが同じです。戻り値の型だけを変えてもオーバーロードにはなりません。</div></details></div>
+
+<div class="q"><span class="tag">interface</span><h2>Q20. Cクラスが実装すべきメソッドは？</h2><pre><code>interface A { void a(); }
+interface B extends A { void b(); }
+class C implements B { }</code></pre><div class="choices"><div class="choice">A. b()だけ</div><div class="choice">B. a()だけ</div><div class="choice">C. a()とb()の両方</div></div><details><summary>答え・解説</summary><div><b>C。</b> BはAをextendsしているため、Bを実装する具象クラスはA由来とB自身の抽象メソッドの両方を実装する必要があります。</div></details></div>
+
+<div class="q"><span class="tag">constructor</span><h2>Q21. 自動生成されるコンストラクタについて正しいものは？</h2><pre><code>class Parent { Parent() {} }
+class Child { }</code></pre><div class="choices"><div class="choice">A. Childには引数なしコンストラクタが自動生成される</div><div class="choice">B. コンストラクタは一切生成されない</div></div><details><summary>答え・解説</summary><div><b>A。</b> クラス内にコンストラクタが1つも明記されていない場合、引数なしのデフォルトコンストラクタが自動生成されます。</div></details></div>
+
+<div class="q"><span class="tag">constructor</span><h2>Q22. 次の説明として正しいものは？</h2><pre><code>class Parent {
+    Parent() { System.out.println("P"); }
+}
+class Child extends Parent {
+    Child() { System.out.println("C"); }
+}</code></pre><div class="choices"><div class="choice">A. Child()の先頭では暗黙にsuper()が呼ばれる</div><div class="choice">B. super()は自動では呼ばれない</div></div><details><summary>答え・解説</summary><div><b>A。</b> 明示的なthis(...)やsuper(...)がない場合、サブクラスのコンストラクタ先頭でsuper()が暗黙に呼ばれます。</div></details></div>
+
+<div class="q"><span class="tag">enum</span><h2>Q23. 次のコードはどうなる？</h2><pre><code>enum Color { RED, BLUE }
+Color c = Color.GREEN;</code></pre><div class="choices"><div class="choice">A. 正常にコンパイル</div><div class="choice">B. コンパイルエラー</div><div class="choice">C. 実行時例外</div></div><details><summary>答え・解説</summary><div><b>B。</b> enum型には定義されている列挙定数だけを指定できます。GREENは存在しません。</div></details></div>
+
+<div class="q"><span class="tag">HashMap</span><h2>Q24. 次のコードで例外は発生する？</h2><pre><code>Map&lt;Integer,String&gt; map = new HashMap&lt;&gt;();
+map.put(1, null);
+System.out.println(map.get(1));</code></pre><div class="choices"><div class="choice">A. nullが表示される</div><div class="choice">B. put時に例外</div><div class="choice">C. get時に例外</div></div><details><summary>答え・解説</summary><div><b>A。</b> HashMapは値としてnullを保持できます。この例ではget(1)の結果としてnullが表示されます。</div></details></div>
+
+<div class="q"><span class="tag">HashSet</span><h2>Q25. 2回目のaddの戻り値は？</h2><pre><code>Set&lt;String&gt; s = new HashSet&lt;&gt;();
+System.out.println(s.add("A"));
+System.out.println(s.add("A"));</code></pre><div class="choices"><div class="choice">A. true, true</div><div class="choice">B. true, false</div><div class="choice">C. 2回目で例外</div></div><details><summary>答え・解説</summary><div><b>B。</b> 最初は追加できるのでtrue。重複要素は保持されないため2回目はfalseです。</div></details></div>
+
+<div class="q"><span class="tag">TreeSet</span><h2>Q26. 出力は？</h2><pre><code>Set&lt;Integer&gt; s = new TreeSet&lt;&gt;();
+s.add(30); s.add(10); s.add(20);
+System.out.println(s);</code></pre><div class="choices"><div class="choice">A. [30, 10, 20]</div><div class="choice">B. [10, 20, 30]</div><div class="choice">C. 順序は保証されない</div></div><details><summary>答え・解説</summary><div><b>B。</b> TreeSetは自然順序で並びます。Integerなら小さい順です。</div></details></div>
+
+<div class="q"><span class="tag">2次元配列</span><h2>Q27. 出力は？</h2><pre><code>int[][] a = { {1}, {2, 3, 4} };
+for (int[] row : a) {
+    System.out.println(row.length);
+}</code></pre><div class="choices"><div class="choice">A. 1, 3</div><div class="choice">B. 2, 2</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。</b> Javaの2次元配列では各行の長さが同じである必要はありません。外側の拡張forでは各行のint[]を受け取ります。</div></details></div>
+
+<div class="q"><span class="tag">for</span><h2>Q28. sumはいくつ？</h2><pre><code>int[] a = {5, 10, 15, 20};
+int sum = 0;
+for (int i = 0; i &lt; a.length; i += 2) {
+    sum += a[i];
+}
+System.out.println(sum);</code></pre><div class="choices"><div class="choice">A. 15</div><div class="choice">B. 20</div><div class="choice">C. 50</div></div><details><summary>答え・解説</summary><div><b>B。20。</b> iは0→2と進むので、加算されるのはa[0]=5とa[2]=15です。</div></details></div>
+
+<div class="q"><span class="tag">instanceof</span><h2>Q29. 出力は？</h2><pre><code>interface Fly {}
+class Bird implements Fly {}
+class Sparrow extends Bird {}
+Fly f = new Sparrow();
+System.out.println(f instanceof Bird);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。</b> 変数の宣言型がFlyでも、実体はSparrowです。SparrowはBirdのサブクラスなのでinstanceof Birdはtrueです。</div></details></div>
+
+<div class="q"><span class="tag">cast</span><h2>Q30. 正しいキャスト後のメソッド呼び出しはどれ？</h2><pre><code>Object o = new String("java");</code></pre><div class="choices"><div class="choice">A. (String)o.length()</div><div class="choice">B. ((String)o).length()</div></div><details><summary>答え・解説</summary><div><b>B。</b> 先にo全体をStringへキャストしてからlength()を呼びます。ドット演算子はキャストより強く結び付くため、括弧が重要です。</div></details></div>
+
+<div class="q"><span class="tag">synchronized</span><h2>Q31. synchronizedを指定できる場所は？</h2><div class="choices"><div class="choice">A. メソッドだけ</div><div class="choice">B. ブロックだけ</div><div class="choice">C. メソッドとブロックの両方</div></div><details><summary>答え・解説</summary><div><b>C。</b> synchronizedはメソッド全体にも、メソッド内の特定ブロックにも指定できます。</div></details></div>
+
+<div class="q"><span class="tag">Thread.yield</span><h2>Q32. Thread.yield() の説明として最も適切なのは？</h2><div class="choices"><div class="choice">A. 現在のスレッドを必ず1秒停止する</div><div class="choice">B. 他のスレッドに実行の機会を与えるための呼び出し</div><div class="choice">C. スレッドを終了する</div></div><details><summary>答え・解説</summary><div><b>B。</b> yield()は他のスレッドへ実行機会を渡すために使われるAPIです。</div></details></div>
+
+<div class="q"><span class="tag">Thread.sleep</span><h2>Q33. Thread.sleep(500) は何をする？</h2><div class="choices"><div class="choice">A. 対象Threadオブジェクトを必ず終了する</div><div class="choice">B. 現在実行中のスレッドを指定時間停止させる</div><div class="choice">C. 新しいスレッドを開始する</div></div><details><summary>答え・解説</summary><div><b>B。</b> sleepは現在のスレッドを指定時間だけ停止させます。start()とは役割が異なります。</div></details></div>
+
+<div class="q"><span class="tag">Runnable</span><h2>Q34. 正しい説明はどれ？</h2><div class="choices"><div class="choice">A. Runnableはクラスなのでextendsする</div><div class="choice">B. Runnableはinterfaceなのでimplementsする</div><div class="choice">C. Runnableはenumである</div></div><details><summary>答え・解説</summary><div><b>B。</b> Runnableはinterfaceです。クラスがRunnableを実装する場合はimplementsを使います。</div></details></div>
+
+<div class="q"><span class="tag">List</span><h2>Q35. remove(int index) の戻り値は？</h2><pre><code>List&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add("A"); list.add("B"); list.add("C");
+String x = list.remove(1);</code></pre><div class="choices"><div class="choice">A. "A"</div><div class="choice">B. "B"</div><div class="choice">C. true</div></div><details><summary>答え・解説</summary><div><b>B。</b> remove(int index)は指定位置の要素を削除し、その削除された要素を返します。削除後は後続要素のインデックスが1つ前へ詰まります。</div></details></div>
+
+<p><a href="quiz.html">← 最初の15問へ戻る</a></p>
+</div></body></html>
