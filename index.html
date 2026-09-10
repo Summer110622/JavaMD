@@ -34,17 +34,14 @@
 <main id="top"><div class="content">
 <header class="hero"><div class="eyebrow">JAVA BEGINNER DOCUMENT</div><h1>じゃばる！！</h1><p class="lead">Javaの基礎からCollection、ラムダ式、Stream、スレッドまで。「何を書くか」だけでなく「どれを選ぶか」が分かるように、比較表と短いコード例で整理しています。</p><div class="chips"><span class="chip">初心者向け</span><span class="chip">Java 17+</span><span class="chip">コード例中心</span><span class="chip">1ページで参照</span></div></header>
 <div class="quick"><a href="#collections"><strong>Collection</strong><span>List / Set / Map</span></a><a href="#set"><strong>TreeSet</strong><span>順序付きSet</span></a><a href="#map"><strong>HashMap</strong><span>キー → 値</span></a><a href="#lambda"><strong>Lambda</strong><span>処理を値として渡す</span></a><a href="#thread"><strong>Thread</strong><span>まず6 APIだけ</span></a></div>
-
 <section id="overview"><div class="kicker">Start</div><h2>1. Java / JVM / JDK</h2><div class="cards"><div class="card"><strong>JDK</strong><p>Javaを書く・コンパイルするための開発キット。</p></div><div class="card"><strong>JVM</strong><p>コンパイル後のバイトコードを実行する仮想マシン。</p></div></div><div class="code"><div class="codehead"><span>Hello.java</span><button class="copy">コピー</button></div><pre><code>public class Hello {
     public static void main(String[] args) {
         System.out.println("Hello, Java!");
     }
 }</code></pre></div><p><code>javac Hello.java</code> でコンパイルし、<code>java Hello</code> で実行します。</p></section>
-
 <section id="syntax"><div class="kicker">Language</div><h2>2. 基本構文・変数・型</h2><div class="tablewrap"><table><thead><tr><th>種類</th><th>代表</th><th>例</th></tr></thead><tbody><tr><td>整数</td><td>int / long</td><td><code>int age = 20;</code></td></tr><tr><td>小数</td><td>double</td><td><code>double price = 12.5;</code></td></tr><tr><td>真偽</td><td>boolean</td><td><code>boolean ok = true;</code></td></tr><tr><td>文字</td><td>char</td><td><code>char grade = 'A';</code></td></tr><tr><td>文字列</td><td>String</td><td><code>String name = "Java";</code></td></tr></tbody></table></div><div class="code"><div class="codehead"><span>変数</span><button class="copy">コピー</button></div><pre><code>int count = 10;
 final double TAX = 0.10;
 var message = "hello"; // ローカル変数で型推論</code></pre></div><div class="callout warn"><strong>String比較:</strong> 内容比較は <code>equals()</code>。<code>==</code> は参照が同じかを比較します。</div></section>
-
 <section id="control"><div class="kicker">Language</div><h2>3. if / switch / loop</h2><div class="code"><div class="codehead"><span>条件分岐</span><button class="copy">コピー</button></div><pre><code>if (score >= 80) {
     System.out.println("A");
 } else if (score >= 60) {
@@ -64,7 +61,6 @@ String label = switch (day) {
 for (String name : names) {
     System.out.println(name);
 }</code></pre></div></section>
-
 <section id="oop"><div class="kicker">Object Oriented</div><h2>4. クラス・継承・interface</h2><div class="code"><div class="codehead"><span>class</span><button class="copy">コピー</button></div><pre><code>class User {
     private final String name;
 
@@ -76,16 +72,13 @@ for (String name : names) {
         return name;
     }
 }</code></pre></div><div class="cards"><div class="card"><strong>extends</strong><p>クラスを継承する。Javaはクラスの多重継承をしません。</p></div><div class="card"><strong>implements</strong><p>interfaceが要求する操作を実装します。</p></div><div class="card"><strong>record</strong><p>値を保持するデータクラスを簡潔に書けます。</p></div><div class="card"><strong>enum</strong><p>決まった候補だけを型安全に表現します。</p></div></div></section>
-
 <section id="exception"><div class="kicker">Language</div><h2>5. 例外・Generics</h2><div class="code"><div class="codehead"><span>try / catch</span><button class="copy">コピー</button></div><pre><code>try {
     int value = Integer.parseInt(text);
 } catch (NumberFormatException e) {
     System.out.println("数字ではありません");
 }</code></pre></div><div class="code"><div class="codehead"><span>Generics</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
 Map&lt;String, Integer&gt; scores = new HashMap&lt;&gt;();</code></pre></div><p>Genericsは「この箱には何型を入れるか」を型パラメータで指定し、コンパイル時に型安全性を確認する仕組みです。</p></section>
-
 <section id="collections"><div class="kicker">Collections</div><h2>6. Collection Framework — まず選び方</h2><div class="tablewrap"><table><thead><tr><th>やりたいこと</th><th>第一候補</th><th>特徴</th></tr></thead><tbody><tr><td>順番付き一覧</td><td><code>ArrayList</code></td><td>重複OK、添字アクセス</td></tr><tr><td>重複をなくす</td><td><code>HashSet</code></td><td>平均O(1)で検索</td></tr><tr><td>ソート済み集合</td><td><code>TreeSet</code></td><td>O(log n)、範囲検索</td></tr><tr><td>キーから値を探す</td><td><code>HashMap</code></td><td>平均O(1)</td></tr><tr><td>キー順Map</td><td><code>TreeMap</code></td><td>O(log n)、範囲検索</td></tr><tr><td>FIFO / Stack</td><td><code>ArrayDeque</code></td><td>両端操作が高速</td></tr></tbody></table></div><div class="callout good"><strong>迷ったら:</strong> List → ArrayList、Set → HashSet、Map → HashMap、Queue/Stack → ArrayDeque。</div></section>
-
 <section id="list"><div class="kicker">Collections</div><h2>7. List — ArrayList / LinkedList</h2><div class="code"><div class="codehead"><span>ArrayList</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
 names.add("Alice");
 names.add("Bob");
@@ -93,7 +86,6 @@ names.add("Bob");
 String first = names.get(0);
 names.set(1, "Bobby");
 names.remove("Alice");</code></pre></div><p><code>ArrayList</code> は通常の第一候補です。<code>LinkedList</code> は両端操作もできますが、一般用途ではArrayListやArrayDequeの方が選ばれやすいです。</p></section>
-
 <section id="set"><div class="kicker">Collections</div><h2>8. Set — HashSet / LinkedHashSet / TreeSet</h2><div class="tablewrap"><table><thead><tr><th>実装</th><th>順序</th><th>検索</th><th>用途</th></tr></thead><tbody><tr><td>HashSet</td><td>保証なし</td><td>平均O(1)</td><td>高速な重複排除</td></tr><tr><td>LinkedHashSet</td><td>挿入順</td><td>平均O(1)</td><td>順番を保つ重複排除</td></tr><tr><td>TreeSet</td><td>ソート順</td><td>O(log n)</td><td>範囲・最小最大</td></tr></tbody></table></div><div class="code"><div class="codehead"><span>TreeSet</span><button class="copy">コピー</button></div><pre><code>TreeSet&lt;Integer&gt; set = new TreeSet&lt;&gt;();
 set.addAll(List.of(30, 10, 20));
 
@@ -103,7 +95,6 @@ set.lower(20);    // 10
 set.higher(20);   // 30
 set.ceiling(15);  // 20
 set.subSet(10, true, 30, false); // [10, 20]</code></pre></div></section>
-
 <section id="map"><div class="kicker">Collections</div><h2>9. Map — HashMap / LinkedHashMap / TreeMap</h2><div class="code"><div class="codehead"><span>HashMap</span><button class="copy">コピー</button></div><pre><code>Map&lt;String, Integer&gt; scores = new HashMap&lt;&gt;();
 scores.put("Alice", 90);
 scores.put("Bob", 80);
@@ -114,7 +105,6 @@ scores.putIfAbsent("Dave", 70);
 scores.merge("Alice", 5, Integer::sum);</code></pre></div><div class="code"><div class="codehead"><span>computeIfAbsent</span><button class="copy">コピー</button></div><pre><code>Map&lt;String, List&lt;String&gt;&gt; groups = new HashMap&lt;&gt;();
 groups.computeIfAbsent("java", k -> new ArrayList&lt;&gt;())
       .add("ArrayList");</code></pre></div><p><code>LinkedHashMap</code> は挿入順、<code>TreeMap</code> はキーのソート順を保持します。</p></section>
-
 <section id="queue"><div class="kicker">Collections</div><h2>10. Queue / Deque</h2><div class="code"><div class="codehead"><span>ArrayDeque</span><button class="copy">コピー</button></div><pre><code>Deque&lt;String&gt; q = new ArrayDeque&lt;&gt;();
 q.offerLast("A");
 q.offerLast("B");
@@ -124,14 +114,11 @@ q.peekFirst(); // B
 
 q.push("X");   // Stackとして追加
 q.pop();       // Stackとして取り出し</code></pre></div><p>優先度順に取り出したい場合は <code>PriorityQueue</code> を使います。</p></section>
-
 <section id="lambda"><div class="kicker">Functional</div><h2>11. ラムダ式</h2><div class="tablewrap"><table><thead><tr><th>形</th><th>例</th></tr></thead><tbody><tr><td>引数なし</td><td><code>() -> 42</code></td></tr><tr><td>1引数</td><td><code>x -> x * 2</code></td></tr><tr><td>2引数</td><td><code>(a, b) -> a + b</code></td></tr><tr><td>複数文</td><td><code>x -> { var y=x*2; return y; }</code></td></tr></tbody></table></div><div class="code"><div class="codehead"><span>ラムダとメソッド参照</span><button class="copy">コピー</button></div><pre><code>Predicate&lt;String&gt; isLong = s -> s.length() >= 5;
 Function&lt;String, Integer&gt; len = String::length;
 Consumer&lt;String&gt; print = System.out::println;
 Supplier&lt;UUID&gt; uuid = UUID::randomUUID;</code></pre></div><div class="callout"><strong>effectively final:</strong> ラムダから参照するローカル変数は、初期化後に再代入しない必要があります。</div></section>
-
 <section id="functional"><div class="kicker">Functional</div><h2>12. 標準の関数型interface</h2><div class="tablewrap"><table><thead><tr><th>型</th><th>形</th><th>用途</th></tr></thead><tbody><tr><td><code>Predicate&lt;T&gt;</code></td><td>T → boolean</td><td>条件</td></tr><tr><td><code>Function&lt;T,R&gt;</code></td><td>T → R</td><td>変換</td></tr><tr><td><code>Consumer&lt;T&gt;</code></td><td>T → void</td><td>値を使う</td></tr><tr><td><code>Supplier&lt;T&gt;</code></td><td>() → T</td><td>値を作る</td></tr><tr><td><code>UnaryOperator&lt;T&gt;</code></td><td>T → T</td><td>同じ型へ変換</td></tr><tr><td><code>BinaryOperator&lt;T&gt;</code></td><td>(T,T) → T</td><td>2値を結合</td></tr></tbody></table></div></section>
-
 <section id="stream"><div class="kicker">Functional</div><h2>13. Stream API</h2><div class="code"><div class="codehead"><span>filter → map → toList</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; result = names.stream()
     .filter(s -> !s.isBlank())
     .map(String::trim)
@@ -140,15 +127,12 @@ Supplier&lt;UUID&gt; uuid = UUID::randomUUID;</code></pre></div><div class="call
     .sorted()
     .toList();</code></pre></div><div class="code"><div class="codehead"><span>groupingBy</span><button class="copy">コピー</button></div><pre><code>Map&lt;Integer, List&lt;String&gt;&gt; byLength = names.stream()
     .collect(Collectors.groupingBy(String::length));</code></pre></div><div class="tablewrap"><table><thead><tr><th>操作</th><th>意味</th></tr></thead><tbody><tr><td>filter</td><td>条件に合うものだけ残す</td></tr><tr><td>map</td><td>別の値へ変換</td></tr><tr><td>flatMap</td><td>入れ子を平坦化</td></tr><tr><td>sorted</td><td>ソート</td></tr><tr><td>reduce</td><td>1つの値へまとめる</td></tr><tr><td>collect</td><td>ListやMapなどへ集約</td></tr></tbody></table></div></section>
-
 <section id="datetime"><div class="kicker">Practical</div><h2>14. Date / Time・Files</h2><div class="code"><div class="codehead"><span>java.time</span><button class="copy">コピー</button></div><pre><code>LocalDate today = LocalDate.now();
 LocalDate nextWeek = today.plusWeeks(1);
 Instant now = Instant.now();</code></pre></div><div class="code"><div class="codehead"><span>Files</span><button class="copy">コピー</button></div><pre><code>Path path = Path.of("data.txt");
 Files.writeString(path, "hello");
 String text = Files.readString(path);</code></pre></div></section>
-
-<section id="thread"><div class="kicker">Beginner Thread API</div><h2>15. スレッド — 初心者はまずこれだけ</h2><p>スレッドは「プログラムの中で処理を進める流れ」です。最初から難しいロックや並行コレクションを覚える必要はありません。まず <strong>Threadを作る → startする → 少し待つ → 終了を待つ</strong> という流れを理解します。</p><div class="steps"><div class="step"><strong>やる処理を書く</strong><br><code>Runnable</code> やラムダ式で処理を用意します。</div><div class="step"><strong>Threadを作る</strong><br><code>new Thread(...)</code> でスレッドオブジェクトを作ります。</div><div class="step"><strong>start()する</strong><br>新しいスレッドで処理が始まります。</div><div class="step"><strong>必要ならjoin()する</strong><br>そのスレッドが終わるまで待ちます。</div></div>
-<h3>いちばん簡単な例</h3><div class="code"><div class="codehead"><span>Thread + ラムダ式</span><button class="copy">コピー</button></div><pre><code>public class Main {
+<section id="thread"><div class="kicker">Beginner Thread API</div><h2>15. スレッド — 初心者はまずこれだけ</h2><p>スレッドは「プログラムの中で処理を進める流れ」です。最初から難しいロックや並行コレクションを覚える必要はありません。まず <strong>Threadを作る → startする → 少し待つ → 終了を待つ</strong> という流れを理解します。</p><div class="steps"><div class="step"><strong>やる処理を書く</strong><br><code>Runnable</code> やラムダ式で処理を用意します。</div><div class="step"><strong>Threadを作る</strong><br><code>new Thread(...)</code> でスレッドオブジェクトを作ります。</div><div class="step"><strong>start()する</strong><br>新しいスレッドで処理が始まります。</div><div class="step"><strong>必要ならjoin()する</strong><br>そのスレッドが終わるまで待ちます。</div></div><h3>いちばん簡単な例</h3><div class="code"><div class="codehead"><span>Thread + ラムダ式</span><button class="copy">コピー</button></div><pre><code>public class Main {
     public static void main(String[] args) throws InterruptedException {
         Thread worker = new Thread(() -> {
             System.out.println("別スレッドで実行中");
@@ -159,27 +143,21 @@ String text = Files.readString(path);</code></pre></div></section>
 
         System.out.println("終了");
     }
-}</code></pre></div>
-<h3>最初に覚える6つのThread API</h3><div class="api"><code>start()</code><span>新しいスレッドを開始します。初心者が最初に覚える最重要API。</span></div><div class="api"><code>sleep(ms)</code><span>現在動いているスレッドを指定時間だけ休ませます。</span></div><div class="api"><code>join()</code><span>対象スレッドが終了するまで現在のスレッドを待たせます。</span></div><div class="api"><code>getName()</code><span>スレッド名を取得します。</span></div><div class="api"><code>setName()</code><span>スレッドに分かりやすい名前を付けます。</span></div><div class="api"><code>currentThread()</code><span>今このコードを実行しているThreadを取得します。</span></div>
-<h3>sleep()</h3><div class="code"><div class="codehead"><span>1秒ごとに表示</span><button class="copy">コピー</button></div><pre><code>for (int i = 1; i <= 3; i++) {
+}</code></pre></div><h3>最初に覚える6つのThread API</h3><div class="api"><code>start()</code><span>新しいスレッドを開始します。初心者が最初に覚える最重要API。</span></div><div class="api"><code>sleep(ms)</code><span>現在動いているスレッドを指定時間だけ休ませます。</span></div><div class="api"><code>join()</code><span>対象スレッドが終了するまで現在のスレッドを待たせます。</span></div><div class="api"><code>getName()</code><span>スレッド名を取得します。</span></div><div class="api"><code>setName()</code><span>スレッドに分かりやすい名前を付けます。</span></div><div class="api"><code>currentThread()</code><span>今このコードを実行しているThreadを取得します。</span></div><h3>sleep()</h3><div class="code"><div class="codehead"><span>1秒ごとに表示</span><button class="copy">コピー</button></div><pre><code>for (int i = 1; i <= 3; i++) {
     System.out.println(i);
     Thread.sleep(1000); // 1000ms = 1秒
-}</code></pre></div>
-<h3>スレッド名を見る</h3><div class="code"><div class="codehead"><span>getName / currentThread</span><button class="copy">コピー</button></div><pre><code>Thread worker = new Thread(() -> {
+}</code></pre></div><h3>スレッド名を見る</h3><div class="code"><div class="codehead"><span>getName / currentThread</span><button class="copy">コピー</button></div><pre><code>Thread worker = new Thread(() -> {
     Thread current = Thread.currentThread();
     System.out.println(current.getName());
 });
 
 worker.setName("worker-1");
-worker.start();</code></pre></div>
-<h3>start() と run() は違う</h3><div class="tablewrap"><table><thead><tr><th>呼び方</th><th>何が起きる?</th></tr></thead><tbody><tr><td><code>thread.start()</code></td><td>新しいスレッドを作り、その中でrun()が呼ばれる</td></tr><tr><td><code>thread.run()</code></td><td>普通のメソッド呼び出し。新しいスレッドは作られない</td></tr></tbody></table></div><div class="callout warn"><strong>初心者向けルール:</strong> 「別スレッドで動かしたい」なら <code>run()</code> ではなく <code>start()</code>。</div>
-<h3>Runnable とは?</h3><div class="code"><div class="codehead"><span>Runnable</span><button class="copy">コピー</button></div><pre><code>Runnable task = () -> {
+worker.start();</code></pre></div><h3>start() と run() は違う</h3><div class="tablewrap"><table><thead><tr><th>呼び方</th><th>何が起きる?</th></tr></thead><tbody><tr><td><code>thread.start()</code></td><td>新しいスレッドを作り、その中でrun()が呼ばれる</td></tr><tr><td><code>thread.run()</code></td><td>普通のメソッド呼び出し。新しいスレッドは作られない</td></tr></tbody></table></div><div class="callout warn"><strong>初心者向けルール:</strong> 「別スレッドで動かしたい」なら <code>run()</code> ではなく <code>start()</code>。</div><h3>Runnable とは?</h3><div class="code"><div class="codehead"><span>Runnable</span><button class="copy">コピー</button></div><pre><code>Runnable task = () -> {
     System.out.println("仕事をする");
 };
 
 Thread thread = new Thread(task);
-thread.start();</code></pre></div><p><code>Runnable</code> は「実行したい処理」を表します。ラムダ式と相性がよく、<code>new Thread(() -> {...})</code> と短く書けます。</p>
-<h3>2つ同時に動かす</h3><div class="code"><div class="codehead"><span>2 threads</span><button class="copy">コピー</button></div><pre><code>Thread a = new Thread(() -> {
+thread.start();</code></pre></div><p><code>Runnable</code> は「実行したい処理」を表します。ラムダ式と相性がよく、<code>new Thread(() -> {...})</code> と短く書けます。</p><h3>2つ同時に動かす</h3><div class="code"><div class="codehead"><span>2 threads</span><button class="copy">コピー</button></div><pre><code>Thread a = new Thread(() -> {
     for (int i = 0; i < 3; i++) {
         System.out.println("A: " + i);
     }
@@ -195,22 +173,11 @@ a.start();
 b.start();
 
 a.join();
-b.join();</code></pre></div><div class="callout"><strong>ポイント:</strong> AとBの表示順は毎回同じとは限りません。これが並行実行を理解する最初の重要ポイントです。</div>
-<h3>今は後回しでOK</h3><p class="muted"><code>synchronized</code>、<code>Lock</code>、<code>volatile</code>、<code>AtomicInteger</code>、<code>ExecutorService</code>、<code>CompletableFuture</code> などは、Thread / Runnable / start / sleep / join に慣れてから学べば十分です。</p><div class="callout good"><strong>学習順:</strong> Runnable → new Thread → start → sleep → join → currentThread/getName → 共有データの問題 → ExecutorService。</div></section>
-
+b.join();</code></pre></div><div class="callout"><strong>ポイント:</strong> AとBの表示順は毎回同じとは限りません。これが並行実行を理解する最初の重要ポイントです。</div><h3>今は後回しでOK</h3><p class="muted"><code>synchronized</code>、<code>Lock</code>、<code>volatile</code>、<code>AtomicInteger</code>、<code>ExecutorService</code>、<code>CompletableFuture</code> などは、Thread / Runnable / start / sleep / join に慣れてから学べば十分です。</p><div class="callout good"><strong>学習順:</strong> Runnable → new Thread → start → sleep → join → currentThread/getName → 共有データの問題 → ExecutorService。</div></section>
 <section id="cheat"><div class="kicker">Reference</div><h2>16. 迷ったときのチートシート</h2><div class="api"><strong>一覧</strong><span><code>ArrayList</code></span></div><div class="api"><strong>重複排除</strong><span><code>HashSet</code></span></div><div class="api"><strong>ソート済みSet</strong><span><code>TreeSet</code></span></div><div class="api"><strong>キー→値</strong><span><code>HashMap</code></span></div><div class="api"><strong>ソート済みMap</strong><span><code>TreeMap</code></span></div><div class="api"><strong>FIFO / Stack</strong><span><code>ArrayDeque</code></span></div><div class="api"><strong>条件</strong><span><code>Predicate&lt;T&gt;</code></span></div><div class="api"><strong>変換</strong><span><code>Function&lt;T,R&gt;</code></span></div><div class="api"><strong>別スレッド開始</strong><span><code>new Thread(task).start()</code></span></div><div class="api"><strong>終了を待つ</strong><span><code>thread.join()</code></span></div></section>
 <footer>JavaMD — じゃばる！！</footer>
 </div></main>
-
-<div class="playground" id="playground">
-  <div class="pg-inner">
-    <div class="pg-title">
-      <div><h2>Java 実験場</h2><p>main不要の簡単なスニペット</p></div>
-      <span class="pg-badge">EXPERIMENTAL</span>
-    </div>
-    <div id="pgStatus" class="pg-status">未起動 — ▶ 実行でJava環境を読み込みます</div>
-    <div class="pg-label">Code</div>
-    <textarea id="javaEditor" class="pg-editor" spellcheck="false" aria-label="Javaコード入力">System.out.println("Hello, Java!");
+<div class="playground" id="playground"><div class="pg-inner"><div class="pg-title"><div><h2>Java 実験場</h2><p>main不要の簡単なスニペット</p></div><span class="pg-badge">EXPERIMENTAL</span></div><div id="pgStatus" class="pg-status">未起動 — ▶ 実行でJava環境を読み込みます</div><div class="pg-label">Code</div><textarea id="javaEditor" class="pg-editor" spellcheck="false" aria-label="Javaコード入力">System.out.println("Hello, Java!");
 
 int a = 10;
 int b = 20;
@@ -218,24 +185,12 @@ System.out.println("a + b = " + (a + b));
 
 for (int i = 1; i <= 3; i++) {
     System.out.println("loop: " + i);
-}</textarea>
-    <div class="pg-actions">
-      <button id="runJava" class="pg-btn primary">▶ 実行</button>
-      <button id="resetJava" class="pg-btn">↺ リセット</button>
-    </div>
-    <div class="pg-label">Output</div>
-    <pre id="javaOutput" class="pg-output">ここに実行結果が表示されます。</pre>
-    <div class="pg-divider"></div>
-    <div class="pg-note"><strong>Powered by CheerpJ 4.3</strong><br>ブラウザ内のJVMで実行します。入力は初心者向けのJava文・式を想定しています。完全な複数ファイルプロジェクトや最新構文のすべてをコンパイルするIDEではありません。</div>
-    <a class="pg-link" href="https://cheerpj.com/docs/overview.html" target="_blank" rel="noreferrer">CheerpJ documentation ↗</a>
-  </div>
-</div>
+}</textarea><div class="pg-actions"><button id="runJava" class="pg-btn primary">▶ 実行</button><button id="resetJava" class="pg-btn">↺ リセット</button></div><div class="pg-label">Output</div><pre id="javaOutput" class="pg-output">ここに実行結果が表示されます。</pre><div class="pg-divider"></div><div class="pg-note"><strong>Powered by CheerpJ 4.3</strong><br>ブラウザ内のJVMで実行します。入力は初心者向けのJava文・式を想定しています。完全な複数ファイルプロジェクトや最新構文のすべてをコンパイルするIDEではありません。</div><a class="pg-link" href="https://cheerpj.com/docs/overview.html" target="_blank" rel="noreferrer">CheerpJ documentation ↗</a></div></div>
 </div>
 <script>
 const root=document.documentElement;const saved=localStorage.getItem('javAMD-theme');if(saved)root.dataset.theme=saved;else if(matchMedia('(prefers-color-scheme: dark)').matches)root.dataset.theme='dark';function toggleTheme(){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('javAMD-theme',root.dataset.theme)}
 document.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',async()=>{const code=btn.closest('.code').querySelector('code').innerText;await navigator.clipboard.writeText(code);const old=btn.textContent;btn.textContent='コピー済み';setTimeout(()=>btn.textContent=old,1200)}));
 const links=[...document.querySelectorAll('#nav a')],sections=[...document.querySelectorAll('section')];const observer=new IntersectionObserver(entries=>{entries.filter(e=>e.isIntersecting).forEach(e=>{links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))})},{rootMargin:'-20% 0px -70%'});sections.forEach(s=>observer.observe(s));document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.toLowerCase();links.forEach(a=>a.style.display=a.textContent.toLowerCase().includes(q)?'block':'none')});
-
 const JAVA_STARTER=`System.out.println("Hello, Java!");
 
 int a = 10;
@@ -245,72 +200,10 @@ System.out.println("a + b = " + (a + b));
 for (int i = 1; i <= 3; i++) {
     System.out.println("loop: " + i);
 }`;
-const editor=document.getElementById('javaEditor');
-const output=document.getElementById('javaOutput');
-const statusEl=document.getElementById('pgStatus');
-const runBtn=document.getElementById('runJava');
-let cjLib=null;
-let cjLoading=null;
+const editor=document.getElementById('javaEditor'),output=document.getElementById('javaOutput'),statusEl=document.getElementById('pgStatus'),runBtn=document.getElementById('runJava');let cjLib=null,cjLoading=null;
 function setPgStatus(text,type=''){statusEl.textContent=text;statusEl.className='pg-status'+(type?' '+type:'')}
-async function initPlayground(){
-  if(cjLib)return cjLib;
-  if(cjLoading)return cjLoading;
-  cjLoading=(async()=>{
-    if(typeof cheerpjInit!=='function')throw new Error('CheerpJ loaderを読み込めませんでした');
-    setPgStatus('CheerpJ JVMを起動中…');
-    await cheerpjInit({version:17,status:'none'});
-    setPgStatus('Javaスニペット実行環境を準備中…');
-    const jarUrl='https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/2.1.1/bsh-2.1.1.jar';
-    const response=await fetch(jarUrl,{cache:'force-cache'});
-    if(!response.ok)throw new Error('Javaスニペットエンジンを取得できませんでした: HTTP '+response.status);
-    const bytes=new Uint8Array(await response.arrayBuffer());
-    cheerpOSAddStringFile('/str/bsh-2.1.1.jar',bytes);
-    cjLib=await cheerpjRunLibrary('/str/bsh-2.1.1.jar');
-    setPgStatus('準備完了 — Javaコードを実行できます','ready');
-    return cjLib;
-  })().catch(err=>{cjLoading=null;setPgStatus('起動失敗: '+(err?.message||err),'error');throw err});
-  return cjLoading;
-}
-async function runJavaSnippet(){
-  runBtn.disabled=true;
-  output.textContent='実行準備中…';
-  try{
-    const lib=await initPlayground();
-    const Interpreter=await lib.bsh.Interpreter;
-    const ByteArrayOutputStream=await lib.java.io.ByteArrayOutputStream;
-    const PrintStream=await lib.java.io.PrintStream;
-    const System=await lib.java.lang.System;
-    const buffer=await new ByteArrayOutputStream();
-    const ps=await new PrintStream(buffer);
-    const oldOut=System.out;
-    const oldErr=System.err;
-    await System.setOut(ps);
-    await System.setErr(ps);
-    try{
-      const interpreter=await new Interpreter();
-      await interpreter.setOut(ps);
-      await interpreter.setErr(ps);
-      const result=await interpreter.eval(editor.value);
-      await ps.flush();
-      let text=await buffer.toString();
-      text=text==null?'':String(text);
-      if(!text.trim()&&result!=null)text=String(result);
-      output.textContent=text||'(出力なし)';
-      setPgStatus('実行完了','ready');
-    }finally{
-      await System.setOut(oldOut);
-      await System.setErr(oldErr);
-      await ps.close();
-    }
-  }catch(err){
-    let message=err?.message||String(err);
-    try{if(err?.getMessage)message=String(await err.getMessage())}catch(_){ }
-    output.textContent='Error:\n'+message;
-    setPgStatus('実行エラー — コードを確認してください','error');
-  }finally{runBtn.disabled=false}
-}
-runBtn.addEventListener('click',runJavaSnippet);
-document.getElementById('resetJava').addEventListener('click',()=>{editor.value=JAVA_STARTER;output.textContent='ここに実行結果が表示されます。';if(cjLib)setPgStatus('準備完了 — Javaコードを実行できます','ready');else setPgStatus('未起動 — ▶ 実行でJava環境を読み込みます')});
-editor.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runJavaSnippet()}if(e.key==='Tab'){e.preventDefault();const s=editor.selectionStart,t=editor.selectionEnd;editor.value=editor.value.slice(0,s)+'    '+editor.value.slice(t);editor.selectionStart=editor.selectionEnd=s+4}});
+async function initPlayground(){if(cjLib)return cjLib;if(cjLoading)return cjLoading;cjLoading=(async()=>{if(typeof cheerpjInit!=='function')throw new Error('CheerpJ loaderを読み込めませんでした');setPgStatus('CheerpJ JVMを起動中…');await cheerpjInit({version:17,status:'none'});setPgStatus('Javaスニペット実行環境を準備中…');const jarUrl='https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/2.1.1/bsh-2.1.1.jar';const response=await fetch(jarUrl,{cache:'force-cache'});if(!response.ok)throw new Error('Javaスニペットエンジンを取得できませんでした: HTTP '+response.status);const bytes=new Uint8Array(await response.arrayBuffer());cheerpOSAddStringFile('/str/bsh-2.1.1.jar',bytes);cjLib=await cheerpjRunLibrary('/str/bsh-2.1.1.jar');setPgStatus('準備完了 — Javaコードを実行できます','ready');return cjLib})().catch(err=>{cjLoading=null;setPgStatus('起動失敗: '+(err?.message||err),'error');throw err});return cjLoading}
+async function runJavaSnippet(){runBtn.disabled=true;output.textContent='実行準備中…';try{const lib=await initPlayground();const Interpreter=await lib.bsh.Interpreter;const ByteArrayOutputStream=await lib.java.io.ByteArrayOutputStream;const PrintStream=await lib.java.io.PrintStream;const System=await lib.java.lang.System;const buffer=await new ByteArrayOutputStream();const ps=await new PrintStream(buffer);const oldOut=System.out,oldErr=System.err;await System.setOut(ps);await System.setErr(ps);try{const interpreter=await new Interpreter();await interpreter.setOut(ps);await interpreter.setErr(ps);const result=await interpreter.eval(editor.value);await ps.flush();let text=await buffer.toString();text=text==null?'':String(text);if(!text.trim()&&result!=null)text=String(result);output.textContent=text||'(出力なし)';setPgStatus('実行完了','ready')}finally{await System.setOut(oldOut);await System.setErr(oldErr);await ps.close()}}catch(err){let message=err?.message||String(err);try{if(err?.getMessage)message=String(await err.getMessage())}catch(_){}output.textContent='Error:\n'+message;setPgStatus('実行エラー — コードを確認してください','error')}finally{runBtn.disabled=false}}
+runBtn.addEventListener('click',runJavaSnippet);document.getElementById('resetJava').addEventListener('click',()=>{editor.value=JAVA_STARTER;output.textContent='ここに実行結果が表示されます。';if(cjLib)setPgStatus('準備完了 — Javaコードを実行できます','ready');else setPgStatus('未起動 — ▶ 実行でJava環境を読み込みます')});editor.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runJavaSnippet()}if(e.key==='Tab'){e.preventDefault();const s=editor.selectionStart,t=editor.selectionEnd;editor.value=editor.value.slice(0,s)+'    '+editor.value.slice(t);editor.selectionStart=editor.selectionEnd=s+4}});
 </script>
 </body></html>
