@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>じゃばる！！ 検定チェック</title>
+<style>
+:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--warn:#fff8df;--code:#101722}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:42px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px 30px;margin:14px 0}h1{font-size:clamp(2.2rem,6vw,4.5rem);margin:0;line-height:1}.lead{color:var(--muted)}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:99px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.15rem;margin:6px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:#fafbfc}details{margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 13px}details>div{padding:0 13px 13px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}.note{background:var(--warn);padding:10px 13px;border-radius:9px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center}.back{color:var(--primary);text-decoration:none;font-weight:700}@media(max-width:600px){header,.q{padding:20px 18px}}
+</style>
+</head>
+<body><div class="wrap">
+<header><div class="top"><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><a class="back" href="index.html">← ドキュメントへ</a></div><h1>検定チェック</h1><p class="lead">実際の試験問題の転載ではなく、2級で問われやすい論点を基に作った確認問題です。まず答えを決めてから「答え・解説」を開いてください。</p></header>
+
+<div class="q"><span class="tag">interface</span><h2>Q1. 次のコードはコンパイルできる？</h2><pre><code>interface Runner { void run(); }
+class Dog implements Runner {
+    void run() { System.out.println("run"); }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B. できない。</b> interface の通常の抽象メソッドは暗黙に <code>public abstract</code>。実装側は <code>public void run()</code> とする必要があります。</div></details></div>
+
+<div class="q"><span class="tag">implements / extends</span><h2>Q2. 正しい宣言はどれ？</h2><div class="choices"><div class="choice">A. class Dog extends Runnable</div><div class="choice">B. class Dog implements Runnable</div><div class="choice">C. interface Fast implements Runnable</div><div class="choice">D. interface Fast extends Runnable</div></div><details><summary>答え・解説</summary><div><b>B と D。</b> class → interface は <code>implements</code>、interface → interface は <code>extends</code> です。</div></details></div>
+
+<div class="q"><span class="tag">static / this</span><h2>Q3. 次のコードはどうなる？</h2><pre><code>class Counter {
+    int value;
+    static void set(int n) {
+        this.value = n;
+    }
+}</code></pre><div class="choices"><div class="choice">A. 正常にコンパイル</div><div class="choice">B. this の箇所でコンパイルエラー</div><div class="choice">C. 実行時例外</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>static</code> メソッドは特定のインスタンスに属さないため <code>this</code> を使えません。</div></details></div>
+
+<div class="q"><span class="tag">constructor</span><h2>Q4. コンパイルできる？</h2><pre><code>class Food {
+    Food(String name) {}
+}
+class Stew extends Food {
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> Stew のデフォルトコンストラクタは暗黙に <code>super()</code> を呼びますが、Food に引数なしコンストラクタがありません。</div></details></div>
+
+<div class="q"><span class="tag">super</span><h2>Q5. どこが問題？</h2><pre><code>class Child extends Parent {
+    Child(boolean flag) {
+        System.out.println("start");
+        super(10);
+    }
+}</code></pre><div class="choices"><div class="choice">A. 問題なし</div><div class="choice">B. super(...) はコンストラクタ先頭で呼ぶ必要がある</div></div><details><summary>答え・解説</summary><div><b>B。</b> 明示的な <code>super(...)</code> / <code>this(...)</code> はコンストラクタ呼出しとして先頭に置く必要があります。</div></details></div>
+
+<div class="q"><span class="tag">HashMap</span><h2>Q6. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+map.put("A", 10);
+map.put("B", 20);
+map.put("A", 30);
+System.out.println(map.size());
+System.out.println(map.get("A"));</code></pre><div class="choices"><div class="choice">A. 3 / 10</div><div class="choice">B. 3 / 30</div><div class="choice">C. 2 / 30</div></div><details><summary>答え・解説</summary><div><b>C。2 / 30。</b> 同じkeyへの <code>put</code> は要素追加ではなくvalueの上書きです。</div></details></div>
+
+<div class="q"><span class="tag">Set</span><h2>Q7. size はいくつ？</h2><pre><code>Set&lt;String&gt; set = new HashSet&lt;&gt;();
+set.add("A");
+set.add("A");
+set.add("B");
+System.out.println(set.size());</code></pre><div class="choices"><div class="choice">A. 1</div><div class="choice">B. 2</div><div class="choice">C. 3</div></div><details><summary>答え・解説</summary><div><b>B。2。</b> Set は重複を保持しません。2回目の <code>add("A")</code> は要素を増やしません。</div></details></div>
+
+<div class="q"><span class="tag">TreeSet</span><h2>Q8. 出力は？</h2><pre><code>Set&lt;String&gt; set = new TreeSet&lt;&gt;();
+set.add("C");
+set.add("A");
+set.add("B");
+System.out.println(set);</code></pre><div class="choices"><div class="choice">A. [C, A, B]</div><div class="choice">B. [A, B, C]</div><div class="choice">C. 順序は完全に不定</div></div><details><summary>答え・解説</summary><div><b>B。</b> TreeSet は重複を除き、自然順序で並びます。</div></details></div>
+
+<div class="q"><span class="tag">2次元配列</span><h2>Q9. 何が表示される？</h2><pre><code>int[][] data = { {1, 2}, null, {3, 4, 5} };
+for (int[] row : data) {
+    if (row != null) {
+        System.out.println(row.length);
+    }
+}</code></pre><div class="choices"><div class="choice">A. 2, 0, 3</div><div class="choice">B. 2, 3</div><div class="choice">C. NullPointerException</div></div><details><summary>答え・解説</summary><div><b>B。2, 3。</b> 外側の拡張forで受け取るのは1行分の <code>int[]</code>。null行はifで除外されています。</div></details></div>
+
+<div class="q"><span class="tag">boolean</span><h2>Q10. 出力は？</h2><pre><code>boolean flag = false;
+if (!(flag = false)) {
+    System.out.println("true");
+}</code></pre><div class="choices"><div class="choice">A. コンパイルエラー</div><div class="choice">B. true</div><div class="choice">C. 何も表示されない</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>flag = false</code> は代入式で、その値はfalse。<code>!</code> でtrueになります。<code>==</code> との見間違いに注意。</div></details></div>
+
+<div class="q"><span class="tag">instanceof</span><h2>Q11. 条件式はtrue？</h2><pre><code>interface Swim {}
+class Fish implements Swim {}
+class Salmon extends Fish {}
+Salmon s = new Salmon();
+System.out.println(s instanceof Fish && s instanceof Swim);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。true。</b> Salmon は Fish のサブクラスで、Fish が Swim を実装しているため両方成立します。</div></details></div>
+
+<div class="q"><span class="tag">Thread</span><h2>Q12. 新しいスレッドを開始するのはどれ？</h2><div class="choices"><div class="choice">A. thread.run()</div><div class="choice">B. thread.start()</div><div class="choice">C. Thread.sleep(1000)</div><div class="choice">D. thread.join()</div></div><details><summary>答え・解説</summary><div><b>B。thread.start()。</b> <code>run()</code> を直接呼ぶだけでは通常のメソッド呼出しです。<code>start()</code> が新しいスレッドを開始します。</div></details></div>
+
+<div class="q"><span class="tag">List remove</span><h2>Q13. remove中のループで注意することは？</h2><pre><code>int i = 0;
+while (i &lt; list.size()) {
+    if (shouldRemove(list.get(i))) {
+        list.remove(i);
+        // ???
+    }
+    i++;
+}</code></pre><div class="choices"><div class="choice">A. 削除直後にi++を必ず追加する</div><div class="choice">B. 削除後は同じindexに次要素が詰められるので、必要ならcontinue等で増分を飛ばす</div></div><details><summary>答え・解説</summary><div><b>B。</b> index i を削除すると次の要素が同じiへ移動します。そこでさらにiを増やすと、その要素を読み飛ばす場合があります。</div></details></div>
+
+<div class="q"><span class="tag">final</span><h2>Q14. final class について正しいものは？</h2><div class="choices"><div class="choice">A. サブクラスを作れる</div><div class="choice">B. サブクラスを作れない</div><div class="choice">C. インスタンス化できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>final class</code> は継承できません。abstract classとは意味が異なります。</div></details></div>
+
+<div class="q"><span class="tag">short-circuit</span><h2>Q15. 安全な equals 実装はどちら？</h2><div class="choices"><div class="choice">A. id == ((Message)o).getId() &amp;&amp; o instanceof Message</div><div class="choice">B. o instanceof Message &amp;&amp; id == ((Message)o).getId()</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>&amp;&amp;</code> は左がfalseなら右を評価しません。先に <code>instanceof</code> で型を確認してからキャストするのが安全です。</div></details></div>
+
+<p class="note"><b>学習の使い方:</b> 正解した問題でも「なぜ他の選択肢が違うか」を1文で説明できるか確認すると、正誤問題とコード読解の両方に強くなります。</p>
+</div></body></html>
