@@ -1,0 +1,74 @@
+name: Deploy JavaMD Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build static site with same-origin ECJ
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site/vendor
+          cp index.html README.md LICENSE _site/
+          if [ -f threads.html ]; then cp threads.html _site/; fi
+
+          curl --fail --location --retry 3 \
+            https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.44.0/ecj-3.44.0.jar \
+            --output _site/vendor/ecj-3.44.0.jar
+
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('_site/index.html')
+          s = p.read_text(encoding='utf-8')
+
+          start = s.find("const ECJ_PATH='/str/ecj-3.44.0.jar';")
+          marker = 'async function initPlayground()'
+          end = s.find(marker, start)
+          if start == -1 or end == -1:
+              raise SystemExit('ECJ loader block not found')
+
+          s = s[:start] + "const ECJ_PATH='/app/vendor/ecj-3.44.0.jar';" + s[end:]
+          s = s.replace(
+              "const ecjBytes=await fetchEcj();cheerpOSAddStringFile(ECJ_PATH,ecjBytes);",
+              "",
+              1,
+          )
+          s = s.replace(
+              "statusText('ECJを取得中…');",
+              "statusText('同一オリジンのECJを読み込み中…');",
+          )
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
