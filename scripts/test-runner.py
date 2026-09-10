@@ -111,4 +111,39 @@ with tempfile.TemporaryDirectory(prefix="javamd-runner-") as temporary:
         }
     }''', 0, "run", "runtime classes available", launcher="RuntimeProbe", extra_classpath=workspace)
 
+    # Match the browser's two-process flow: a persistent compiler followed by
+    # repeated fresh runs with no ECJ on the execution classpath.
+    split_probe = workspace / "CompileProbe.java"
+    split_probe.write_text("""import java.nio.file.*;
+    public class CompileProbe {
+        public static void main(String[] args) throws Exception {
+            var originalOut = System.out;
+            var originalErr = System.err;
+            for (int i = 0; i < 3; i++) {
+                String source = i == 1 ? "invalid java" :
+                    "public class Main { static int count; public static void main(String[] args) { " +
+                    "System.out.println(++count); } }";
+                Files.writeString(Path.of(args[0]), source);
+                boolean ok = javamd.PlaygroundRunner.compile(args[0], args[1], args[2]);
+                if (ok != (i != 1)) throw new AssertionError("compile/error/recovery failed");
+                if (System.out != originalOut || System.err != originalErr)
+                    throw new AssertionError("compiler redirected shared output");
+            }
+        }
+    }""", encoding="utf-8")
+    subprocess.run(["javac", "--release", "17", "-cp", classpath, "-d", str(workspace), str(split_probe)],
+                   check=True, capture_output=True, text=True, timeout=30)
+    split_dir = workspace / "split-classes"
+    subprocess.run(["java", "-cp", str(workspace) + os.pathsep + classpath, "CompileProbe",
+                    str(workspace / "Main.java"), str(split_dir), str(split_dir / "compiler.log")],
+                   check=True, capture_output=True, text=True, timeout=30)
+    for iteration in range(2):
+        log = workspace / f"split-run-{iteration}.log"
+        result = subprocess.run(["java", "-cp", str(site / "vendor/playground-runner.jar"),
+                                 "javamd.PlaygroundRunner", "--run", str(split_dir), str(log), "Main"],
+                                check=True, capture_output=True, text=True, timeout=30)
+        require(log.read_text() == "1\n", "cached class leaked static state or failed to run again")
+        require(not result.stdout and not result.stderr, "fresh run output escaped capture")
+    print("PASS persistent compiler: success/error/recovery, fresh cached-class runs without ECJ")
+
 print("All Java playground bridge checks passed.")

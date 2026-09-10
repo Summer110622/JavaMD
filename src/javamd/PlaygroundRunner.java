@@ -18,49 +18,68 @@ import java.util.Map;
 public final class PlaygroundRunner {
     private PlaygroundRunner() {}
 
+    /** Runs in the persistent library JVM, so ECJ's JRT index survives edits. */
+    public static synchronized boolean compile(String sourcePath, String outputPath, String logPath)
+            throws Exception {
+        Path outputDirectory = Path.of(outputPath);
+        Files.createDirectories(outputDirectory);
+        try (PrintWriter diagnostics = new PrintWriter(
+                new FileOutputStream(logPath), true, StandardCharsets.UTF_8)) {
+            try {
+                configureCurrentRuntime();
+                return org.eclipse.jdt.internal.compiler.batch.Main.compile(
+                    new String[] {
+                        "-17", "-proc:none", "-encoding", "UTF-8",
+                        "-d", outputDirectory.toString(), sourcePath
+                    }, diagnostics, diagnostics, null);
+            } catch (Throwable failure) {
+                failure.printStackTrace(diagnostics);
+                return false;
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
+        // Browser compilation happens in library mode. Only user code enters
+        // this fresh process, preserving static state, threads and System.exit.
+        if (args.length == 4 && args[0].equals("--run")) {
+            execute(Path.of(args[1]), args[2], args[3]);
+            return;
+        }
         if (args.length != 5) {
             throw new IllegalArgumentException(
-                "Expected sourcePath, outputDirectory, logPath, phasePath, mainClass");
+                "Expected --run, outputDirectory, logPath, mainClass; or sourcePath, "
+                + "outputDirectory, logPath, phasePath, mainClass");
         }
 
+        // Keep the standalone compile-and-run entry point for CLI regression checks.
         Path outputDirectory = Path.of(args[1]);
         Files.createDirectories(outputDirectory);
+        Path phasePath = Path.of(args[3]);
+        Files.writeString(phasePath, "compile", StandardCharsets.UTF_8);
+        if (!compile(args[0], args[1], args[2])) {
+            System.exit(1);
+            return;
+        }
+        Files.writeString(phasePath, "run", StandardCharsets.UTF_8);
+        execute(outputDirectory, args[2], args[4]);
+    }
 
-        // A library-mode System object belongs to a different CheerpJ process.
-        // Capture here, where both compilation and the user's main actually run.
+    private static void execute(Path outputDirectory, String logPath, String mainClassName)
+            throws Exception {
+        Files.createDirectories(Path.of(logPath).toAbsolutePath().getParent());
         PrintStream capture = new PrintStream(
-            new FileOutputStream(args[2]), true, StandardCharsets.UTF_8);
+            new FileOutputStream(logPath, true), true, StandardCharsets.UTF_8);
         System.setOut(capture);
         System.setErr(capture);
-
         try {
-            Path phasePath = Path.of(args[3]);
-            Files.writeString(phasePath, "compile", StandardCharsets.UTF_8);
-            configureCurrentRuntime();
-
-            PrintWriter diagnostics = new PrintWriter(capture, true, StandardCharsets.UTF_8);
-            boolean compiled = org.eclipse.jdt.internal.compiler.batch.Main.compile(
-                new String[] {
-                    "-17", "-proc:none", "-encoding", "UTF-8",
-                    "-d", outputDirectory.toString(), args[0]
-                }, diagnostics, diagnostics, null);
-            diagnostics.flush();
-            if (!compiled) {
-                System.exit(1);
-                return;
-            }
-
-            Files.writeString(phasePath, "run", StandardCharsets.UTF_8);
             URLClassLoader application = new URLClassLoader(
                 new URL[] { outputDirectory.toUri().toURL() },
                 PlaygroundRunner.class.getClassLoader());
             Thread.currentThread().setContextClassLoader(application);
-            Class<?> mainClass = application.loadClass(args[4]);
+            Class<?> mainClass = application.loadClass(mainClassName);
             mainClass.getMethod("main", String[].class).invoke(null, (Object) new String[0]);
-
-            // Return naturally: non-daemon threads may still need the classloader
-            // and output stream. User System.exit(code) also keeps its exit code.
+            // Return naturally so non-daemon threads can finish and keep printing.
             capture.flush();
         } catch (Throwable failure) {
             while (failure instanceof InvocationTargetException && failure.getCause() != null) {
