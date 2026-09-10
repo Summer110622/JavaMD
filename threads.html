@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JavaMD — Javaスレッド・並行処理</title>
+<style>
+:root{color-scheme:light;--bg:#f7f8fb;--surface:#fff;--surface2:#f1f4f8;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--code:#111827;--warn:#fff8df}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP","Yu Gothic",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.app{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;background:var(--surface);border-right:1px solid var(--line);padding:22px 18px}aside a{display:block;padding:7px 9px;border-radius:8px;text-decoration:none;color:var(--muted);font-size:.9rem}aside a:hover{background:var(--soft);color:var(--primary)}.brand{font-weight:850;color:var(--text);margin-bottom:16px}.back{margin-bottom:18px!important;color:var(--primary)!important}.content{width:min(980px,calc(100% - 44px));margin:auto;padding:48px 0 90px}.hero,section{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px 32px;margin:0 0 18px}.hero{padding:38px}.eyebrow{color:var(--primary);font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}h1{font-size:clamp(2rem,5vw,3.8rem);line-height:1.08;margin:8px 0 14px}h2{font-size:1.65rem;margin:0 0 12px}h3{margin-top:26px}p{margin:8px 0 14px}.muted{color:var(--muted)}code,pre{font-family:"SFMono-Regular",Consolas,monospace}.inline{background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:.12rem .35rem}.code{border:1px solid #263243;border-radius:12px;overflow:hidden;background:var(--code);margin:14px 0}.code-head{padding:8px 12px;background:#18202c;color:#aeb8c5;font-size:.8rem}pre{margin:0;padding:17px 18px;overflow:auto;color:#e5edf7;line-height:1.6;font-size:.88rem}.callout{background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin:14px 0}.warn{background:var(--warn)}table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0 20px;font-size:.9rem}th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--surface2)}tr:last-child td{border-bottom:0}.table-wrap{overflow:auto}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{padding:15px;border:1px solid var(--line);border-radius:11px;background:var(--surface2)}@media(max-width:900px){.app{display:block}aside{display:none}.content{padding-top:24px}}@media(max-width:640px){.content{width:min(100% - 22px,980px)}.hero,section{padding:21px 18px}.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="app"><aside><div class="brand">JavaMD / Threads</div><a class="back" href="index.html">← Java基礎へ戻る</a><a href="#model">スレッドとは</a><a href="#create">Thread / Runnable</a><a href="#lifecycle">状態とライフサイクル</a><a href="#race">Race Condition</a><a href="#sync">synchronized</a><a href="#volatile">volatile</a><a href="#locks">Lock / Atomic</a><a href="#wait">wait / notify</a><a href="#executor">ExecutorService</a><a href="#future">Future / CompletableFuture</a><a href="#concurrent">Concurrent Collections</a><a href="#virtual">Virtual Threads</a><a href="#interrupt">interrupt</a><a href="#deadlock">Deadlock</a><a href="#guide">使い分け</a></aside><main><div class="content">
+<header class="hero"><div class="eyebrow">Java Concurrency</div><h1>スレッドと並行処理を、仕組みから理解する。</h1><p class="muted">Threadの生成だけでなく、競合・可視性・排他制御・スレッドプール・非同期処理・Virtual Threadまでを、役割の違いが分かるように整理します。</p></header>
+<section id="model"><h2>1. スレッドとは</h2><p>プロセスは実行中のプログラム単位、スレッドはその中で命令列を実行する単位です。同一プロセス内のスレッドはヒープなどを共有するため、同じオブジェクトへ同時アクセスできます。</p><div class="cards"><div class="card"><strong>Concurrency</strong><br>複数の処理が時間的に重なって進むこと。</div><div class="card"><strong>Parallelism</strong><br>複数CPUコアなどで実際に同時実行すること。</div></div><div class="callout">Javaでは「共有された可変状態」が並行処理の主要な難所です。共有を減らし、不変データやメッセージ受け渡しを優先すると設計しやすくなります。</div></section>
+<section id="create"><h2>2. Thread / Runnable</h2><div class="code"><div class="code-head">Runnable + Thread</div><pre><code>Runnable task = () -&gt; {
+    System.out.println(Thread.currentThread().getName());
+};
+
+Thread thread = new Thread(task, "worker-1");
+thread.start();</code></pre></div><div class="callout warn"><strong>start() と run() は別物:</strong> <code>start()</code> は新しいスレッドを開始し、そのスレッド上で <code>run()</code> を呼びます。<code>run()</code> を直接呼ぶだけでは現在のスレッド上で普通のメソッドとして実行されます。</div><div class="code"><div class="code-head">join</div><pre><code>Thread t = new Thread(() -&gt; doWork());
+t.start();
+t.join(); // tの終了を待つ
+System.out.println("done");</code></pre></div></section>
+<section id="lifecycle"><h2>3. Threadの状態</h2><div class="table-wrap"><table><thead><tr><th>状態</th><th>意味</th></tr></thead><tbody><tr><td>NEW</td><td>生成済み、未開始</td></tr><tr><td>RUNNABLE</td><td>実行可能または実行中</td></tr><tr><td>BLOCKED</td><td>monitor lock待ち</td></tr><tr><td>WAITING</td><td>期限なし待機</td></tr><tr><td>TIMED_WAITING</td><td>期限付き待機</td></tr><tr><td>TERMINATED</td><td>終了済み</td></tr></tbody></table></div></section>
+<section id="race"><h2>4. Race Condition</h2><p><code>count++</code> は1操作に見えても、読み取り→加算→書き戻しの複数操作です。複数スレッドが同時に行うと更新が失われる可能性があります。</p><div class="code"><div class="code-head">危険な例</div><pre><code>class Counter {
+    private int count = 0;
+    void increment() { count++; }
+    int get() { return count; }
+}</code></pre></div><p>この問題には少なくとも <strong>atomicity（不可分性）</strong> と <strong>visibility（可視性）</strong> の2軸があります。</p></section>
+<section id="sync"><h2>5. synchronized</h2><p><code>synchronized</code> はmonitor lockを使い、同一ロックを使うクリティカルセクションを同時に1スレッドだけ実行させます。排他に加えて、ロック解放・取得間の可視性も保証します。</p><div class="code"><div class="code-head">synchronized method</div><pre><code>class Counter {
+    private int count;
+
+    synchronized void increment() {
+        count++;
+    }
+
+    synchronized int get() {
+        return count;
+    }
+}</code></pre></div><div class="code"><div class="code-head">synchronized block</div><pre><code>private final Object lock = new Object();
+
+void update() {
+    synchronized (lock) {
+        // critical section
+    }
+}</code></pre></div></section>
+<section id="volatile"><h2>6. volatile</h2><p><code>volatile</code> は主に可視性と一定のorderingを保証しますが、複合操作を原子的にはしません。</p><div class="code"><div class="code-head">停止フラグ</div><pre><code>class Worker {
+    private volatile boolean running = true;
+
+    void stop() { running = false; }
+
+    void runLoop() {
+        while (running) {
+            doWork();
+        }
+    }
+}</code></pre></div><div class="callout warn"><code>volatile int count;</code> にしても <code>count++</code> はatomicになりません。単純カウンタなら <code>AtomicInteger</code> を検討します。</div></section>
+<section id="locks"><h2>7. Lock / Atomic</h2><div class="table-wrap"><table><thead><tr><th>仕組み</th><th>用途</th></tr></thead><tbody><tr><td><code>synchronized</code></td><td>標準的な排他。構文が簡潔</td></tr><tr><td><code>ReentrantLock</code></td><td>tryLock、interruptible lock、複数Conditionなど高度な制御</td></tr><tr><td><code>AtomicInteger</code></td><td>単純な原子的更新</td></tr><tr><td><code>LongAdder</code></td><td>高競合下の統計カウンタなど</td></tr></tbody></table></div><div class="code"><div class="code-head">AtomicInteger</div><pre><code>AtomicInteger counter = new AtomicInteger();
+
+counter.incrementAndGet();
+counter.addAndGet(10);
+int value = counter.get();</code></pre></div></section>
+<section id="wait"><h2>8. wait / notify / notifyAll</h2><p><code>wait()</code> はmonitorを解放して待機し、<code>notify()</code>/<code>notifyAll()</code> は同じmonitorで待つスレッドを起こします。必ず対応する <code>synchronized</code> 内で使います。</p><div class="code"><div class="code-head">条件待ち</div><pre><code>synchronized (lock) {
+    while (!ready) {
+        lock.wait();
+    }
+    consume();
+}
+
+synchronized (lock) {
+    ready = true;
+    lock.notifyAll();
+}</code></pre></div><div class="callout">実務では低レベルな <code>wait/notify</code> より、<code>BlockingQueue</code>、<code>CountDownLatch</code>、<code>Semaphore</code>、<code>CompletableFuture</code> など高水準APIを優先する場面が多いです。</div></section>
+<section id="executor"><h2>9. ExecutorService</h2><p>タスクとスレッド管理を分離します。アプリケーションコードで大量の <code>new Thread(...)</code> を直接管理するより、Executorを使う方が一般的です。</p><div class="code"><div class="code-head">Fixed Thread Pool</div><pre><code>try (ExecutorService executor = Executors.newFixedThreadPool(4)) {
+    executor.submit(() -&gt; processA());
+    executor.submit(() -&gt; processB());
+}</code></pre></div><div class="table-wrap"><table><thead><tr><th>API</th><th>意味</th></tr></thead><tbody><tr><td><code>execute(Runnable)</code></td><td>戻り値なしタスクを投入</td></tr><tr><td><code>submit(...)</code></td><td>Futureを返す</td></tr><tr><td><code>shutdown()</code></td><td>新規受付停止、既存タスクは継続</td></tr><tr><td><code>shutdownNow()</code></td><td>割り込みを試みて停止要求</td></tr></tbody></table></div></section>
+<section id="future"><h2>10. Future / CompletableFuture</h2><div class="code"><div class="code-head">Future</div><pre><code>Future&lt;Integer&gt; future = executor.submit(() -&gt; 40 + 2);
+Integer result = future.get(); // 完了までblock</code></pre></div><div class="code"><div class="code-head">CompletableFuture</div><pre><code>CompletableFuture&lt;String&gt; future =
+    CompletableFuture.supplyAsync(() -&gt; loadUser())
+        .thenApply(User::name)
+        .thenApply(String::toUpperCase)
+        .exceptionally(ex -&gt; "UNKNOWN");
+
+String name = future.join();</code></pre></div><p><code>thenCompose</code> は非同期処理を直列合成、<code>thenCombine</code> は独立した2処理の結果を結合するときに使います。</p></section>
+<section id="concurrent"><h2>11. Concurrent Collections</h2><div class="table-wrap"><table><thead><tr><th>型</th><th>用途</th></tr></thead><tbody><tr><td><code>ConcurrentHashMap</code></td><td>高並行なMapアクセス</td></tr><tr><td><code>CopyOnWriteArrayList</code></td><td>読み取り多数・書き込み少数</td></tr><tr><td><code>BlockingQueue</code></td><td>producer-consumer</td></tr><tr><td><code>ConcurrentLinkedQueue</code></td><td>non-blocking queue</td></tr></tbody></table></div><div class="code"><div class="code-head">ConcurrentHashMap</div><pre><code>ConcurrentHashMap&lt;String, Integer&gt; counts = new ConcurrentHashMap&lt;&gt;();
+counts.merge("java", 1, Integer::sum);
+counts.computeIfAbsent("score", k -&gt; 0);</code></pre></div></section>
+<section id="virtual"><h2>12. Virtual Threads</h2><p>Java 21で正式導入されたVirtual Threadは、JVMが管理する軽量スレッドです。大量のI/O待ちタスクを「1タスク1スレッド」に近い直感的なスタイルで扱いやすくします。</p><div class="code"><div class="code-head">Virtual Thread</div><pre><code>Thread.startVirtualThread(() -&gt; {
+    String body = fetchFromNetwork();
+    System.out.println(body);
+});</code></pre></div><div class="code"><div class="code-head">Virtual Thread Executor</div><pre><code>try (ExecutorService executor =
+         Executors.newVirtualThreadPerTaskExecutor()) {
+
+    Future&lt;String&gt; a = executor.submit(() -&gt; loadA());
+    Future&lt;String&gt; b = executor.submit(() -&gt; loadB());
+
+    System.out.println(a.get() + b.get());
+}</code></pre></div><div class="callout warn">Virtual ThreadはCPU処理を魔法のように高速化する仕組みではありません。特にI/O待ちが多い大量タスクで有効です。CPU-bound処理はCPUコア数という物理的制約を受けます。</div></section>
+<section id="interrupt"><h2>13. interrupt とキャンセル</h2><p>Javaのinterruptは強制終了ではなく「中断要求」です。対象コードは割り込みを検知して協調的に終了します。</p><div class="code"><div class="code-head">InterruptedException</div><pre><code>try {
+    Thread.sleep(1000);
+} catch (InterruptedException e) {
+    Thread.currentThread().interrupt();
+    return;
+}</code></pre></div><div class="callout">catchした後に処理継続する場合でも、上位へ中断状態を伝える必要があるなら <code>Thread.currentThread().interrupt()</code> でinterrupt flagを復元します。</div></section>
+<section id="deadlock"><h2>14. Deadlock</h2><p>複数スレッドが互いのロック解放を永久に待つ状態です。</p><div class="code"><div class="code-head">典型構造</div><pre><code>// Thread A: lock1 → lock2
+// Thread B: lock2 → lock1
+// 両方が最初のlockを取ると互いに次を待つ</code></pre></div><p>対策はロック取得順序を統一する、ロック粒度を減らす、共有状態を減らす、必要なら <code>tryLock</code> を使う、などです。</p></section>
+<section id="guide"><h2>15. 使い分けチートシート</h2><div class="table-wrap"><table><thead><tr><th>目的</th><th>第一候補</th></tr></thead><tbody><tr><td>単純に別スレッドを1本開始</td><td><code>Thread</code> / Virtual Thread</td></tr><tr><td>固定数workerでタスク処理</td><td><code>ExecutorService</code></td></tr><tr><td>大量I/O待ちタスク</td><td>Virtual Threads</td></tr><tr><td>単純カウンタ</td><td><code>AtomicInteger</code> / <code>LongAdder</code></td></tr><tr><td>共有Map</td><td><code>ConcurrentHashMap</code></td></tr><tr><td>producer-consumer</td><td><code>BlockingQueue</code></td></tr><tr><td>複数非同期処理の合成</td><td><code>CompletableFuture</code></td></tr><tr><td>クリティカルセクション</td><td><code>synchronized</code> または <code>Lock</code></td></tr><tr><td>単純な可視性フラグ</td><td><code>volatile</code></td></tr></tbody></table></div><div class="callout"><strong>原則:</strong> 最初から低レベル同期を書くより、immutable object・thread confinement・Concurrent Collection・Executor・Virtual Threadなどで共有可変状態そのものを減らす設計を優先します。</div></section>
+</div></main></div></body></html>
