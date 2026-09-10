@@ -5,90 +5,94 @@ Javaの基礎からCollection Framework、ラムダ式、Stream API、スレッ�
 ## 特徴
 
 - 基礎から実務基礎まで参照可能
-- 固定サイドバー + 目次検索 + 読了進捗
+- 固定サイドバー + 目次検索
 - ライト / ダークテーマ
 - コード例のコピーボタン
+- 右側に初心者向けJava実験場
 - モバイル対応
-- 外部ライブラリ・ビルド不要
+
+## Java実験場
+
+メインドキュメントの右側に、簡単なJavaコードをその場で試せる実験場を用意しています。
+
+- Powered by CheerpJ 4.3
+- 初回実行時にブラウザ内Javaランタイムを遅延ロード
+- BeanShell 2.0b6をCheerpJ JVM上で実行して初心者向けJavaスニペットを評価
+- `System.out.println`、変数、演算、if / for などの簡単なコード向け
+- 実行結果を右側のOutputへ表示
+- 実行 / リセット
+- `Ctrl + Enter` / `Cmd + Enter` で実行
+- 狭い画面ではドキュメント本文の下へ移動
+
+完全なJava IDEや複数ファイルプロジェクト用のコンパイラではなく、学習用の簡易スニペット実行環境です。CheerpJランタイムとBeanShell JARは実行時に外部配信元から読み込みます。初回実行はランタイム読み込みのため、その後より重くなります。
 
 ## 内容
 
 ### Java / Language
 
-- Java / JVM / JDK / バイトコード / GC
+- Java / JVM / JDK
 - コンパイルと実行
 - 変数、プリミティブ型、参照型、null、var、final、キャスト
-- String / StringBuilder / Wrapper / equals
+- String / Wrapper / equals
 - 演算子、if、switch、for、while
-- 配列、メソッド、overload、可変長引数
-- class / constructor / static / final
-- record / enum
-- 継承 / abstract class / interface / polymorphism
-- アクセス修飾子 / package / import
-- checked / unchecked exception / try-with-resources
-- Generics / wildcard / PECS
+- class / constructor / record / enum
+- 継承 / interface
+- 例外処理
+- Generics
 
 ### Collection Framework
 
 - Collection / Map の全体像と選び方
-- ArrayList / LinkedList / Vector
-- HashSet / LinkedHashSet / TreeSet / EnumSet
-- HashMap / LinkedHashMap / TreeMap / EnumMap / ConcurrentHashMap
-- Hashtable の位置づけ
+- ArrayList / LinkedList
+- HashSet / LinkedHashSet / TreeSet
+- HashMap / LinkedHashMap / TreeMap
 - Queue / Deque / ArrayDeque / PriorityQueue
-- Comparable / Comparator / sort
-- equals / hashCode とHash系Collectionの関係
-- NavigableSet / NavigableMap の範囲検索
 - 主要実装の計算量比較
 
 ### Lambda / Functional / Stream
 
-- ラムダ式の全構文
-- ターゲット型とeffectively final
-- メソッド参照 / constructor参照
+- ラムダ式
+- メソッド参照
 - Predicate / Function / Consumer / Supplier
-- UnaryOperator / BinaryOperator / BiFunction
-- 関数合成
-- プリミティブ特化型
-- Streamの遅延評価
-- filter / map / flatMap / distinct / sorted / limit / skip / peek
-- forEach / count / min / max / find / match / reduce
-- Collectors.groupingBy / partitioningBy / joining / toMap
-- parallelStream の注意点
-- Optional
+- UnaryOperator / BinaryOperator
+- Stream API
+- filter / map / flatMap / sorted / reduce / collect
+- Collectors.groupingBy
 
 ### Threads / Concurrency
 
-詳細版は `threads.html` に分離しています。
+メインページには初心者向けThread APIを掲載し、詳細版は `threads.html` に分離しています。
 
-- Thread / Runnable / start / run / join
-- Thread state / lifecycle
+初心者向け:
+
+- Thread / Runnable
+- start / run の違い
+- sleep / join
+- getName / setName / currentThread
+- 2スレッドを動かす基本例
+
+詳細版:
+
 - race condition / atomicity / visibility
-- synchronized / monitor lock
-- volatile
-- ReentrantLock / AtomicInteger / LongAdder
-- wait / notify / notifyAll
-- ExecutorService / thread pool
-- Future / CompletableFuture
-- ConcurrentHashMap / CopyOnWriteArrayList / BlockingQueue
-- Virtual Threads (Java 21)
-- interrupt / cooperative cancellation
-- deadlock と回避策
-- 用途別使い分け
+- synchronized / volatile
+- ReentrantLock / AtomicInteger
+- ExecutorService / Future / CompletableFuture
+- ConcurrentHashMap / BlockingQueue
+- Virtual Threads
+- interrupt / deadlock
 
 ### Practical
 
 - java.time
 - Files / NIO.2
-- 頻出ミス集
 - 用途別チートシート
 
 ## プレビュー
 
-メインドキュメント:
+メインドキュメント + Java実験場:
 https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/index.html
 
 スレッド・並行処理:
 https://htmlpreview.github.io/?https://github.com/Summer110622/JavaMD/blob/feature/java-basics-site/threads.html
 
-HTMLファイルを直接ブラウザで開いても表示できます。
+CheerpJ実験場は `http://` または `https://` で配信されたページ上で利用してください。
