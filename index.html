@@ -3,370 +3,681 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Javaの基礎を、コード例と図解感覚で細かく学べる入門サイト" />
-  <title>JavaMD | Java基礎を細かく学ぶ</title>
+  <meta name="description" content="Javaの基礎・コレクション・ラムダ式・Stream APIまで体系的に学べる日本語ドキュメント" />
+  <title>JavaMD — Java基礎リファレンス</title>
   <style>
     :root {
-      color-scheme: light dark;
-      --bg: #0b1020;
-      --panel: #111831;
-      --panel-2: #17203d;
-      --text: #edf2ff;
-      --muted: #aab5d4;
-      --accent: #7dd3fc;
-      --accent-2: #a7f3d0;
-      --border: #2a365f;
-      --code: #070b16;
-      --warning: #fde68a;
-      --shadow: 0 14px 40px rgba(0,0,0,.24);
+      color-scheme: light;
+      --bg:#f7f8fb; --surface:#ffffff; --surface-2:#f1f4f8; --text:#172033; --muted:#637083;
+      --line:#dfe5ec; --primary:#3157d5; --primary-soft:#eef2ff; --green:#087b56; --green-soft:#eaf8f2;
+      --amber:#9a6700; --amber-soft:#fff8df; --red:#b42318; --red-soft:#fff0ee; --code:#111827;
+      --shadow:0 10px 30px rgba(31,41,55,.08); --radius:16px;
     }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, #172554 0, var(--bg) 36%), var(--bg);
-      color: var(--text);
-      line-height: 1.75;
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg:#0d1117; --surface:#151b23; --surface-2:#1c2430; --text:#e6edf3; --muted:#9ba7b4;
+      --line:#2b3542; --primary:#8aa4ff; --primary-soft:#1b2443; --green:#70d5ae; --green-soft:#12352b;
+      --amber:#f0c45d; --amber-soft:#3a2e12; --red:#ff9c91; --red-soft:#3b1d1a; --code:#090d13;
+      --shadow:0 10px 30px rgba(0,0,0,.22);
     }
-    a { color: inherit; }
-    code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
-    .layout { min-height: 100vh; display: grid; grid-template-columns: 280px minmax(0,1fr); }
-    .sidebar {
-      position: sticky; top: 0; height: 100vh; overflow: auto;
-      border-right: 1px solid var(--border); background: rgba(8,12,26,.92); backdrop-filter: blur(14px);
-      padding: 24px 18px;
-    }
-    .brand { display: flex; gap: 12px; align-items: center; margin-bottom: 22px; }
-    .logo { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; font-weight: 900; background: linear-gradient(135deg,var(--accent),var(--accent-2)); color:#07111e; }
-    .brand strong { display:block; font-size: 1.05rem; }
-    .brand span { display:block; color: var(--muted); font-size:.78rem; }
-    .progress { height: 7px; border-radius: 999px; background: var(--panel-2); overflow: hidden; margin: 14px 0 22px; }
-    .progress > div { height: 100%; width: 0; background: linear-gradient(90deg,var(--accent),var(--accent-2)); transition: width .2s linear; }
-    .nav-title { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.12em; margin: 18px 8px 8px; }
-    nav a { display:block; text-decoration:none; color:var(--muted); padding:8px 10px; border-radius:9px; font-size:.9rem; }
-    nav a:hover, nav a.active { color:var(--text); background:var(--panel-2); }
-    main { width: min(1080px, calc(100% - 40px)); margin: 0 auto; padding: 64px 0 96px; }
-    .hero { padding: 34px; border:1px solid var(--border); border-radius:24px; background: linear-gradient(180deg,rgba(23,32,61,.9),rgba(17,24,49,.82)); box-shadow: var(--shadow); }
-    .eyebrow { color:var(--accent-2); font-weight:800; letter-spacing:.08em; font-size:.82rem; }
-    h1 { font-size: clamp(2.3rem,6vw,4.8rem); line-height:1.03; margin:10px 0 18px; letter-spacing:-.04em; }
-    h2 { margin-top:0; font-size: clamp(1.65rem,3vw,2.3rem); line-height:1.2; }
-    h3 { margin-top:1.5rem; }
-    .lead { color:var(--muted); font-size:1.08rem; max-width:72ch; }
-    .chips { display:flex; gap:10px; flex-wrap:wrap; margin-top:22px; }
-    .chip { border:1px solid var(--border); background:var(--panel-2); color:var(--muted); padding:7px 11px; border-radius:999px; font-size:.82rem; }
-    section { scroll-margin-top: 24px; margin-top: 28px; padding: 28px; border:1px solid var(--border); border-radius:20px; background:rgba(17,24,49,.88); }
-    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
-    .card { padding:18px; border:1px solid var(--border); border-radius:14px; background:var(--panel-2); }
-    .card strong { display:block; margin-bottom:6px; }
-    .card p { margin:0; color:var(--muted); }
-    .note { border-left:4px solid var(--accent); padding:12px 14px; background:rgba(125,211,252,.08); border-radius:0 10px 10px 0; }
-    .warning { border-left-color:var(--warning); background:rgba(253,230,138,.08); }
-    pre { overflow:auto; padding:18px; border-radius:14px; background:var(--code); border:1px solid #1c2749; color:#dce8ff; font-size:.9rem; line-height:1.6; }
-    .inline { padding:.15rem .35rem; border-radius:6px; background:var(--code); border:1px solid var(--border); }
-    table { width:100%; border-collapse:collapse; font-size:.92rem; overflow:hidden; border-radius:12px; }
-    th,td { padding:11px 12px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
-    th { background:var(--panel-2); }
-    td { color:var(--muted); }
-    .steps { counter-reset: step; display:grid; gap:12px; }
-    .step { position:relative; padding:14px 14px 14px 48px; border:1px solid var(--border); border-radius:12px; background:var(--panel-2); }
-    .step::before { counter-increment:step; content:counter(step); position:absolute; left:14px; top:14px; width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:var(--accent); color:#05101e; font-weight:900; font-size:.78rem; }
-    .quiz { margin-top:16px; }
-    .quiz button { border:1px solid var(--border); background:var(--panel-2); color:var(--text); padding:9px 12px; border-radius:9px; cursor:pointer; margin:4px 4px 4px 0; }
-    .quiz button:hover { border-color:var(--accent); }
-    .answer { margin-top:10px; color:var(--accent-2); min-height:1.5em; }
-    footer { color:var(--muted); margin-top:32px; text-align:center; font-size:.85rem; }
-    .mobile-top { display:none; }
-    @media (max-width: 900px) {
-      .layout { display:block; }
-      .sidebar { display:none; }
-      .mobile-top { display:flex; position:sticky; top:0; z-index:20; padding:12px 16px; border-bottom:1px solid var(--border); background:rgba(8,12,26,.92); backdrop-filter:blur(12px); justify-content:space-between; align-items:center; }
-      .mobile-top a { text-decoration:none; color:var(--accent); }
-      main { padding-top:28px; }
-    }
-    @media (max-width: 640px) {
-      main { width:min(100% - 24px,1080px); }
-      .hero, section { padding:20px; border-radius:16px; }
-      .grid { grid-template-columns:1fr; }
-      table { display:block; overflow:auto; }
-    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.85}
+    button,input{font:inherit}
+    a{color:var(--primary)}
+    code,pre{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+    .app{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+    aside{position:sticky;top:0;height:100vh;overflow:auto;background:var(--surface);border-right:1px solid var(--line);padding:22px 18px}
+    .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);margin:0 4px 18px}
+    .brand-mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#3157d5,#58a6ff);color:white;display:grid;place-items:center;font-weight:900}
+    .brand strong{display:block;font-size:1rem;line-height:1.2}.brand small{color:var(--muted)}
+    .search{position:relative;margin-bottom:16px}.search input{width:100%;padding:10px 12px 10px 36px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);color:var(--text);outline:none}.search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}.search span{position:absolute;left:12px;top:8px;color:var(--muted)}
+    .progress{height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin:0 4px 18px}.progress>div{height:100%;width:0;background:var(--primary)}
+    nav .group{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin:18px 8px 6px}
+    nav a{display:block;padding:7px 9px;margin:1px 0;border-radius:8px;text-decoration:none;color:var(--muted);font-size:.88rem;line-height:1.35}nav a:hover,nav a.active{background:var(--primary-soft);color:var(--primary);font-weight:650}
+    .aside-actions{display:flex;gap:8px;margin:18px 4px 0}.icon-btn{border:1px solid var(--line);background:var(--surface-2);color:var(--text);border-radius:9px;padding:7px 10px;cursor:pointer}
+    main{min-width:0}.content{width:min(1040px,calc(100% - 48px));margin:auto;padding:56px 0 100px}
+    .hero{padding:38px 42px;border:1px solid var(--line);background:var(--surface);border-radius:22px;box-shadow:var(--shadow);margin-bottom:24px}
+    .eyebrow{font-size:.78rem;letter-spacing:.13em;color:var(--primary);font-weight:850}.hero h1{font-size:clamp(2.1rem,5vw,4.25rem);line-height:1.08;letter-spacing:-.045em;margin:8px 0 16px}.lead{font-size:1.07rem;color:var(--muted);max-width:75ch;margin:0}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.chip{font-size:.78rem;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);color:var(--muted)}
+    .quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0 30px}.quick{display:block;text-decoration:none;color:var(--text);padding:15px;border:1px solid var(--line);background:var(--surface);border-radius:13px}.quick strong{display:block;font-size:.92rem}.quick span{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}.quick:hover{border-color:var(--primary);box-shadow:var(--shadow)}
+    section{scroll-margin-top:24px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:30px 34px;margin:18px 0}.section-kicker{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);font-weight:800;margin-bottom:2px}h2{font-size:clamp(1.55rem,3vw,2.05rem);line-height:1.25;margin:0 0 14px;letter-spacing:-.02em}h3{font-size:1.15rem;margin:28px 0 8px}h4{font-size:1rem;margin:22px 0 6px}p{margin:8px 0 14px}ul,ol{padding-left:1.35rem}li+li{margin-top:5px}
+    .muted{color:var(--muted)}.inline{padding:.12rem .34rem;border:1px solid var(--line);background:var(--surface-2);border-radius:6px;font-size:.9em}
+    .callout{padding:13px 15px;border-radius:11px;border:1px solid var(--line);background:var(--primary-soft);margin:14px 0}.callout.good{background:var(--green-soft)}.callout.warn{background:var(--amber-soft)}.callout.bad{background:var(--red-soft)}
+    .code{margin:14px 0 18px;border:1px solid #263243;border-radius:12px;overflow:hidden;background:var(--code)}.code-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 12px;background:#18202c;color:#aeb8c5;font-size:.76rem}.copy{border:0;background:transparent;color:#cbd5e1;cursor:pointer}.copy:hover{color:white}pre{margin:0;padding:17px 18px;overflow:auto;color:#e5edf7;line-height:1.65;font-size:.88rem;tab-size:4}
+    table{width:100%;border-collapse:separate;border-spacing:0;margin:14px 0 20px;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.9rem}th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--surface-2);font-weight:750}td{color:var(--muted)}tr:last-child td{border-bottom:0}.table-wrap{overflow:auto}
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}.card{padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}.card strong{display:block;margin-bottom:4px}.card p{margin:0;color:var(--muted);font-size:.9rem}
+    .decision{display:grid;grid-template-columns:160px 1fr;gap:8px 14px;padding:14px 0;border-bottom:1px dashed var(--line)}.decision:last-child{border-bottom:0}.decision strong{color:var(--primary)}
+    .tag{display:inline-block;font-size:.72rem;font-weight:750;padding:2px 7px;border-radius:99px;background:var(--primary-soft);color:var(--primary);margin-right:4px}
+    details{border:1px solid var(--line);border-radius:11px;margin:10px 0;background:var(--surface-2)}summary{cursor:pointer;padding:12px 14px;font-weight:700}details>div{padding:0 14px 14px}
+    .mobilebar{display:none}.search-empty{display:none;padding:10px;color:var(--muted);font-size:.85rem}
+    footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:34px}
+    @media(max-width:1000px){.app{display:block}aside{display:none}.mobilebar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.mobilebar a{text-decoration:none;font-weight:800;color:var(--text)}.content{padding-top:28px}.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.content{width:min(100% - 22px,1040px)}.hero,section{padding:22px 19px;border-radius:14px}.quick-grid,.cards{grid-template-columns:1fr}.decision{grid-template-columns:1fr}.hero h1{font-size:2.35rem}table{font-size:.84rem}th,td{padding:9px 10px}}
   </style>
 </head>
 <body>
-  <div class="mobile-top"><strong>JavaMD</strong><a href="#toc">目次へ</a></div>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="brand"><div class="logo">J</div><div><strong>JavaMD</strong><span>Java fundamentals guide</span></div></div>
-      <div class="progress"><div id="progressBar"></div></div>
-      <nav id="toc">
-        <div class="nav-title">Start</div>
-        <a href="#overview">Javaとは</a><a href="#setup">環境と実行</a><a href="#syntax">基本構文</a>
-        <div class="nav-title">Core</div>
-        <a href="#types">変数と型</a><a href="#operators">演算子</a><a href="#branch">条件分岐</a><a href="#loop">繰り返し</a><a href="#arrays">配列とコレクション</a><a href="#methods">メソッド</a>
-        <div class="nav-title">OOP</div>
-        <a href="#classes">クラスとオブジェクト</a><a href="#inheritance">継承・interface</a><a href="#access">アクセス修飾子・package</a>
-        <div class="nav-title">Practical</div>
-        <a href="#exceptions">例外処理</a><a href="#generics">ジェネリクス</a><a href="#lambda">ラムダ・Stream</a><a href="#tips">初心者の落とし穴</a>
-      </nav>
-    </aside>
+<div class="mobilebar"><a href="#top">JavaMD</a><button class="icon-btn" id="mobileTheme">◐</button></div>
+<div class="app">
+  <aside>
+    <a class="brand" href="#top"><span class="brand-mark">J</span><span><strong>JavaMD</strong><small>Java reference</small></span></a>
+    <div class="search"><span>⌕</span><input id="search" type="search" placeholder="目次を検索…" aria-label="目次を検索"></div>
+    <div class="progress"><div id="progress"></div></div>
+    <nav id="nav">
+      <div class="group">Start</div>
+      <a href="#overview">Java / JVM / JDK</a><a href="#hello">実行と基本構文</a><a href="#types">変数・型・null</a><a href="#strings">String・Wrapper</a>
+      <div class="group">Language</div>
+      <a href="#operators">演算子</a><a href="#control">if / switch / loop</a><a href="#arrays">配列</a><a href="#methods">メソッド</a><a href="#classes">クラス・record・enum</a><a href="#oop">継承・interface</a><a href="#access">修飾子・package</a><a href="#exceptions">例外処理</a><a href="#generics">Generics</a>
+      <div class="group">Collections</div>
+      <a href="#collections">全体像・選び方</a><a href="#list">List</a><a href="#set">Set / HashSet / TreeSet</a><a href="#map">Map / HashMap / TreeMap</a><a href="#queue">Queue / Deque</a><a href="#compare">Comparable / Comparator</a>
+      <div class="group">Functional</div>
+      <a href="#lambda">ラムダ式</a><a href="#functional">関数型interface</a><a href="#stream">Stream API</a><a href="#optional">Optional</a>
+      <div class="group">Practical</div>
+      <a href="#datetime">Date / Time</a><a href="#io">Files / I/O</a><a href="#concurrency">並行処理の基礎</a><a href="#pitfalls">頻出ミス</a><a href="#cheatsheet">チートシート</a>
+      <div id="empty" class="search-empty">一致する項目がありません</div>
+    </nav>
+    <div class="aside-actions"><button class="icon-btn" id="theme">◐ テーマ</button><a class="icon-btn" href="https://github.com/Summer110622/JavaMD" target="_blank" rel="noreferrer" style="text-decoration:none">GitHub</a></div>
+  </aside>
+  <main id="top"><div class="content">
+    <header class="hero">
+      <div class="eyebrow">JAVA FUNDAMENTALS · COLLECTIONS · FUNCTIONAL</div>
+      <h1>Javaを「選べる」まで理解する。</h1>
+      <p class="lead">構文の暗記ではなく、型・オブジェクト指向・コレクション・ラムダ式・Stream APIを、比較表とコード例で体系的に整理した日本語リファレンスです。</p>
+      <div class="chips"><span class="chip">Java 17+ を基準</span><span class="chip">初心者 → 実務基礎</span><span class="chip">外部依存なし</span><span class="chip">比較表 + コード例</span></div>
+    </header>
 
-    <main>
-      <header class="hero">
-        <div class="eyebrow">JAVA FUNDAMENTALS</div>
-        <h1>Javaの基礎を、<br>細かく・順番に。</h1>
-        <p class="lead">「書き方を覚える」だけでなく、JVMでどう実行されるか、型がなぜ重要か、クラス設計をどう考えるかまで、初心者がつまずきやすい点を分解して説明します。</p>
-        <div class="chips"><span class="chip">初心者向け</span><span class="chip">コード例つき</span><span class="chip">依存なし</span><span class="chip">Java 17+ を想定</span></div>
-      </header>
+    <div class="quick-grid">
+      <a class="quick" href="#collections"><strong>Collectionを選ぶ</strong><span>List / Set / Map / Queue</span></a>
+      <a class="quick" href="#set"><strong>Setを理解する</strong><span>HashSet / TreeSet / LinkedHashSet</span></a>
+      <a class="quick" href="#map"><strong>Mapを理解する</strong><span>HashMap / TreeMap / LinkedHashMap</span></a>
+      <a class="quick" href="#lambda"><strong>ラムダ式を理解する</strong><span>Function / Predicate / Stream</span></a>
+    </div>
 
-      <section id="overview"><h2>1. Javaとは</h2>
-        <p>Javaは、ソースコードをいったん <code class="inline">.class</code> 形式のバイトコードへコンパイルし、そのバイトコードを JVM（Java Virtual Machine）が実行する言語です。</p>
-        <div class="grid"><div class="card"><strong>JDK</strong><p>開発に必要なツール一式。コンパイラ <code>javac</code> や実行環境を含みます。</p></div><div class="card"><strong>JVM</strong><p>JavaバイトコードをOS・CPU上で実行する仮想マシンです。</p></div><div class="card"><strong>JRE</strong><p>Javaアプリを実行するための環境。近年はJDK配布物の中に実行環境が含まれる形が一般的です。</p></div><div class="card"><strong>バイトコード</strong><p>ソースと機械語の中間表現。JVMが環境差を吸収します。</p></div></div>
-        <div class="note"><strong>重要:</strong> 「JavaはどのOSでも同じ機械語で動く」のではなく、「同じバイトコードを、それぞれのOS向けJVMが実行する」と理解すると正確です。</div>
-      </section>
+    <section id="overview"><div class="section-kicker">Start</div><h2>1. Java / JVM / JDK</h2>
+      <p>Javaソースは通常、<code class="inline">javac</code> でバイトコードへ変換され、JVMがそのバイトコードを実行します。OSごとの差をJVMが吸収するため、同じバイトコードを複数環境で実行しやすい設計です。</p>
+      <div class="cards"><div class="card"><strong>JDK</strong><p>コンパイラ、実行環境、標準ツールを含む開発キット。</p></div><div class="card"><strong>JVM</strong><p>バイトコードをロード・検証・実行する仮想マシン。</p></div><div class="card"><strong>バイトコード</strong><p><code>.class</code> に格納されるJVM向け命令。</p></div><div class="card"><strong>GC</strong><p>到達不能なオブジェクトのメモリを自動回収する仕組み。</p></div></div>
+      <div class="callout"><strong>流れ:</strong> <code>Example.java → javac → Example.class → JVM → 実行</code></div>
+    </section>
 
-      <section id="setup"><h2>2. 環境と実行の流れ</h2>
-        <div class="steps"><div class="step"><strong>JDKを入れる</strong><br>Java 17 または 21 のLTSを選ぶと学習しやすいです。</div><div class="step"><strong>ソースを書く</strong><br><code>Hello.java</code> を作成します。</div><div class="step"><strong>コンパイル</strong><br><code>javac Hello.java</code> で <code>Hello.class</code> を生成します。</div><div class="step"><strong>実行</strong><br><code>java Hello</code> としてJVMにクラスを読み込ませます。</div></div>
-<pre><code>public class Hello {
+    <section id="hello"><div class="section-kicker">Start</div><h2>2. 実行と基本構文</h2>
+      <div class="code"><div class="code-head"><span>Hello.java</span><button class="copy">コピー</button></div><pre><code>public class Hello {
     public static void main(String[] args) {
         System.out.println("Hello, Java!");
     }
-}</code></pre>
-        <p><code>main</code> はプログラムの入口です。<code>public</code> はJVMから呼び出せること、<code>static</code> はインスタンス生成前でも呼べること、<code>void</code> は戻り値を返さないことを意味します。</p>
-      </section>
+}</code></pre></div>
+      <p><code class="inline">public</code> は外部からアクセス可能、<code class="inline">static</code> はインスタンス不要、<code class="inline">void</code> は戻り値なしを表します。文末は原則 <code class="inline">;</code>、ブロックは <code class="inline">{ }</code> です。</p>
+      <div class="code"><div class="code-head"><span>terminal</span><button class="copy">コピー</button></div><pre><code>javac Hello.java
+java Hello</code></pre></div>
+    </section>
 
-      <section id="syntax"><h2>3. 基本構文</h2>
-        <p>Javaでは文の末尾に <code>;</code> を付けます。ブロックは <code>{ }</code> で囲み、大小文字を区別します。</p>
-<pre><code>// 1行コメント
-/* 複数行コメント */
+    <section id="types"><div class="section-kicker">Language</div><h2>3. 変数・型・null</h2>
+      <p>Javaは静的型付けです。プリミティブ型は値そのものを扱い、参照型はオブジェクトへの参照を扱います。</p>
+      <div class="table-wrap"><table><thead><tr><th>分類</th><th>型</th><th>例</th><th>ポイント</th></tr></thead><tbody>
+        <tr><td>整数</td><td><code>byte short int long</code></td><td><code>int n = 10;</code></td><td>通常の整数は <code>int</code></td></tr>
+        <tr><td>浮動小数</td><td><code>float double</code></td><td><code>double x = 1.5;</code></td><td>通常の小数は <code>double</code></td></tr>
+        <tr><td>文字</td><td><code>char</code></td><td><code>char c = 'A';</code></td><td>シングルクォート</td></tr>
+        <tr><td>真偽</td><td><code>boolean</code></td><td><code>boolean ok = true;</code></td><td><code>true / false</code></td></tr>
+        <tr><td>参照型</td><td><code>String</code> 等</td><td><code>String s = "hi";</code></td><td><code>null</code> を取り得る</td></tr>
+      </tbody></table></div>
+      <div class="code"><div class="code-head"><span>型推論・定数・キャスト</span><button class="copy">コピー</button></div><pre><code>var name = "Java";          // ローカル変数の型推論: String
+final double PI = 3.14159;  // 再代入不可
+long big = 10_000_000_000L;
+int narrowed = (int) 3.9;   // 3: 明示的キャスト
 
-int count = 3;          // 文
-if (count > 0) {        // ブロック
-    System.out.println(count);
-}</code></pre>
-        <div class="warning note"><strong>よくあるミス:</strong> ファイル名と <code>public class</code> 名は一致させます。<code>public class Main</code> なら通常ファイル名は <code>Main.java</code> です。</div>
-      </section>
+String text = null;
+// text.length();            // NullPointerException</code></pre></div>
+      <div class="callout warn"><strong>注意:</strong> <code>var</code> は「動的型付け」ではありません。コンパイル時に具体的な型が決まります。</div>
+    </section>
 
-      <section id="types"><h2>4. 変数と型</h2>
-        <p>Javaは静的型付けです。変数には「どの種類の値を入れるか」という型がコンパイル時に決まります。</p>
-        <table><thead><tr><th>型</th><th>用途</th><th>例</th></tr></thead><tbody><tr><td>byte / short / int / long</td><td>整数</td><td><code>int age = 20;</code></td></tr><tr><td>float / double</td><td>小数</td><td><code>double rate = 1.25;</code></td></tr><tr><td>char</td><td>1文字</td><td><code>char grade = 'A';</code></td></tr><tr><td>boolean</td><td>真偽値</td><td><code>boolean ok = true;</code></td></tr><tr><td>String</td><td>文字列</td><td><code>String name = "Java";</code></td></tr></tbody></table>
-<pre><code>int x = 10;
-long y = x;          // widening: 安全に広い型へ
+    <section id="strings"><div class="section-kicker">Language</div><h2>4. String・Wrapper・equals</h2>
+      <p><code>String</code> は不変（immutable）です。文字列を変更する操作は新しい <code>String</code> を返します。</p>
+      <div class="code"><div class="code-head"><span>String</span><button class="copy">コピー</button></div><pre><code>String s = " Java ";
+String normalized = s.trim().toLowerCase();
+boolean same = "java".equals(normalized);  // 内容比較
 
-long big = 100L;
-int small = (int) big; // narrowing: 明示的キャストが必要
+StringBuilder sb = new StringBuilder();
+sb.append("A").append("B").append("C");
+String result = sb.toString();</code></pre></div>
+      <p><code>Integer</code>、<code>Long</code>、<code>Double</code>、<code>Boolean</code> などはプリミティブのWrapperです。Genericsにはプリミティブ型を直接指定できないため、<code>List&lt;Integer&gt;</code> のように使います。</p>
+      <div class="callout bad"><strong><code>==</code> と <code>equals</code>:</strong> 参照型の <code>==</code> は基本的に同一参照かを比較します。内容比較は適切に実装された <code>equals()</code> を使います。</div>
+    </section>
 
-var message = "hello"; // ローカル変数なら型推論も可能</code></pre>
-        <p>プリミティブ型は値そのものを扱います。一方、<code>String</code> や自作クラスは参照型で、変数はオブジェクトへの参照を保持します。</p>
-      </section>
+    <section id="operators"><div class="section-kicker">Language</div><h2>5. 演算子</h2>
+      <div class="table-wrap"><table><thead><tr><th>種類</th><th>演算子</th><th>例</th></tr></thead><tbody>
+        <tr><td>算術</td><td><code>+ - * / %</code></td><td><code>7 % 3 == 1</code></td></tr>
+        <tr><td>比較</td><td><code>== != &lt; &lt;= &gt; &gt;=</code></td><td><code>age &gt;= 18</code></td></tr>
+        <tr><td>論理</td><td><code>&amp;&amp; || !</code></td><td><code>loggedIn &amp;&amp; admin</code></td></tr>
+        <tr><td>代入</td><td><code>= += -= *= /=</code></td><td><code>count += 1</code></td></tr>
+        <tr><td>三項</td><td><code>? :</code></td><td><code>ok ? "yes" : "no"</code></td></tr>
+      </tbody></table></div>
+      <div class="callout"><code>&amp;&amp;</code> と <code>||</code> は短絡評価します。左側だけで結果が確定した場合、右側は評価されません。</div>
+    </section>
 
-      <section id="operators"><h2>5. 演算子</h2>
-        <div class="grid"><div class="card"><strong>算術</strong><p><code>+ - * / %</code></p></div><div class="card"><strong>比較</strong><p><code>== != &lt; &lt;= &gt; &gt;=</code></p></div><div class="card"><strong>論理</strong><p><code>&amp;&amp; || !</code></p></div><div class="card"><strong>代入</strong><p><code>= += -= *= /=</code></p></div></div>
-<pre><code>int a = 7;
-int b = 2;
-System.out.println(a / b);       // 3: int同士なので整数除算
-System.out.println(a / 2.0);     // 3.5: doubleを含むので小数</code></pre>
-        <div class="note"><strong>String比較:</strong> 文字列の内容比較は通常 <code>equals()</code> を使います。<code>==</code> は参照が同じかを見るため、意味が異なります。</div>
-      </section>
-
-      <section id="branch"><h2>6. 条件分岐</h2>
-<pre><code>int score = 78;
-
-if (score >= 90) {
+    <section id="control"><div class="section-kicker">Language</div><h2>6. if / switch / loop</h2>
+      <div class="code"><div class="code-head"><span>条件分岐</span><button class="copy">コピー</button></div><pre><code>if (score >= 80) {
     System.out.println("A");
-} else if (score >= 70) {
+} else if (score >= 60) {
     System.out.println("B");
 } else {
     System.out.println("C");
-}</code></pre>
-<pre><code>String role = "admin";
-String label = switch (role) {
-    case "admin" -> "管理者";
-    case "member" -> "一般ユーザー";
-    default -> "ゲスト";
-};</code></pre>
-        <p><code>switch</code> 式は「条件ごとに値を返したい」場面で読みやすくなります。</p>
-      </section>
-
-      <section id="loop"><h2>7. 繰り返し</h2>
-<pre><code>for (int i = 0; i < 3; i++) {
-    System.out.println(i);
 }
 
-int n = 3;
-while (n > 0) {
-    System.out.println(n);
-    n--;
-}
-</code></pre>
-<pre><code>String[] names = {"Aki", "Mio", "Ren"};
-for (String name : names) {
-    System.out.println(name);
-}</code></pre>
-        <p><code>break</code> はループを終了し、<code>continue</code> はその周回の残りを飛ばして次へ進みます。</p>
-      </section>
+String label = switch (day) {
+    case SATURDAY, SUNDAY -> "休日";
+    default -> "平日";
+};</code></pre></div>
+      <div class="code"><div class="code-head"><span>ループ</span><button class="copy">コピー</button></div><pre><code>for (int i = 0; i &lt; 3; i++) { }
 
-      <section id="arrays"><h2>8. 配列とコレクション</h2>
-        <p>配列は長さが固定です。要素数が増減するデータには <code>List</code> が便利です。</p>
-<pre><code>int[] scores = {80, 92, 75};
-System.out.println(scores[0]); // 80
+for (String name : names) { }
 
-import java.util.ArrayList;
-import java.util.List;
+while (condition) { }
 
-List&lt;String&gt; users = new ArrayList&lt;&gt;();
-users.add("Alice");
-users.add("Bob");
-System.out.println(users.get(0));</code></pre>
-        <div class="grid"><div class="card"><strong>List</strong><p>順序あり・重複可。</p></div><div class="card"><strong>Set</strong><p>重複を持たせたくない集合。</p></div><div class="card"><strong>Map</strong><p>キーと値の組。辞書・ハッシュ表に相当。</p></div><div class="card"><strong>Array</strong><p>固定長で軽量。プリミティブ配列も作れます。</p></div></div>
-      </section>
+do { } while (condition);
 
-      <section id="methods"><h2>9. メソッド</h2>
-<pre><code>static int add(int a, int b) {
+// continue: 今回だけ飛ばす
+// break: ループ自体を抜ける</code></pre></div>
+    </section>
+
+    <section id="arrays"><div class="section-kicker">Language</div><h2>7. 配列</h2>
+      <p>配列は固定長で、同じ型の要素を連続して扱います。添字は0始まりです。</p>
+      <div class="code"><div class="code-head"><span>Array</span><button class="copy">コピー</button></div><pre><code>int[] nums = {10, 20, 30};
+System.out.println(nums[0]);   // 10
+System.out.println(nums.length); // 3
+
+int[][] matrix = {
+    {1, 2},
+    {3, 4}
+};</code></pre></div>
+      <p>要素数を後から増減したいなら、通常は <code>ArrayList</code> などのCollectionを選びます。</p>
+    </section>
+
+    <section id="methods"><div class="section-kicker">Language</div><h2>8. メソッド</h2>
+      <div class="code"><div class="code-head"><span>Method</span><button class="copy">コピー</button></div><pre><code>static int add(int a, int b) {
     return a + b;
 }
 
-public static void main(String[] args) {
-    int result = add(3, 5);
-    System.out.println(result);
-}</code></pre>
-        <p><code>int add(int a, int b)</code> では、先頭の <code>int</code> が戻り値の型、<code>a</code> と <code>b</code> が引数です。戻り値が不要なら <code>void</code> を使います。</p>
-        <p>同じ名前で引数の型や個数が異なるメソッドを定義することをオーバーロードと呼びます。</p>
-      </section>
+static int add(int a, int b, int c) { // overload
+    return a + b + c;
+}
 
-      <section id="classes"><h2>10. クラスとオブジェクト</h2>
-        <p>クラスは「データ」と「そのデータに対する振る舞い」をまとめた設計図です。</p>
-<pre><code>class User {
-    private String name;
+static void printAll(String... values) { // 可変長引数
+    for (String value : values) {
+        System.out.println(value);
+    }
+}</code></pre></div>
+      <p>Javaは基本的に「値渡し」です。オブジェクトを引数に渡す場合も、渡されるのは参照値のコピーです。</p>
+    </section>
+
+    <section id="classes"><div class="section-kicker">Object Oriented</div><h2>9. クラス・record・enum</h2>
+      <div class="code"><div class="code-head"><span>Class</span><button class="copy">コピー</button></div><pre><code>class User {
+    private final String name;
     private int age;
 
-    User(String name, int age) { // コンストラクタ
+    User(String name, int age) {
         this.name = name;
         this.age = age;
     }
 
-    void introduce() {
-        System.out.println("私は" + name + "です");
-    }
+    String getName() { return name; }
+    int getAge() { return age; }
+    void birthday() { age++; }
+}</code></pre></div>
+      <h3>record</h3><p>値を保持するデータキャリアなら <code>record</code> が簡潔です。アクセサ、<code>equals</code>、<code>hashCode</code>、<code>toString</code> が自動生成されます。</p>
+      <div class="code"><div class="code-head"><span>record / enum</span><button class="copy">コピー</button></div><pre><code>record Point(int x, int y) {}
+
+enum Status {
+    TODO, DOING, DONE
+}</code></pre></div>
+      <h3>static / final</h3><ul><li><code>static</code>: インスタンスではなくクラスに属する。</li><li><code>final</code> 変数: 再代入不可。</li><li><code>final</code> メソッド: override不可。</li><li><code>final</code> クラス: 継承不可。</li></ul>
+    </section>
+
+    <section id="oop"><div class="section-kicker">Object Oriented</div><h2>10. 継承・abstract・interface・ポリモーフィズム</h2>
+      <div class="code"><div class="code-head"><span>継承とinterface</span><button class="copy">コピー</button></div><pre><code>interface Flyable {
+    void fly();
 }
 
-public class Main {
-    public static void main(String[] args) {
-        User user = new User("Aki", 20);
-        user.introduce();
-    }
-}</code></pre>
-        <p><code>new User(...)</code> でインスタンスを生成します。<code>this.name</code> は「このインスタンス自身が持つフィールド」を表します。</p>
-      </section>
-
-      <section id="inheritance"><h2>11. 継承と interface</h2>
-<pre><code>class Animal {
-    void speak() {
-        System.out.println("...");
-    }
+abstract class Animal {
+    abstract void speak();
 }
 
-class Dog extends Animal {
-    @Override
-    void speak() {
-        System.out.println("bow");
-    }
-}</code></pre>
-<pre><code>interface Payable {
-    void pay(int amount);
+class Bird extends Animal implements Flyable {
+    @Override void speak() { System.out.println("tweet"); }
+    @Override public void fly() { System.out.println("fly"); }
 }
 
-class CreditCard implements Payable {
-    public void pay(int amount) {
-        System.out.println(amount + "円を支払いました");
-    }
-}</code></pre>
-        <p>継承は「is-a」の関係を表す場合に使います。再利用だけを目的に安易に継承すると結合が強くなるため、実務では委譲やinterfaceを組み合わせることが多いです。</p>
-      </section>
+Animal animal = new Bird();
+animal.speak(); // 実体Birdの実装が呼ばれる</code></pre></div>
+      <div class="cards"><div class="card"><strong>extends</strong><p>クラスの継承。Javaのクラス継承は単一継承。</p></div><div class="card"><strong>implements</strong><p>interfaceの契約を実装。複数指定可能。</p></div><div class="card"><strong>abstract</strong><p>直接生成せず、共通実装と抽象操作を定義。</p></div><div class="card"><strong>polymorphism</strong><p>親型で複数の具体型を同じように扱う。</p></div></div>
+    </section>
 
-      <section id="access"><h2>12. アクセス修飾子と package</h2>
-        <table><thead><tr><th>修飾子</th><th>見える範囲</th></tr></thead><tbody><tr><td>public</td><td>どこからでも</td></tr><tr><td>protected</td><td>同一package + サブクラス</td></tr><tr><td>指定なし</td><td>同一package</td></tr><tr><td>private</td><td>同一クラス内のみ</td></tr></tbody></table>
-<pre><code>package com.example.app;
+    <section id="access"><div class="section-kicker">Object Oriented</div><h2>11. アクセス修飾子・package</h2>
+      <div class="table-wrap"><table><thead><tr><th>修飾子</th><th>同じclass</th><th>同じpackage</th><th>subclass</th><th>どこからでも</th></tr></thead><tbody>
+        <tr><td><code>private</code></td><td>○</td><td>×</td><td>×</td><td>×</td></tr><tr><td>package-private</td><td>○</td><td>○</td><td>条件次第</td><td>×</td></tr><tr><td><code>protected</code></td><td>○</td><td>○</td><td>○</td><td>×</td></tr><tr><td><code>public</code></td><td>○</td><td>○</td><td>○</td><td>○</td></tr>
+      </tbody></table></div>
+      <div class="code"><div class="code-head"><span>package / import</span><button class="copy">コピー</button></div><pre><code>package com.example.app;
 
-public class UserService {
-    private final UserRepository repository;
+import java.util.ArrayList;
+import java.util.List;</code></pre></div>
+    </section>
 
-    public UserService(UserRepository repository) {
-        this.repository = repository;
-    }
-}</code></pre>
-        <p><code>package</code> はクラスを名前空間として整理します。ディレクトリ構成とpackage名を対応させるのが基本です。</p>
-      </section>
-
-      <section id="exceptions"><h2>13. 例外処理</h2>
-<pre><code>try {
-    int value = Integer.parseInt("123");
-    System.out.println(value);
+    <section id="exceptions"><div class="section-kicker">Language</div><h2>12. 例外処理</h2>
+      <p>例外は正常系とは別の失敗経路を表します。checked例外はコンパイル時に処理が要求され、unchecked例外（<code>RuntimeException</code> 系）は必須ではありません。</p>
+      <div class="code"><div class="code-head"><span>try / catch / finally</span><button class="copy">コピー</button></div><pre><code>try {
+    int n = Integer.parseInt(input);
 } catch (NumberFormatException e) {
-    System.out.println("数値に変換できません");
+    System.err.println("数値ではありません");
 } finally {
-    System.out.println("終了処理");
-}</code></pre>
-        <p>例外は「通常の戻り値では扱いにくい異常状態」を伝える仕組みです。例外には大きく、コンパイル時に処理を要求される checked exception と、実行時例外を中心とする unchecked exception があります。</p>
-        <div class="note"><strong>設計の考え方:</strong> 例外を握りつぶすのではなく、「どこで回復するか」「どこまで上位へ伝えるか」を決めます。</div>
-      </section>
+    System.out.println("必ず実行");
+}</code></pre></div>
+      <div class="code"><div class="code-head"><span>try-with-resources</span><button class="copy">コピー</button></div><pre><code>try (var reader = Files.newBufferedReader(path)) {
+    System.out.println(reader.readLine());
+} catch (IOException e) {
+    throw new UncheckedIOException(e);
+}</code></pre></div>
+      <div class="callout warn"><strong>原則:</strong> 捕捉して何もしない <code>catch (Exception e) {}</code> は避けます。回復する、意味を付けて再throwする、上位へ伝える、のどれかを明確にします。</div>
+    </section>
 
-      <section id="generics"><h2>14. ジェネリクス</h2>
-<pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
-names.add("Aki");
-
-class Box&lt;T&gt; {
+    <section id="generics"><div class="section-kicker">Language</div><h2>13. Generics</h2>
+      <p>Genericsは「型を引数化」し、キャストを減らしながら型安全に再利用する仕組みです。</p>
+      <div class="code"><div class="code-head"><span>Generic class / method</span><button class="copy">コピー</button></div><pre><code>class Box&lt;T&gt; {
     private T value;
-
     void set(T value) { this.value = value; }
     T get() { return value; }
-}</code></pre>
-        <p><code>&lt;T&gt;</code> は型を後から指定する仕組みです。キャストを減らし、型安全性を高めます。</p>
-      </section>
+}
 
-      <section id="lambda"><h2>15. ラムダ式と Stream</h2>
-<pre><code>List&lt;String&gt; names = List.of("Alice", "Bob", "Ann");
+static &lt;T&gt; T first(List&lt;T&gt; list) {
+    return list.get(0);
+}</code></pre></div>
+      <h3>ワイルドカード</h3>
+      <div class="table-wrap"><table><thead><tr><th>型</th><th>意味</th><th>典型用途</th></tr></thead><tbody><tr><td><code>List&lt;?&gt;</code></td><td>要素型は不明</td><td>型を問わず読む</td></tr><tr><td><code>List&lt;? extends Number&gt;</code></td><td>Number以下</td><td>Producerとして読む</td></tr><tr><td><code>List&lt;? super Integer&gt;</code></td><td>Integer以上</td><td>Consumerとして書く</td></tr></tbody></table></div>
+      <div class="callout"><strong>PECS:</strong> Producer Extends, Consumer Super。値を取り出す側なら <code>extends</code>、値を入れる側なら <code>super</code> が基本です。</div>
+    </section>
 
-names.stream()
-    .filter(name -> name.startsWith("A"))
+    <section id="collections"><div class="section-kicker">Collections</div><h2>14. Collection Framework 全体像・選び方</h2>
+      <p><code>Collection</code> は要素の集まりを表す主要interfaceです。<code>Map</code> はキー→値の対応を表し、<code>Collection</code> とは別系統です。</p>
+      <div class="table-wrap"><table><thead><tr><th>欲しい性質</th><th>第一候補</th><th>理由</th></tr></thead><tbody>
+        <tr><td>順番付きで重複OK</td><td><code>ArrayList</code></td><td>最も一般的なList。ランダムアクセスが速い</td></tr>
+        <tr><td>重複を除きたい</td><td><code>HashSet</code></td><td>平均O(1)で追加・検索</td></tr>
+        <tr><td>重複なし + 挿入順保持</td><td><code>LinkedHashSet</code></td><td>挿入順に反復</td></tr>
+        <tr><td>重複なし + ソート済み</td><td><code>TreeSet</code></td><td>順序付きSet、O(log n)</td></tr>
+        <tr><td>キーから値を高速検索</td><td><code>HashMap</code></td><td>平均O(1)</td></tr>
+        <tr><td>Mapで挿入順保持</td><td><code>LinkedHashMap</code></td><td>順序を保って反復</td></tr>
+        <tr><td>キー順に並ぶMap</td><td><code>TreeMap</code></td><td>キーをソート、O(log n)</td></tr>
+        <tr><td>FIFOキュー</td><td><code>ArrayDeque</code></td><td>両端操作が高速</td></tr>
+        <tr><td>優先度順に取り出す</td><td><code>PriorityQueue</code></td><td>最小/最大優先のヒープ</td></tr>
+      </tbody></table></div>
+      <div class="callout good"><strong>迷ったら:</strong> List → <code>ArrayList</code>、Set → <code>HashSet</code>、Map → <code>HashMap</code>、Queue/Stack用途 → <code>ArrayDeque</code> を出発点にすると整理しやすいです。</div>
+      <h3>計算量の目安</h3>
+      <div class="table-wrap"><table><thead><tr><th>実装</th><th>get</th><th>contains</th><th>add/put</th><th>順序</th></tr></thead><tbody>
+        <tr><td>ArrayList</td><td>O(1)</td><td>O(n)</td><td>末尾 償却O(1)</td><td>挿入順</td></tr>
+        <tr><td>HashSet</td><td>—</td><td>平均O(1)</td><td>平均O(1)</td><td>保証なし</td></tr>
+        <tr><td>TreeSet</td><td>—</td><td>O(log n)</td><td>O(log n)</td><td>ソート順</td></tr>
+        <tr><td>HashMap</td><td>平均O(1)</td><td>平均O(1)</td><td>平均O(1)</td><td>保証なし</td></tr>
+        <tr><td>TreeMap</td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>キーのソート順</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section id="list"><div class="section-kicker">Collections</div><h2>15. List — ArrayList / LinkedList / Vector</h2>
+      <p>Listは順序があり、重複を許します。添字アクセスが必要なら基本は <code>ArrayList</code> です。</p>
+      <div class="table-wrap"><table><thead><tr><th>実装</th><th>特徴</th><th>向いている場面</th></tr></thead><tbody>
+        <tr><td><code>ArrayList</code></td><td>可変長配列。getがO(1)</td><td>ほとんどの通常用途</td></tr>
+        <tr><td><code>LinkedList</code></td><td>双方向リンク。Dequeも実装</td><td>両端操作。ただし多くの場面でArrayDequeが優先</td></tr>
+        <tr><td><code>Vector</code></td><td>古い同期化List</td><td>新規コードでは通常使わない</td></tr>
+      </tbody></table></div>
+      <div class="code"><div class="code-head"><span>ArrayList</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
+names.add("Alice");
+names.add("Bob");
+names.add(1, "Carol");
+
+String first = names.get(0);
+names.set(0, "Alicia");
+names.remove("Bob");
+boolean hasCarol = names.contains("Carol");
+
+for (String name : names) {
+    System.out.println(name);
+}</code></pre></div>
+      <div class="callout warn"><strong>LinkedList ≠ 常に挿入削除が速い:</strong> 挿入位置を探すための走査が必要ならO(n)です。CPUキャッシュ効率も含め、一般用途ではArrayListが有利なことが多いです。</div>
+    </section>
+
+    <section id="set"><div class="section-kicker">Collections</div><h2>16. Set — HashSet / LinkedHashSet / TreeSet / EnumSet</h2>
+      <p>Setは重複を許しません。「すでに存在するか」を表現したいときに使います。</p>
+      <div class="table-wrap"><table><thead><tr><th>実装</th><th>順序</th><th>性能目安</th><th>null</th><th>用途</th></tr></thead><tbody>
+        <tr><td><code>HashSet</code></td><td>保証なし</td><td>平均O(1)</td><td>許容</td><td>高速な重複排除・存在確認</td></tr>
+        <tr><td><code>LinkedHashSet</code></td><td>挿入順</td><td>平均O(1)</td><td>許容</td><td>順序を維持した重複排除</td></tr>
+        <tr><td><code>TreeSet</code></td><td>ソート順</td><td>O(log n)</td><td>通常不可</td><td>範囲検索・最小最大・整列</td></tr>
+        <tr><td><code>EnumSet</code></td><td>enum定義順</td><td>非常に効率的</td><td>不可</td><td>enum集合</td></tr>
+      </tbody></table></div>
+      <h3>HashSet</h3>
+      <div class="code"><div class="code-head"><span>HashSet</span><button class="copy">コピー</button></div><pre><code>Set&lt;String&gt; tags = new HashSet&lt;&gt;();
+tags.add("java");
+tags.add("stream");
+tags.add("java"); // false: 重複なので追加されない
+
+boolean exists = tags.contains("java");
+tags.remove("stream");</code></pre></div>
+      <h3>LinkedHashSet</h3>
+      <div class="code"><div class="code-head"><span>入力順を保って重複排除</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; input = List.of("B", "A", "B", "C");
+Set&lt;String&gt; unique = new LinkedHashSet&lt;&gt;(input);
+// [B, A, C]</code></pre></div>
+      <h3>TreeSet</h3>
+      <p><code>TreeSet</code> は赤黒木ベースの <code>NavigableSet</code> で、自然順序または <code>Comparator</code> に従って常に整列します。</p>
+      <div class="code"><div class="code-head"><span>TreeSet / NavigableSet</span><button class="copy">コピー</button></div><pre><code>NavigableSet&lt;Integer&gt; scores = new TreeSet&lt;&gt;();
+scores.addAll(List.of(70, 90, 60, 80));
+
+scores.first();      // 60
+scores.last();       // 90
+scores.lower(80);    // 70  (&lt; 80)
+scores.floor(80);    // 80  (&lt;= 80)
+scores.higher(80);   // 90  (&gt; 80)
+scores.ceiling(75);  // 80  (&gt;= 75)
+scores.subSet(70, true, 90, false); // [70, 80]</code></pre></div>
+      <h3>Setで重要な equals / hashCode</h3>
+      <p><code>HashSet</code> は <code>hashCode()</code> で候補を絞り、<code>equals()</code> で同一性を判定します。独自クラスを要素にするなら両者の契約が重要です。</p>
+      <div class="callout bad"><strong>契約:</strong> <code>a.equals(b)</code> が true なら、<code>a.hashCode() == b.hashCode()</code> でなければなりません。</div>
+    </section>
+
+    <section id="map"><div class="section-kicker">Collections</div><h2>17. Map — HashMap / LinkedHashMap / TreeMap / EnumMap / ConcurrentHashMap</h2>
+      <p>Mapはキーと値の対応を持ちます。キーは重複できず、同じキーへputすると値が置き換わります。</p>
+      <div class="table-wrap"><table><thead><tr><th>実装</th><th>キー順序</th><th>性能目安</th><th>代表用途</th></tr></thead><tbody>
+        <tr><td><code>HashMap</code></td><td>保証なし</td><td>平均O(1)</td><td>通常の辞書・検索</td></tr>
+        <tr><td><code>LinkedHashMap</code></td><td>挿入順 / access-order</td><td>平均O(1)</td><td>順序保持、LRUの土台</td></tr>
+        <tr><td><code>TreeMap</code></td><td>キーのソート順</td><td>O(log n)</td><td>範囲検索、最小/最大キー</td></tr>
+        <tr><td><code>EnumMap</code></td><td>enum定義順</td><td>効率的</td><td>enumをキーにするMap</td></tr>
+        <tr><td><code>ConcurrentHashMap</code></td><td>保証なし</td><td>高並行性</td><td>複数thread共有</td></tr>
+      </tbody></table></div>
+      <h3>HashMap</h3>
+      <div class="code"><div class="code-head"><span>HashMap 基本操作</span><button class="copy">コピー</button></div><pre><code>Map&lt;String, Integer&gt; ages = new HashMap&lt;&gt;();
+ages.put("Alice", 20);
+ages.put("Bob", 25);
+
+int alice = ages.get("Alice");
+int unknown = ages.getOrDefault("Carol", 0);
+boolean hasBob = ages.containsKey("Bob");
+
+ages.putIfAbsent("Carol", 30);
+ages.computeIfAbsent("Dave", key -&gt; key.length());
+ages.merge("Alice", 1, Integer::sum); // 21
+
+for (Map.Entry&lt;String, Integer&gt; e : ages.entrySet()) {
+    System.out.println(e.getKey() + " = " + e.getValue());
+}</code></pre></div>
+      <h3>TreeMap</h3>
+      <div class="code"><div class="code-head"><span>TreeMap / NavigableMap</span><button class="copy">コピー</button></div><pre><code>NavigableMap&lt;Integer, String&gt; ranking = new TreeMap&lt;&gt;();
+ranking.put(100, "Gold");
+ranking.put(50, "Silver");
+ranking.put(10, "Bronze");
+
+ranking.firstKey();      // 10
+ranking.lastKey();       // 100
+ranking.floorEntry(60);  // 50=Silver
+ranking.ceilingEntry(60);// 100=Gold
+ranking.subMap(10, true, 100, false);</code></pre></div>
+      <h3>LinkedHashMap</h3>
+      <p>デフォルトは挿入順です。コンストラクタでaccess-orderを有効にすると「最近アクセスした順」を管理でき、LRUキャッシュ実装の基礎にも使えます。</p>
+      <div class="callout warn"><strong>Hashtable:</strong> 古い同期化Mapです。新規コードでは通常 <code>HashMap</code>、並行用途なら <code>ConcurrentHashMap</code> を検討します。</div>
+    </section>
+
+    <section id="queue"><div class="section-kicker">Collections</div><h2>18. Queue / Deque — ArrayDeque / PriorityQueue</h2>
+      <p>Queueは基本FIFO、Dequeは両端キューです。スタック用途でも古い <code>Stack</code> より <code>ArrayDeque</code> が一般的です。</p>
+      <div class="code"><div class="code-head"><span>Queue / Deque</span><button class="copy">コピー</button></div><pre><code>Deque&lt;String&gt; deque = new ArrayDeque&lt;&gt;();
+
+deque.addLast("A");
+deque.addLast("B");
+String first = deque.removeFirst(); // A: FIFO
+
+deque.push("X");
+String top = deque.pop();           // X: stack</code></pre></div>
+      <div class="code"><div class="code-head"><span>PriorityQueue</span><button class="copy">コピー</button></div><pre><code>Queue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;();
+pq.addAll(List.of(30, 10, 20));
+
+pq.poll(); // 10
+pq.poll(); // 20
+pq.poll(); // 30
+
+Queue&lt;Integer&gt; maxHeap =
+    new PriorityQueue&lt;&gt;(Comparator.reverseOrder());</code></pre></div>
+      <div class="table-wrap"><table><thead><tr><th>操作</th><th>例外を投げる</th><th>特殊値を返す</th></tr></thead><tbody><tr><td>追加</td><td><code>add</code></td><td><code>offer</code></td></tr><tr><td>取り出し+削除</td><td><code>remove</code></td><td><code>poll</code></td></tr><tr><td>先頭を見る</td><td><code>element</code></td><td><code>peek</code></td></tr></tbody></table></div>
+    </section>
+
+    <section id="compare"><div class="section-kicker">Collections</div><h2>19. Comparable / Comparator / sort</h2>
+      <p><code>Comparable</code> は型自身の自然順序、<code>Comparator</code> は外部から与える並び順です。</p>
+      <div class="code"><div class="code-head"><span>Comparator</span><button class="copy">コピー</button></div><pre><code>record User(String name, int age) {}
+
+List&lt;User&gt; users = new ArrayList&lt;&gt;();
+
+users.sort(
+    Comparator.comparingInt(User::age)
+              .thenComparing(User::name)
+);
+
+users.sort(Comparator.comparingInt(User::age).reversed());</code></pre></div>
+      <div class="callout"><code>TreeSet</code> / <code>TreeMap</code> では比較結果0が「同じキー/要素」として扱われる点が重要です。<code>equals</code> との整合性も意識します。</div>
+    </section>
+
+    <section id="lambda"><div class="section-kicker">Functional Java</div><h2>20. ラムダ式 — 書き方から変数キャプチャまで</h2>
+      <p>ラムダ式は、関数型interface（抽象メソッドが1つのinterface）の実装を簡潔に表す式です。単独で型を持つのではなく、代入先などの「ターゲット型」によって型が決まります。</p>
+      <h3>構文</h3>
+      <div class="table-wrap"><table><thead><tr><th>形</th><th>例</th></tr></thead><tbody><tr><td>引数なし</td><td><code>() -&gt; 42</code></td></tr><tr><td>引数1つ</td><td><code>x -&gt; x * 2</code></td></tr><tr><td>複数引数</td><td><code>(a, b) -&gt; a + b</code></td></tr><tr><td>複数文</td><td><code>x -&gt; { var y = x * 2; return y; }</code></td></tr></tbody></table></div>
+      <div class="code"><div class="code-head"><span>Lambda 基本</span><button class="copy">コピー</button></div><pre><code>Predicate&lt;String&gt; isLong = s -&gt; s.length() &gt;= 5;
+Function&lt;String, Integer&gt; length = s -&gt; s.length();
+Consumer&lt;String&gt; print = s -&gt; System.out.println(s);
+Supplier&lt;UUID&gt; uuid = () -&gt; UUID.randomUUID();
+BinaryOperator&lt;Integer&gt; add = (a, b) -&gt; a + b;</code></pre></div>
+      <h3>メソッド参照</h3>
+      <div class="table-wrap"><table><thead><tr><th>種類</th><th>ラムダ</th><th>メソッド参照</th></tr></thead><tbody>
+        <tr><td>static</td><td><code>x -&gt; Integer.parseInt(x)</code></td><td><code>Integer::parseInt</code></td></tr>
+        <tr><td>特定instance</td><td><code>x -&gt; out.println(x)</code></td><td><code>out::println</code></td></tr>
+        <tr><td>任意instance</td><td><code>s -&gt; s.length()</code></td><td><code>String::length</code></td></tr>
+        <tr><td>constructor</td><td><code>() -&gt; new ArrayList&lt;&gt;()</code></td><td><code>ArrayList::new</code></td></tr>
+      </tbody></table></div>
+      <h3>変数キャプチャ</h3>
+      <div class="code"><div class="code-head"><span>effectively final</span><button class="copy">コピー</button></div><pre><code>int threshold = 10;
+Predicate&lt;Integer&gt; large = n -&gt; n &gt; threshold;
+// threshold = 20; // これをするとラムダから参照できない
+</code></pre></div>
+      <p>ローカル変数をラムダから参照する場合、その変数は <code>final</code> または effectively final（初期化後に再代入されない）である必要があります。</p>
+    </section>
+
+    <section id="functional"><div class="section-kicker">Functional Java</div><h2>21. 標準の関数型interface</h2>
+      <div class="table-wrap"><table><thead><tr><th>interface</th><th>形</th><th>主メソッド</th><th>用途</th></tr></thead><tbody>
+        <tr><td><code>Predicate&lt;T&gt;</code></td><td>T → boolean</td><td><code>test</code></td><td>条件判定</td></tr>
+        <tr><td><code>Function&lt;T,R&gt;</code></td><td>T → R</td><td><code>apply</code></td><td>変換</td></tr>
+        <tr><td><code>Consumer&lt;T&gt;</code></td><td>T → void</td><td><code>accept</code></td><td>消費・副作用</td></tr>
+        <tr><td><code>Supplier&lt;T&gt;</code></td><td>() → T</td><td><code>get</code></td><td>遅延生成</td></tr>
+        <tr><td><code>UnaryOperator&lt;T&gt;</code></td><td>T → T</td><td><code>apply</code></td><td>同型変換</td></tr>
+        <tr><td><code>BinaryOperator&lt;T&gt;</code></td><td>(T,T) → T</td><td><code>apply</code></td><td>結合</td></tr>
+        <tr><td><code>BiFunction&lt;T,U,R&gt;</code></td><td>(T,U) → R</td><td><code>apply</code></td><td>2引数変換</td></tr>
+      </tbody></table></div>
+      <h3>合成</h3>
+      <div class="code"><div class="code-head"><span>and / or / compose</span><button class="copy">コピー</button></div><pre><code>Predicate&lt;String&gt; notBlank = s -&gt; !s.isBlank();
+Predicate&lt;String&gt; shortText = s -&gt; s.length() &lt; 10;
+Predicate&lt;String&gt; valid = notBlank.and(shortText);
+
+Function&lt;String, String&gt; trim = String::trim;
+Function&lt;String, Integer&gt; len = String::length;
+Function&lt;String, Integer&gt; trimThenLen = trim.andThen(len);</code></pre></div>
+      <p>プリミティブ特化版として <code>IntPredicate</code>、<code>IntFunction</code>、<code>ToIntFunction</code>、<code>IntConsumer</code> などがあり、boxingを避けられます。</p>
+    </section>
+
+    <section id="stream"><div class="section-kicker">Functional Java</div><h2>22. Stream API — filter / map / flatMap / collect / reduce</h2>
+      <p>Streamはデータそのものを保持するCollectionではなく、データ処理のパイプラインです。中間操作は遅延評価され、終端操作が呼ばれると処理されます。</p>
+      <div class="code"><div class="code-head"><span>基本パイプライン</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; result = names.stream()
+    .filter(name -&gt; !name.isBlank())
+    .map(String::trim)
     .map(String::toUpperCase)
-    .forEach(System.out::println);</code></pre>
-        <p>Streamはコレクションそのものを変更する機能ではなく、「要素の流れに対して処理をつなぐ」APIです。<code>filter</code> は絞り込み、<code>map</code> は変換、<code>forEach</code> は終端処理です。</p>
-      </section>
+    .distinct()
+    .sorted()
+    .toList();</code></pre></div>
+      <h3>主要な中間操作</h3>
+      <div class="table-wrap"><table><thead><tr><th>操作</th><th>意味</th></tr></thead><tbody><tr><td><code>filter</code></td><td>条件に合う要素だけ残す</td></tr><tr><td><code>map</code></td><td>1要素を別の1要素へ変換</td></tr><tr><td><code>flatMap</code></td><td>入れ子のStreamを平坦化</td></tr><tr><td><code>distinct</code></td><td>重複除去</td></tr><tr><td><code>sorted</code></td><td>ソート</td></tr><tr><td><code>limit / skip</code></td><td>件数制御</td></tr><tr><td><code>peek</code></td><td>主にデバッグ用の観察</td></tr></tbody></table></div>
+      <h3>主要な終端操作</h3>
+      <div class="table-wrap"><table><thead><tr><th>操作</th><th>用途</th></tr></thead><tbody><tr><td><code>toList / collect</code></td><td>結果を集約</td></tr><tr><td><code>forEach</code></td><td>各要素を処理</td></tr><tr><td><code>count</code></td><td>件数</td></tr><tr><td><code>min / max</code></td><td>最小/最大</td></tr><tr><td><code>findFirst / findAny</code></td><td>要素検索</td></tr><tr><td><code>anyMatch / allMatch / noneMatch</code></td><td>条件判定</td></tr><tr><td><code>reduce</code></td><td>畳み込み</td></tr></tbody></table></div>
+      <h3>flatMap</h3>
+      <div class="code"><div class="code-head"><span>List&lt;List&lt;T&gt;&gt; → List&lt;T&gt;</span><button class="copy">コピー</button></div><pre><code>List&lt;List&lt;Integer&gt;&gt; nested = List.of(
+    List.of(1, 2),
+    List.of(3, 4)
+);
 
-      <section id="tips"><h2>16. 初心者がつまずきやすいポイント</h2>
-        <div class="grid"><div class="card"><strong><code>==</code> と <code>equals()</code></strong><p>参照型の内容比較では目的に応じて <code>equals()</code> を使います。</p></div><div class="card"><strong><code>null</code></strong><p>参照先がない状態。アクセスすると <code>NullPointerException</code> の原因になります。</p></div><div class="card"><strong>整数除算</strong><p><code>5 / 2</code> は <code>2</code>。小数が必要なら片方を <code>double</code> にします。</p></div><div class="card"><strong>スコープ</strong><p><code>{ }</code> の内側で宣言した変数は、外側から使えない場合があります。</p></div></div>
-        <div class="quiz" data-answer="B"><strong>ミニ確認:</strong> <code>String a = new String("x"); String b = new String("x");</code> の内容比較として適切なのは？<br><button>A: a == b</button><button>B: a.equals(b)</button><div class="answer"></div></div>
-      </section>
+List&lt;Integer&gt; flat = nested.stream()
+    .flatMap(List::stream)
+    .toList();</code></pre></div>
+      <h3>Collectors</h3>
+      <div class="code"><div class="code-head"><span>groupingBy / partitioningBy / joining / toMap</span><button class="copy">コピー</button></div><pre><code>Map&lt;Integer, List&lt;String&gt;&gt; byLength = names.stream()
+    .collect(Collectors.groupingBy(String::length));
 
-      <footer>JavaMD — Javaの基礎を、コードと概念の両方から学ぶ。</footer>
-    </main>
-  </div>
-  <script>
-    const sections = [...document.querySelectorAll('main section')];
-    const links = [...document.querySelectorAll('nav a')];
-    const bar = document.getElementById('progressBar');
-    const updateProgress = () => {
-      const doc = document.documentElement;
-      const max = doc.scrollHeight - doc.clientHeight;
-      bar.style.width = `${max > 0 ? (doc.scrollTop / max) * 100 : 0}%`;
-    };
-    window.addEventListener('scroll', updateProgress, {passive:true});
-    updateProgress();
+Map&lt;Boolean, List&lt;Integer&gt;&gt; evenOdd = nums.stream()
+    .collect(Collectors.partitioningBy(n -&gt; n % 2 == 0));
 
-    const observer = new IntersectionObserver(entries => {
-      const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${visible.target.id}`));
-    }, {rootMargin: '-20% 0px -65% 0px', threshold:[0,.25,.5]});
-    sections.forEach(section => observer.observe(section));
+String csv = names.stream()
+    .collect(Collectors.joining(", "));
 
-    document.querySelectorAll('.quiz').forEach(quiz => {
-      const answer = quiz.dataset.answer;
-      const output = quiz.querySelector('.answer');
-      quiz.querySelectorAll('button').forEach(button => button.addEventListener('click', () => {
-        output.textContent = button.textContent.startsWith(answer) ? '正解です。Stringの内容比較には equals() を使います。' : '不正解です。== は参照の同一性を比較します。';
-      }));
+Map&lt;String, User&gt; byName = users.stream()
+    .collect(Collectors.toMap(
+        User::name,
+        Function.identity(),
+        (oldValue, newValue) -&gt; newValue
+    ));</code></pre></div>
+      <h3>reduce</h3>
+      <div class="code"><div class="code-head"><span>畳み込み</span><button class="copy">コピー</button></div><pre><code>int sum = nums.stream()
+    .reduce(0, Integer::sum);</code></pre></div>
+      <div class="callout warn"><strong>parallelStream:</strong> 速くなるとは限りません。データ量、分割コスト、共有状態、順序制約を考えずに使うと逆に遅くなったり不具合の原因になります。</div>
+    </section>
+
+    <section id="optional"><div class="section-kicker">Functional Java</div><h2>23. Optional</h2>
+      <p><code>Optional&lt;T&gt;</code> は「値があるかもしれない」を戻り値として表現するための型です。</p>
+      <div class="code"><div class="code-head"><span>Optional</span><button class="copy">コピー</button></div><pre><code>Optional&lt;User&gt; user = findUser(id);
+
+String name = user
+    .filter(u -&gt; u.age() &gt;= 18)
+    .map(User::name)
+    .orElse("unknown");
+
+User required = user.orElseThrow(
+    () -&gt; new IllegalStateException("user not found")
+);</code></pre></div>
+      <div class="callout bad"><strong>避けたい:</strong> <code>optional.isPresent()</code> の直後に常に <code>optional.get()</code> するだけなら、<code>map</code>、<code>ifPresent</code>、<code>orElseThrow</code> などを検討します。</div>
+    </section>
+
+    <section id="datetime"><div class="section-kicker">Practical</div><h2>24. Date / Time API</h2>
+      <div class="table-wrap"><table><thead><tr><th>型</th><th>用途</th></tr></thead><tbody><tr><td><code>LocalDate</code></td><td>日付だけ</td></tr><tr><td><code>LocalTime</code></td><td>時刻だけ</td></tr><tr><td><code>LocalDateTime</code></td><td>タイムゾーンなし日時</td></tr><tr><td><code>Instant</code></td><td>UTC基準の瞬間</td></tr><tr><td><code>ZonedDateTime</code></td><td>タイムゾーン付き日時</td></tr><tr><td><code>Duration / Period</code></td><td>時間差 / 日付差</td></tr></tbody></table></div>
+      <div class="code"><div class="code-head"><span>java.time</span><button class="copy">コピー</button></div><pre><code>LocalDate today = LocalDate.now();
+LocalDate nextWeek = today.plusWeeks(1);
+
+Instant now = Instant.now();
+ZonedDateTime tokyo = now.atZone(ZoneId.of("Asia/Tokyo"));
+
+DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+String text = tokyo.format(fmt);</code></pre></div>
+    </section>
+
+    <section id="io"><div class="section-kicker">Practical</div><h2>25. Files / I/O</h2>
+      <div class="code"><div class="code-head"><span>NIO.2</span><button class="copy">コピー</button></div><pre><code>Path path = Path.of("data.txt");
+
+Files.writeString(path, "hello");
+String text = Files.readString(path);
+
+List&lt;String&gt; lines = Files.readAllLines(path);
+
+try (Stream&lt;String&gt; stream = Files.lines(path)) {
+    long count = stream.filter(s -&gt; !s.isBlank()).count();
+}</code></pre></div>
+      <p>大きいファイルを <code>readAllLines</code> で全件メモリに載せるのではなく、必要に応じてストリーム処理やReaderを使います。</p>
+    </section>
+
+    <section id="concurrency"><div class="section-kicker">Practical</div><h2>26. 並行処理の基礎</h2>
+      <p>複数threadから同じ可変状態へアクセスすると競合が起きます。共有状態を減らす、不変オブジェクトを使う、適切な並行Collectionを使うことが基本です。</p>
+      <div class="code"><div class="code-head"><span>ExecutorService</span><button class="copy">コピー</button></div><pre><code>try (ExecutorService executor = Executors.newFixedThreadPool(4)) {
+    Future&lt;Integer&gt; future = executor.submit(() -&gt; 40 + 2);
+    System.out.println(future.get());
+}</code></pre></div>
+      <div class="table-wrap"><table><thead><tr><th>型</th><th>用途</th></tr></thead><tbody><tr><td><code>ConcurrentHashMap</code></td><td>並行アクセス向けMap</td></tr><tr><td><code>CopyOnWriteArrayList</code></td><td>読み取りが非常に多く書き込みが少ないList</td></tr><tr><td><code>BlockingQueue</code></td><td>producer-consumer</td></tr><tr><td><code>AtomicInteger</code></td><td>原子的な数値更新</td></tr></tbody></table></div>
+    </section>
+
+    <section id="pitfalls"><div class="section-kicker">Reference</div><h2>27. 頻出ミス</h2>
+      <details open><summary>Stringを == で比較する</summary><div><code>equals</code> で内容を比較します。<code>==</code> は参照比較です。</div></details>
+      <details><summary>HashSet / HashMap に入れる独自型で equals/hashCode が不整合</summary><div>同値オブジェクトは同じhashCodeを返す必要があります。recordを使えるデータなら自動生成も有効です。</div></details>
+      <details><summary>TreeSetに「違うオブジェクトなのに比較結果0」の要素を入れる</summary><div>TreeSetはComparator/Comparableの比較結果0を同一要素として扱うため、片方が保持されません。</div></details>
+      <details><summary>Map#get の null だけでキー不存在と判断する</summary><div>Mapがnull値を許す場合、<code>get(key) == null</code> だけでは判別できません。必要なら <code>containsKey</code> を使います。</div></details>
+      <details><summary>Streamの中で外部のListへaddする</summary><div>副作用が増え、parallel化にも弱くなります。結果生成なら <code>toList</code> や <code>collect</code> を優先します。</div></details>
+      <details><summary>Optional#get を無条件で呼ぶ</summary><div><code>map</code>、<code>orElse</code>、<code>orElseGet</code>、<code>orElseThrow</code> を用途に応じて使います。</div></details>
+      <details><summary>ArrayListの途中挿入を大量に繰り返す</summary><div>後続要素の移動が必要でO(n)です。データ構造やアルゴリズム自体を見直します。</div></details>
+      <details><summary>可変キーをHashMapへ入れた後、hashCodeに使う値を変更する</summary><div>検索不能になる可能性があります。Mapキーは実質的に不変な値オブジェクトが安全です。</div></details>
+    </section>
+
+    <section id="cheatsheet"><div class="section-kicker">Reference</div><h2>28. 迷ったときのチートシート</h2>
+      <div class="decision"><strong>順番付き一覧</strong><span><code>ArrayList</code></span></div>
+      <div class="decision"><strong>重複排除</strong><span><code>HashSet</code></span></div>
+      <div class="decision"><strong>入力順のまま重複排除</strong><span><code>LinkedHashSet</code></span></div>
+      <div class="decision"><strong>ソートされた集合</strong><span><code>TreeSet</code></span></div>
+      <div class="decision"><strong>キー→値</strong><span><code>HashMap</code></span></div>
+      <div class="decision"><strong>入力順のMap</strong><span><code>LinkedHashMap</code></span></div>
+      <div class="decision"><strong>キー順Map / 範囲検索</strong><span><code>TreeMap</code></span></div>
+      <div class="decision"><strong>FIFO / Stack / 両端</strong><span><code>ArrayDeque</code></span></div>
+      <div class="decision"><strong>優先度順</strong><span><code>PriorityQueue</code></span></div>
+      <div class="decision"><strong>条件</strong><span><code>Predicate&lt;T&gt;</code></span></div>
+      <div class="decision"><strong>変換</strong><span><code>Function&lt;T,R&gt;</code></span></div>
+      <div class="decision"><strong>値を使う</strong><span><code>Consumer&lt;T&gt;</code></span></div>
+      <div class="decision"><strong>値を作る</strong><span><code>Supplier&lt;T&gt;</code></span></div>
+      <div class="decision"><strong>集合を変換・絞込</strong><span><code>stream().filter(...).map(...).toList()</code></span></div>
+      <div class="decision"><strong>グルーピング</strong><span><code>Collectors.groupingBy(...)</code></span></div>
+      <div class="callout good"><strong>設計の基本:</strong> 実装型よりinterface型で受ける — <code>List&lt;T&gt; list = new ArrayList&lt;&gt;();</code>、<code>Map&lt;K,V&gt; map = new HashMap&lt;&gt;();</code>。</div>
+    </section>
+
+    <footer>JavaMD — 基礎からCollection / Lambda / Streamまでを1ページで参照できるJavaドキュメント</footer>
+  </div></main>
+</div>
+<script>
+  const root = document.documentElement;
+  const saved = localStorage.getItem('javAMD-theme');
+  if (saved) root.dataset.theme = saved;
+  else if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+
+  function toggleTheme(){
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('javAMD-theme', root.dataset.theme);
+  }
+  document.getElementById('theme').addEventListener('click', toggleTheme);
+  document.getElementById('mobileTheme').addEventListener('click', toggleTheme);
+
+  const navLinks = [...document.querySelectorAll('#nav a[href^="#"]')];
+  const sections = [...document.querySelectorAll('main section')];
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    if (!visible) return;
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+  }, { rootMargin: '-18% 0px -72% 0px', threshold: 0 });
+  sections.forEach(s => observer.observe(s));
+
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('progress').style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  }, { passive:true });
+
+  document.getElementById('search').addEventListener('input', e => {
+    const q = e.target.value.trim().toLowerCase();
+    let count = 0;
+    navLinks.forEach(a => {
+      const section = document.querySelector(a.getAttribute('href'));
+      const hit = !q || a.textContent.toLowerCase().includes(q) || (section && section.textContent.toLowerCase().includes(q));
+      a.style.display = hit ? '' : 'none';
+      if (hit) count++;
     });
-  </script>
+    document.getElementById('empty').style.display = count ? 'none' : 'block';
+  });
+
+  document.querySelectorAll('.copy').forEach(button => {
+    button.addEventListener('click', async () => {
+      const text = button.closest('.code').querySelector('code').innerText;
+      try {
+        await navigator.clipboard.writeText(text);
+        const old = button.textContent;
+        button.textContent = 'コピー済み';
+        setTimeout(() => button.textContent = old, 1200);
+      } catch {
+        button.textContent = 'コピー不可';
+      }
+    });
+  });
+</script>
 </body>
 </html>
