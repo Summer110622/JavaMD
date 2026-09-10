@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Javaの基礎を、コード例と図解感覚で細かく学べる入門サイト" />
+  <title>JavaMD | Java基礎を細かく学ぶ</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0b1020;
+      --panel: #111831;
+      --panel-2: #17203d;
+      --text: #edf2ff;
+      --muted: #aab5d4;
+      --accent: #7dd3fc;
+      --accent-2: #a7f3d0;
+      --border: #2a365f;
+      --code: #070b16;
+      --warning: #fde68a;
+      --shadow: 0 14px 40px rgba(0,0,0,.24);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #172554 0, var(--bg) 36%), var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+    a { color: inherit; }
+    code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+    .layout { min-height: 100vh; display: grid; grid-template-columns: 280px minmax(0,1fr); }
+    .sidebar {
+      position: sticky; top: 0; height: 100vh; overflow: auto;
+      border-right: 1px solid var(--border); background: rgba(8,12,26,.92); backdrop-filter: blur(14px);
+      padding: 24px 18px;
+    }
+    .brand { display: flex; gap: 12px; align-items: center; margin-bottom: 22px; }
+    .logo { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; font-weight: 900; background: linear-gradient(135deg,var(--accent),var(--accent-2)); color:#07111e; }
+    .brand strong { display:block; font-size: 1.05rem; }
+    .brand span { display:block; color: var(--muted); font-size:.78rem; }
+    .progress { height: 7px; border-radius: 999px; background: var(--panel-2); overflow: hidden; margin: 14px 0 22px; }
+    .progress > div { height: 100%; width: 0; background: linear-gradient(90deg,var(--accent),var(--accent-2)); transition: width .2s linear; }
+    .nav-title { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.12em; margin: 18px 8px 8px; }
+    nav a { display:block; text-decoration:none; color:var(--muted); padding:8px 10px; border-radius:9px; font-size:.9rem; }
+    nav a:hover, nav a.active { color:var(--text); background:var(--panel-2); }
+    main { width: min(1080px, calc(100% - 40px)); margin: 0 auto; padding: 64px 0 96px; }
+    .hero { padding: 34px; border:1px solid var(--border); border-radius:24px; background: linear-gradient(180deg,rgba(23,32,61,.9),rgba(17,24,49,.82)); box-shadow: var(--shadow); }
+    .eyebrow { color:var(--accent-2); font-weight:800; letter-spacing:.08em; font-size:.82rem; }
+    h1 { font-size: clamp(2.3rem,6vw,4.8rem); line-height:1.03; margin:10px 0 18px; letter-spacing:-.04em; }
+    h2 { margin-top:0; font-size: clamp(1.65rem,3vw,2.3rem); line-height:1.2; }
+    h3 { margin-top:1.5rem; }
+    .lead { color:var(--muted); font-size:1.08rem; max-width:72ch; }
+    .chips { display:flex; gap:10px; flex-wrap:wrap; margin-top:22px; }
+    .chip { border:1px solid var(--border); background:var(--panel-2); color:var(--muted); padding:7px 11px; border-radius:999px; font-size:.82rem; }
+    section { scroll-margin-top: 24px; margin-top: 28px; padding: 28px; border:1px solid var(--border); border-radius:20px; background:rgba(17,24,49,.88); }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .card { padding:18px; border:1px solid var(--border); border-radius:14px; background:var(--panel-2); }
+    .card strong { display:block; margin-bottom:6px; }
+    .card p { margin:0; color:var(--muted); }
+    .note { border-left:4px solid var(--accent); padding:12px 14px; background:rgba(125,211,252,.08); border-radius:0 10px 10px 0; }
+    .warning { border-left-color:var(--warning); background:rgba(253,230,138,.08); }
+    pre { overflow:auto; padding:18px; border-radius:14px; background:var(--code); border:1px solid #1c2749; color:#dce8ff; font-size:.9rem; line-height:1.6; }
+    .inline { padding:.15rem .35rem; border-radius:6px; background:var(--code); border:1px solid var(--border); }
+    table { width:100%; border-collapse:collapse; font-size:.92rem; overflow:hidden; border-radius:12px; }
+    th,td { padding:11px 12px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
+    th { background:var(--panel-2); }
+    td { color:var(--muted); }
+    .steps { counter-reset: step; display:grid; gap:12px; }
+    .step { position:relative; padding:14px 14px 14px 48px; border:1px solid var(--border); border-radius:12px; background:var(--panel-2); }
+    .step::before { counter-increment:step; content:counter(step); position:absolute; left:14px; top:14px; width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:var(--accent); color:#05101e; font-weight:900; font-size:.78rem; }
+    .quiz { margin-top:16px; }
+    .quiz button { border:1px solid var(--border); background:var(--panel-2); color:var(--text); padding:9px 12px; border-radius:9px; cursor:pointer; margin:4px 4px 4px 0; }
+    .quiz button:hover { border-color:var(--accent); }
+    .answer { margin-top:10px; color:var(--accent-2); min-height:1.5em; }
+    footer { color:var(--muted); margin-top:32px; text-align:center; font-size:.85rem; }
+    .mobile-top { display:none; }
+    @media (max-width: 900px) {
+      .layout { display:block; }
+      .sidebar { display:none; }
+      .mobile-top { display:flex; position:sticky; top:0; z-index:20; padding:12px 16px; border-bottom:1px solid var(--border); background:rgba(8,12,26,.92); backdrop-filter:blur(12px); justify-content:space-between; align-items:center; }
+      .mobile-top a { text-decoration:none; color:var(--accent); }
+      main { padding-top:28px; }
+    }
+    @media (max-width: 640px) {
+      main { width:min(100% - 24px,1080px); }
+      .hero, section { padding:20px; border-radius:16px; }
+      .grid { grid-template-columns:1fr; }
+      table { display:block; overflow:auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-top"><strong>JavaMD</strong><a href="#toc">目次へ</a></div>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand"><div class="logo">J</div><div><strong>JavaMD</strong><span>Java fundamentals guide</span></div></div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <nav id="toc">
+        <div class="nav-title">Start</div>
+        <a href="#overview">Javaとは</a><a href="#setup">環境と実行</a><a href="#syntax">基本構文</a>
+        <div class="nav-title">Core</div>
+        <a href="#types">変数と型</a><a href="#operators">演算子</a><a href="#branch">条件分岐</a><a href="#loop">繰り返し</a><a href="#arrays">配列とコレクション</a><a href="#methods">メソッド</a>
+        <div class="nav-title">OOP</div>
+        <a href="#classes">クラスとオブジェクト</a><a href="#inheritance">継承・interface</a><a href="#access">アクセス修飾子・package</a>
+        <div class="nav-title">Practical</div>
+        <a href="#exceptions">例外処理</a><a href="#generics">ジェネリクス</a><a href="#lambda">ラムダ・Stream</a><a href="#tips">初心者の落とし穴</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <div class="eyebrow">JAVA FUNDAMENTALS</div>
+        <h1>Javaの基礎を、<br>細かく・順番に。</h1>
+        <p class="lead">「書き方を覚える」だけでなく、JVMでどう実行されるか、型がなぜ重要か、クラス設計をどう考えるかまで、初心者がつまずきやすい点を分解して説明します。</p>
+        <div class="chips"><span class="chip">初心者向け</span><span class="chip">コード例つき</span><span class="chip">依存なし</span><span class="chip">Java 17+ を想定</span></div>
+      </header>
+
+      <section id="overview"><h2>1. Javaとは</h2>
+        <p>Javaは、ソースコードをいったん <code class="inline">.class</code> 形式のバイトコードへコンパイルし、そのバイトコードを JVM（Java Virtual Machine）が実行する言語です。</p>
+        <div class="grid"><div class="card"><strong>JDK</strong><p>開発に必要なツール一式。コンパイラ <code>javac</code> や実行環境を含みます。</p></div><div class="card"><strong>JVM</strong><p>JavaバイトコードをOS・CPU上で実行する仮想マシンです。</p></div><div class="card"><strong>JRE</strong><p>Javaアプリを実行するための環境。近年はJDK配布物の中に実行環境が含まれる形が一般的です。</p></div><div class="card"><strong>バイトコード</strong><p>ソースと機械語の中間表現。JVMが環境差を吸収します。</p></div></div>
+        <div class="note"><strong>重要:</strong> 「JavaはどのOSでも同じ機械語で動く」のではなく、「同じバイトコードを、それぞれのOS向けJVMが実行する」と理解すると正確です。</div>
+      </section>
+
+      <section id="setup"><h2>2. 環境と実行の流れ</h2>
+        <div class="steps"><div class="step"><strong>JDKを入れる</strong><br>Java 17 または 21 のLTSを選ぶと学習しやすいです。</div><div class="step"><strong>ソースを書く</strong><br><code>Hello.java</code> を作成します。</div><div class="step"><strong>コンパイル</strong><br><code>javac Hello.java</code> で <code>Hello.class</code> を生成します。</div><div class="step"><strong>実行</strong><br><code>java Hello</code> としてJVMにクラスを読み込ませます。</div></div>
+<pre><code>public class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello, Java!");
+    }
+}</code></pre>
+        <p><code>main</code> はプログラムの入口です。<code>public</code> はJVMから呼び出せること、<code>static</code> はインスタンス生成前でも呼べること、<code>void</code> は戻り値を返さないことを意味します。</p>
+      </section>
+
+      <section id="syntax"><h2>3. 基本構文</h2>
+        <p>Javaでは文の末尾に <code>;</code> を付けます。ブロックは <code>{ }</code> で囲み、大小文字を区別します。</p>
+<pre><code>// 1行コメント
+/* 複数行コメント */
+
+int count = 3;          // 文
+if (count > 0) {        // ブロック
+    System.out.println(count);
+}</code></pre>
+        <div class="warning note"><strong>よくあるミス:</strong> ファイル名と <code>public class</code> 名は一致させます。<code>public class Main</code> なら通常ファイル名は <code>Main.java</code> です。</div>
+      </section>
+
+      <section id="types"><h2>4. 変数と型</h2>
+        <p>Javaは静的型付けです。変数には「どの種類の値を入れるか」という型がコンパイル時に決まります。</p>
+        <table><thead><tr><th>型</th><th>用途</th><th>例</th></tr></thead><tbody><tr><td>byte / short / int / long</td><td>整数</td><td><code>int age = 20;</code></td></tr><tr><td>float / double</td><td>小数</td><td><code>double rate = 1.25;</code></td></tr><tr><td>char</td><td>1文字</td><td><code>char grade = 'A';</code></td></tr><tr><td>boolean</td><td>真偽値</td><td><code>boolean ok = true;</code></td></tr><tr><td>String</td><td>文字列</td><td><code>String name = "Java";</code></td></tr></tbody></table>
+<pre><code>int x = 10;
+long y = x;          // widening: 安全に広い型へ
+
+long big = 100L;
+int small = (int) big; // narrowing: 明示的キャストが必要
+
+var message = "hello"; // ローカル変数なら型推論も可能</code></pre>
+        <p>プリミティブ型は値そのものを扱います。一方、<code>String</code> や自作クラスは参照型で、変数はオブジェクトへの参照を保持します。</p>
+      </section>
+
+      <section id="operators"><h2>5. 演算子</h2>
+        <div class="grid"><div class="card"><strong>算術</strong><p><code>+ - * / %</code></p></div><div class="card"><strong>比較</strong><p><code>== != &lt; &lt;= &gt; &gt;=</code></p></div><div class="card"><strong>論理</strong><p><code>&amp;&amp; || !</code></p></div><div class="card"><strong>代入</strong><p><code>= += -= *= /=</code></p></div></div>
+<pre><code>int a = 7;
+int b = 2;
+System.out.println(a / b);       // 3: int同士なので整数除算
+System.out.println(a / 2.0);     // 3.5: doubleを含むので小数</code></pre>
+        <div class="note"><strong>String比較:</strong> 文字列の内容比較は通常 <code>equals()</code> を使います。<code>==</code> は参照が同じかを見るため、意味が異なります。</div>
+      </section>
+
+      <section id="branch"><h2>6. 条件分岐</h2>
+<pre><code>int score = 78;
+
+if (score >= 90) {
+    System.out.println("A");
+} else if (score >= 70) {
+    System.out.println("B");
+} else {
+    System.out.println("C");
+}</code></pre>
+<pre><code>String role = "admin";
+String label = switch (role) {
+    case "admin" -> "管理者";
+    case "member" -> "一般ユーザー";
+    default -> "ゲスト";
+};</code></pre>
+        <p><code>switch</code> 式は「条件ごとに値を返したい」場面で読みやすくなります。</p>
+      </section>
+
+      <section id="loop"><h2>7. 繰り返し</h2>
+<pre><code>for (int i = 0; i < 3; i++) {
+    System.out.println(i);
+}
+
+int n = 3;
+while (n > 0) {
+    System.out.println(n);
+    n--;
+}
+</code></pre>
+<pre><code>String[] names = {"Aki", "Mio", "Ren"};
+for (String name : names) {
+    System.out.println(name);
+}</code></pre>
+        <p><code>break</code> はループを終了し、<code>continue</code> はその周回の残りを飛ばして次へ進みます。</p>
+      </section>
+
+      <section id="arrays"><h2>8. 配列とコレクション</h2>
+        <p>配列は長さが固定です。要素数が増減するデータには <code>List</code> が便利です。</p>
+<pre><code>int[] scores = {80, 92, 75};
+System.out.println(scores[0]); // 80
+
+import java.util.ArrayList;
+import java.util.List;
+
+List&lt;String&gt; users = new ArrayList&lt;&gt;();
+users.add("Alice");
+users.add("Bob");
+System.out.println(users.get(0));</code></pre>
+        <div class="grid"><div class="card"><strong>List</strong><p>順序あり・重複可。</p></div><div class="card"><strong>Set</strong><p>重複を持たせたくない集合。</p></div><div class="card"><strong>Map</strong><p>キーと値の組。辞書・ハッシュ表に相当。</p></div><div class="card"><strong>Array</strong><p>固定長で軽量。プリミティブ配列も作れます。</p></div></div>
+      </section>
+
+      <section id="methods"><h2>9. メソッド</h2>
+<pre><code>static int add(int a, int b) {
+    return a + b;
+}
+
+public static void main(String[] args) {
+    int result = add(3, 5);
+    System.out.println(result);
+}</code></pre>
+        <p><code>int add(int a, int b)</code> では、先頭の <code>int</code> が戻り値の型、<code>a</code> と <code>b</code> が引数です。戻り値が不要なら <code>void</code> を使います。</p>
+        <p>同じ名前で引数の型や個数が異なるメソッドを定義することをオーバーロードと呼びます。</p>
+      </section>
+
+      <section id="classes"><h2>10. クラスとオブジェクト</h2>
+        <p>クラスは「データ」と「そのデータに対する振る舞い」をまとめた設計図です。</p>
+<pre><code>class User {
+    private String name;
+    private int age;
+
+    User(String name, int age) { // コンストラクタ
+        this.name = name;
+        this.age = age;
+    }
+
+    void introduce() {
+        System.out.println("私は" + name + "です");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        User user = new User("Aki", 20);
+        user.introduce();
+    }
+}</code></pre>
+        <p><code>new User(...)</code> でインスタンスを生成します。<code>this.name</code> は「このインスタンス自身が持つフィールド」を表します。</p>
+      </section>
+
+      <section id="inheritance"><h2>11. 継承と interface</h2>
+<pre><code>class Animal {
+    void speak() {
+        System.out.println("...");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() {
+        System.out.println("bow");
+    }
+}</code></pre>
+<pre><code>interface Payable {
+    void pay(int amount);
+}
+
+class CreditCard implements Payable {
+    public void pay(int amount) {
+        System.out.println(amount + "円を支払いました");
+    }
+}</code></pre>
+        <p>継承は「is-a」の関係を表す場合に使います。再利用だけを目的に安易に継承すると結合が強くなるため、実務では委譲やinterfaceを組み合わせることが多いです。</p>
+      </section>
+
+      <section id="access"><h2>12. アクセス修飾子と package</h2>
+        <table><thead><tr><th>修飾子</th><th>見える範囲</th></tr></thead><tbody><tr><td>public</td><td>どこからでも</td></tr><tr><td>protected</td><td>同一package + サブクラス</td></tr><tr><td>指定なし</td><td>同一package</td></tr><tr><td>private</td><td>同一クラス内のみ</td></tr></tbody></table>
+<pre><code>package com.example.app;
+
+public class UserService {
+    private final UserRepository repository;
+
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
+}</code></pre>
+        <p><code>package</code> はクラスを名前空間として整理します。ディレクトリ構成とpackage名を対応させるのが基本です。</p>
+      </section>
+
+      <section id="exceptions"><h2>13. 例外処理</h2>
+<pre><code>try {
+    int value = Integer.parseInt("123");
+    System.out.println(value);
+} catch (NumberFormatException e) {
+    System.out.println("数値に変換できません");
+} finally {
+    System.out.println("終了処理");
+}</code></pre>
+        <p>例外は「通常の戻り値では扱いにくい異常状態」を伝える仕組みです。例外には大きく、コンパイル時に処理を要求される checked exception と、実行時例外を中心とする unchecked exception があります。</p>
+        <div class="note"><strong>設計の考え方:</strong> 例外を握りつぶすのではなく、「どこで回復するか」「どこまで上位へ伝えるか」を決めます。</div>
+      </section>
+
+      <section id="generics"><h2>14. ジェネリクス</h2>
+<pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
+names.add("Aki");
+
+class Box&lt;T&gt; {
+    private T value;
+
+    void set(T value) { this.value = value; }
+    T get() { return value; }
+}</code></pre>
+        <p><code>&lt;T&gt;</code> は型を後から指定する仕組みです。キャストを減らし、型安全性を高めます。</p>
+      </section>
+
+      <section id="lambda"><h2>15. ラムダ式と Stream</h2>
+<pre><code>List&lt;String&gt; names = List.of("Alice", "Bob", "Ann");
+
+names.stream()
+    .filter(name -> name.startsWith("A"))
+    .map(String::toUpperCase)
+    .forEach(System.out::println);</code></pre>
+        <p>Streamはコレクションそのものを変更する機能ではなく、「要素の流れに対して処理をつなぐ」APIです。<code>filter</code> は絞り込み、<code>map</code> は変換、<code>forEach</code> は終端処理です。</p>
+      </section>
+
+      <section id="tips"><h2>16. 初心者がつまずきやすいポイント</h2>
+        <div class="grid"><div class="card"><strong><code>==</code> と <code>equals()</code></strong><p>参照型の内容比較では目的に応じて <code>equals()</code> を使います。</p></div><div class="card"><strong><code>null</code></strong><p>参照先がない状態。アクセスすると <code>NullPointerException</code> の原因になります。</p></div><div class="card"><strong>整数除算</strong><p><code>5 / 2</code> は <code>2</code>。小数が必要なら片方を <code>double</code> にします。</p></div><div class="card"><strong>スコープ</strong><p><code>{ }</code> の内側で宣言した変数は、外側から使えない場合があります。</p></div></div>
+        <div class="quiz" data-answer="B"><strong>ミニ確認:</strong> <code>String a = new String("x"); String b = new String("x");</code> の内容比較として適切なのは？<br><button>A: a == b</button><button>B: a.equals(b)</button><div class="answer"></div></div>
+      </section>
+
+      <footer>JavaMD — Javaの基礎を、コードと概念の両方から学ぶ。</footer>
+    </main>
+  </div>
+  <script>
+    const sections = [...document.querySelectorAll('main section')];
+    const links = [...document.querySelectorAll('nav a')];
+    const bar = document.getElementById('progressBar');
+    const updateProgress = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      bar.style.width = `${max > 0 ? (doc.scrollTop / max) * 100 : 0}%`;
+    };
+    window.addEventListener('scroll', updateProgress, {passive:true});
+    updateProgress();
+
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${visible.target.id}`));
+    }, {rootMargin: '-20% 0px -65% 0px', threshold:[0,.25,.5]});
+    sections.forEach(section => observer.observe(section));
+
+    document.querySelectorAll('.quiz').forEach(quiz => {
+      const answer = quiz.dataset.answer;
+      const output = quiz.querySelector('.answer');
+      quiz.querySelectorAll('button').forEach(button => button.addEventListener('click', () => {
+        output.textContent = button.textContent.startsWith(answer) ? '正解です。Stringの内容比較には equals() を使います。' : '不正解です。== は参照の同一性を比較します。';
+      }));
+    });
+  </script>
+</body>
+</html>
