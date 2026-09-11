@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #15</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #15</h1><p>Java 2級の問題冊子・正答解説・学習資料で扱われる論点を基に、既存Q1〜Q295と重複しないよう新規作成したQ296〜Q315です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="index.html#quiz">← JavaMD 検定チェック</a> ／ <a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">#1</a> ／ <a href="quiz-batch-002.html">#2</a> ／ <a href="quiz-batch-003.html">#3</a> ／ <a href="quiz-batch-004.html">#4</a> ／ <a href="quiz-batch-005.html">#5</a> ／ <a href="quiz-batch-006.html">#6</a> ／ <a href="quiz-batch-007.html">#7</a> ／ <a href="quiz-batch-008.html">#8</a> ／ <a href="quiz-batch-009.html">#9</a> ／ <a href="quiz-batch-010.html">#10</a> ／ <a href="quiz-batch-011.html">#11</a> ／ <a href="quiz-batch-012.html">#12</a> ／ <a href="quiz-batch-013.html">#13</a> ／ <a href="quiz-batch-014.html">#14</a></p></header>
+
+<div class="q"><span class="tag">interface / default / inheritance</span><h2>Q296. 出力は？</h2><pre><code>interface Label {
+    default String text() { return "I"; }
+}
+class Parent {
+    public String text() { return "C"; }
+}
+class Child extends Parent implements Label { }
+
+System.out.println(new Child().text());</code></pre><div class="choices"><div class="choice">A. I</div><div class="choice">B. C</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>B。C。クラスから継承したインスタンスメソッドは、interfaceのdefaultメソッドより優先されます。ChildはParent.text()をそのまま利用します。</div></details></div>
+
+<div class="q"><span class="tag">interface / modifiers / compile error</span><h2>Q297. 次のコードはコンパイルできる？</h2><pre><code>interface Rate {
+    int STEP = 2;
+}
+class Use {
+    void bump() {
+        Rate.STEP++;
+    }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。interfaceのフィールドには暗黙でpublic static finalが付きます。STEPは定数なので、++で値を書き換えることはできません。</div></details></div>
+
+<div class="q"><span class="tag">interface / abstract / access modifier / compile error</span><h2>Q298. Fullはコンパイルできる？</h2><pre><code>interface Work {
+    void open();
+    void close();
+}
+abstract class Half implements Work {
+    public void open() { }
+}
+class Full extends Half {
+    void close() { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。Halfはabstractなのでclose()を未実装のままにできますが、具象クラスFullは実装が必要です。interface由来のclose()はpublicなので、Full側もpublicで実装しなければなりません。</div></details></div>
+
+<div class="q"><span class="tag">constructor / super / argument evaluation / trace</span><h2>Q299. 出力は？</h2><pre><code>class Parent {
+    Parent(int n) { System.out.print("P" + n); }
+}
+class Child extends Parent {
+    static int make() {
+        System.out.print("M");
+        return 4;
+    }
+    Child() {
+        super(make());
+        System.out.print("C");
+    }
+}
+
+new Child();</code></pre><div class="choices"><div class="choice">A. P4MC</div><div class="choice">B. MP4C</div><div class="choice">C. MPC4</div></div><details><summary>答え・解説</summary><div>B。MP4C。super(...)へ渡す引数は親コンストラクタを呼ぶ前に評価されるため、まずmake()のM、その後ParentのP4、最後にChildのCが出力されます。</div></details></div>
+
+<div class="q"><span class="tag">static / initialization order / trace</span><h2>Q300. 出力は？</h2><pre><code>class Config {
+    static int a = readB();
+    static int b = 7;
+
+    static int readB() {
+        return b + 1;
+    }
+}
+
+System.out.println(Config.a + ":" + Config.b);</code></pre><div class="choices"><div class="choice">A. 1:7</div><div class="choice">B. 8:7</div><div class="choice">C. 8:8</div></div><details><summary>答え・解説</summary><div>A。1:7。staticフィールドは宣言順に初期化されます。aを求める時点ではbはまだ明示初期化前で既定値0なので、readB()は1を返します。その後bが7になります。</div></details></div>
+
+<div class="q"><span class="tag">constructor / super / compile error</span><h2>Q301. 次のChildはコンパイルできる？</h2><pre><code>class Parent {
+    Parent(int n) { }
+}
+class Child extends Parent {
+    Child() {
+        int n = 3;
+        super(n);
+    }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。コンストラクタで明示的にsuper(...)やthis(...)を呼ぶ場合、その呼び出しは先頭文でなければなりません。ローカル変数宣言を先に置くことはできません。</div></details></div>
+
+<div class="q"><span class="tag">Map / null / containsKey</span><h2>Q302. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+map.put("x", null);
+
+System.out.println(
+    (map.get("x") == null) + ":" +
+    map.containsKey("x") + ":" +
+    map.containsKey("y")
+);</code></pre><div class="choices"><div class="choice">A. true:true:false</div><div class="choice">B. true:false:false</div><div class="choice">C. false:true:false</div></div><details><summary>答え・解説</summary><div>A。HashMapではnull値を保持できます。get()がnullでも「キーがない」とは限らず、containsKey()を使えばxが登録済みであることを区別できます。</div></details></div>
+
+<div class="q"><span class="tag">Map / put / return value</span><h2>Q303. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+Integer a = map.put("k", 1);
+Integer b = map.put("k", 5);
+
+System.out.println(a + ":" + b + ":" + map.get("k"));</code></pre><div class="choices"><div class="choice">A. null:1:5</div><div class="choice">B. 1:5:5</div><div class="choice">C. null:5:1</div></div><details><summary>答え・解説</summary><div>A。put()はそのキーに以前対応していた値を返します。初回は以前の値がないためnull、2回目は旧値1が返り、最終的な値は5です。</div></details></div>
+
+<div class="q"><span class="tag">TreeSet / order / mutation</span><h2>Q304. 出力は？</h2><pre><code>TreeSet&lt;Integer&gt; set = new TreeSet&lt;&gt;();
+set.add(3);
+set.add(1);
+set.add(2);
+
+Integer first = set.pollFirst();
+System.out.println(first + ":" + set);</code></pre><div class="choices"><div class="choice">A. 1:[2, 3]</div><div class="choice">B. 3:[1, 2]</div><div class="choice">C. 1:[1, 2, 3]</div></div><details><summary>答え・解説</summary><div>A。TreeSetは自然順序で保持され、pollFirst()は最小要素を取得すると同時に削除します。1が取り除かれ、残りは[2, 3]です。</div></details></div>
+
+<div class="q"><span class="tag">LinkedHashMap / overwrite / order</span><h2>Q305. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new LinkedHashMap&lt;&gt;();
+map.put("b", 1);
+map.put("a", 2);
+map.put("b", 9);
+
+System.out.println(map.keySet());</code></pre><div class="choices"><div class="choice">A. [a, b]</div><div class="choice">B. [b, a]</div><div class="choice">C. [b, a, b]</div></div><details><summary>答え・解説</summary><div>B。[b, a]。同じキーbへのputは値を上書きするだけで、新しいキーを追加しません。通常のLinkedHashMapは最初に挿入されたキー順を保つため、bの位置も変わりません。</div></details></div>
+
+<div class="q"><span class="tag">array / enhanced for / reference</span><h2>Q306. 出力は？</h2><pre><code>StringBuilder[] a = {
+    new StringBuilder("A"),
+    new StringBuilder("B")
+};
+
+for (StringBuilder s : a) {
+    s.append("!");
+    s = new StringBuilder("X");
+}
+
+System.out.println(a[0] + ":" + a[1]);</code></pre><div class="choices"><div class="choice">A. A:B</div><div class="choice">B. A!:B!</div><div class="choice">C. X:X</div></div><details><summary>答え・解説</summary><div>B。append()は配列要素が参照しているStringBuilder自体を変更するため反映されます。一方、拡張forの変数sへ別オブジェクトを代入しても、配列中の参照は置き換わりません。</div></details></div>
+
+<div class="q"><span class="tag">while / post-increment / trace</span><h2>Q307. 出力は？</h2><pre><code>int i = 0;
+int sum = 0;
+
+while (i++ &lt; 3) {
+    sum += i;
+}
+
+System.out.println(i + ":" + sum);</code></pre><div class="choices"><div class="choice">A. 3:6</div><div class="choice">B. 4:6</div><div class="choice">C. 4:10</div></div><details><summary>答え・解説</summary><div>B。4:6。条件判定では比較に増加前の値を使い、その直後にiが増えます。ループ本体では1、2、3を加え、最後の条件判定でもi++が実行されて4になります。</div></details></div>
+
+<div class="q"><span class="tag">nested loop / break / trace</span><h2>Q308. 出力は？</h2><pre><code>int count = 0;
+for (int i = 0; i &lt; 3; i++) {
+    for (int j = 0; j &lt; 3; j++) {
+        if (i == j) break;
+        count++;
+    }
+}
+System.out.println(count);</code></pre><div class="choices"><div class="choice">A. 3</div><div class="choice">B. 6</div><div class="choice">C. 9</div></div><details><summary>答え・解説</summary><div>A。breakが終了させるのは内側のforだけです。i=0では0回、i=1では1回、i=2では2回count++され、合計3になります。</div></details></div>
+
+<div class="q"><span class="tag">array / instanceof / cast model</span><h2>Q309. 出力は？</h2><pre><code>Object x = new int[2];
+
+System.out.println(
+    (x instanceof Object) + ":" +
+    (x instanceof int[]) + ":" +
+    (x instanceof Object[])
+);</code></pre><div class="choices"><div class="choice">A. true:true:false</div><div class="choice">B. true:true:true</div><div class="choice">C. false:true:false</div></div><details><summary>答え・解説</summary><div>A。配列はObjectですが、int[]はプリミティブ型要素の配列なのでObject[]ではありません。したがってObjectとint[]の判定はtrue、Object[]はfalseです。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / cast / null</span><h2>Q310. 出力は？</h2><pre><code>class Parent { }
+class Child extends Parent { }
+
+Parent p = null;
+Child c = (Child) p;
+
+System.out.println((p instanceof Parent) + ":" + (c == null));</code></pre><div class="choices"><div class="choice">A. false:true</div><div class="choice">B. true:true</div><div class="choice">C. ClassCastException</div></div><details><summary>答え・解説</summary><div>A。nullに対するinstanceofはfalseです。また、null参照を互換性のある参照型へキャストしても例外にはならず、結果はnullのままです。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / compile error / type relation</span><h2>Q311. 次のコードはコンパイルできる？</h2><pre><code>String s = "java";
+System.out.println(s instanceof Integer);</code></pre><div class="choices"><div class="choice">A. できてfalseを表示する</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。StringとIntegerは継承関係のないfinalクラスで、String参照がIntegerオブジェクトを指す可能性はありません。このinstanceofは型として成立せずコンパイルエラーです。</div></details></div>
+
+<div class="q"><span class="tag">boolean / short-circuit / side effect</span><h2>Q312. 出力は？</h2><pre><code>int n = 0;
+boolean a = true || (++n &gt; 0);
+boolean b = false || (++n &gt; 0);
+
+System.out.println(n + ":" + a + ":" + b);</code></pre><div class="choices"><div class="choice">A. 0:true:true</div><div class="choice">B. 1:true:true</div><div class="choice">C. 2:true:true</div></div><details><summary>答え・解説</summary><div>B。最初の||は左辺がtrueなので右辺を評価せずnは増えません。2つ目は左辺がfalseなので右辺を評価し、nが1になって条件もtrueになります。</div></details></div>
+
+<div class="q"><span class="tag">Thread / Runnable / run / start / join</span><h2>Q313. 出力は？</h2><pre><code>class Task implements Runnable {
+    int n = 0;
+    public void run() { n++; }
+}
+
+Task task = new Task();
+Thread t = new Thread(task);
+
+task.run();
+t.start();
+t.join();
+
+System.out.println(task.n);</code></pre><div class="choices"><div class="choice">A. 1</div><div class="choice">B. 2</div><div class="choice">C. 必ずしも決まらない</div></div><details><summary>答え・解説</summary><div>B。task.run()は通常のメソッド呼び出しとして1回実行されます。その後t.start()で同じTaskのrun()が別スレッドからもう1回実行され、join()で終了を待つため最終値は2です。</div></details></div>
+
+<div class="q"><span class="tag">Thread / join / lifecycle</span><h2>Q314. 出力は？</h2><pre><code>Thread t = new Thread(() -&gt; System.out.print("B"));
+
+t.join();
+System.out.print("A");</code></pre><div class="choices"><div class="choice">A. A</div><div class="choice">B. BA</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。start()していないThreadは生存していないため、join()は待たずに戻ります。run()は一度も開始されないのでBは出力されず、Aだけが表示されます。例外処理またはthrows宣言は済んでいるものとします。</div></details></div>
+
+<div class="q"><span class="tag">Thread / sleep / static</span><h2>Q315. 出力として正しいものは？</h2><pre><code>Thread worker = new Thread(() -&gt; System.out.print("W"));
+
+System.out.print("A");
+worker.sleep(10);
+System.out.print("B");</code></pre><div class="choices"><div class="choice">A. AB</div><div class="choice">B. AWB</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。Thread.sleep(...)はstaticメソッドなので、worker経由で呼ぶ書き方でも休止するのは呼び出し元の現在スレッドです。workerはstart()されていないためWは出力されません。例外処理またはthrows宣言は済んでいるものとします。</div></details></div>
+
+</div></body></html>

@@ -36,7 +36,7 @@ index = site / "index.html"
 if not index.is_file() or not index.stat().st_size:
     raise SystemExit("Missing Pages index.html")
 index_text = index.read_text(encoding="utf-8")
-for required in ('id="quiz"', 'href="quiz.html"', 'href="quiz-batch-001.html"', 'href="quiz-batch-014.html"', '>検定チェック<'):
+for required in ('id="quiz"', 'href="quiz.html"', 'href="quiz-batch-001.html"', 'href="quiz-batch-014.html"', 'href="quiz-batch-015.html"', '>検定チェック<'):
     if required not in index_text:
         raise SystemExit(f"Beginner document is missing certification link/content: {required}")
 
