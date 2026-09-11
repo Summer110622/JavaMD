@@ -40,17 +40,34 @@ for asset in threads.html favicon.svg favicon.ico quiz.html quiz-batch-001.html;
   cmp "$REPO_DIR/$asset" "$CHECK_DIR/$asset"
 done
 
-# index.html is intentionally transformed by scripts/build-pages.sh, so validate required content
-# instead of comparing it byte-for-byte with the repository source.
-grep -Fq 'id="inheritance"' "$CHECK_DIR/index.html"
-grep -Fq '継承を詳しく' "$CHECK_DIR/index.html"
-grep -Fq 'id="quiz"' "$CHECK_DIR/index.html"
-grep -Fq 'href="quiz.html"' "$CHECK_DIR/index.html"
-grep -Fq 'href="quiz-batch-001.html"' "$CHECK_DIR/index.html"
-grep -Fq 'vendor/ecj-3.44.0.jar' "$CHECK_DIR/index.html"
-grep -Fq 'vendor/playground-runner.jar' "$CHECK_DIR/index.html"
+# index.html is intentionally transformed by scripts/build-pages.sh, so validate required
+# generated sections and representative deep-dive teaching points instead of byte equality.
+for token in \
+  'id="inheritance"' \
+  '継承を詳しく' \
+  '動的ディスパッチ' \
+  'id="lambda"' \
+  'effectively final' \
+  'ターゲット型が必要' \
+  'id="functional"' \
+  'プリミティブ特殊化' \
+  'id="stream"' \
+  '遅延評価' \
+  'Optional' \
+  'PECS' \
+  'remove(int) と remove(Object)' \
+  'computeIfAbsent と merge' \
+  'synchronized' \
+  'id="quiz"' \
+  'href="quiz.html"' \
+  'href="quiz-batch-001.html"' \
+  'vendor/ecj-3.44.0.jar' \
+  'vendor/playground-runner.jar'; do
+  grep -Fq "$token" "$CHECK_DIR/index.html"
+done
 
-printf 'Verified deployed generated index: %sindex.html\n' "$PAGES_URL"
+printf 'Verified deployed generated beginner guide: %sindex.html\n' "$PAGES_URL"
+printf 'Verified detailed inheritance, lambda, functional, stream, generics, collections, and thread content.\n'
 printf 'Verified quiz pages: %squiz.html and %squiz-batch-001.html\n' "$PAGES_URL" "$PAGES_URL"
 printf 'Verified deployed ECJ: %svendor/ecj-3.44.0.jar\n' "$PAGES_URL"
 printf 'Verified deployed runner against built manifest: %svendor/playground-runner.jar\n' "$PAGES_URL"
