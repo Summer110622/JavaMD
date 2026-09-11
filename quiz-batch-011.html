@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #11</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #11</h1><p>Java 2級の問題冊子・正答解説・学習資料で扱われる論点を基に、既存Q1〜Q215と重複しないよう新規作成したQ216〜Q235です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="index.html#quiz">← JavaMD 検定チェック</a> ／ <a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">#1</a> ／ <a href="quiz-batch-002.html">#2</a> ／ <a href="quiz-batch-003.html">#3</a> ／ <a href="quiz-batch-004.html">#4</a> ／ <a href="quiz-batch-005.html">#5</a> ／ <a href="quiz-batch-006.html">#6</a> ／ <a href="quiz-batch-007.html">#7</a> ／ <a href="quiz-batch-008.html">#8</a> ／ <a href="quiz-batch-009.html">#9</a> ／ <a href="quiz-batch-010.html">#10</a></p></header>
+
+<div class="q"><span class="tag">interface / default / inheritance</span><h2>Q216. 出力は？</h2><pre><code>interface Named {
+    default String name() { return "I"; }
+}
+class Base {
+    public String name() { return "B"; }
+}
+class Item extends Base implements Named { }
+
+System.out.println(new Item().name());</code></pre><div class="choices"><div class="choice">A. I</div><div class="choice">B. B</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>B。B。クラスから継承したインスタンスメソッドは、interfaceのdefaultメソッドより優先されます。Item側で明示的にオーバーライドしなくてもBase.name()が使われます。</div></details></div>
+
+<div class="q"><span class="tag">abstract / final / compile error</span><h2>Q217. 次のクラスはコンパイルできる？</h2><pre><code>abstract class Worker {
+    abstract final void work();
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。abstractメソッドはサブクラスで実装されることを前提にしますが、finalメソッドはオーバーライドできません。両方を同時に指定できないためコンパイルエラーです。</div></details></div>
+
+<div class="q"><span class="tag">protected / package / inheritance</span><h2>Q218. Childのread()はコンパイルできる？</h2><pre><code>// p1/Base.java
+package p1;
+public class Base {
+    protected int value = 5;
+}
+
+// p2/Child.java
+package p2;
+import p1.Base;
+class Child extends Base {
+    int read(Base other) {
+        return other.value;
+    }
+}</code></pre><div class="choices"><div class="choice">A. でき、5を返す</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。別packageのサブクラスからprotectedメンバへアクセスする場合、継承関係を通じた参照である必要があります。ここでotherの型はBaseなので、Childからother.valueを直接参照できません。</div></details></div>
+
+<div class="q"><span class="tag">constructor / private / super</span><h2>Q219. 次のChildはコンパイルできる？</h2><pre><code>class Parent {
+    private Parent() { }
+}
+class Child extends Parent {
+    Child() { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。Child()の先頭には暗黙のsuper()が入りますが、Parent()はprivateなのでChildから呼び出せません。利用可能なスーパークラスのコンストラクタが必要です。</div></details></div>
+
+<div class="q"><span class="tag">this / constructor invocation</span><h2>Q220. 次のBoxはコンパイルできる？</h2><pre><code>class Box {
+    int size = 3;
+
+    Box() {
+        this(size);
+    }
+
+    Box(int n) { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。this(...)やsuper(...)の引数を評価する段階では、まだ現在のインスタンスを参照できません。インスタンスフィールドsizeをthis(size)の引数に使うためコンパイルエラーです。</div></details></div>
+
+<div class="q"><span class="tag">static / overload / null</span><h2>Q221. 次の呼び出しはどうなる？</h2><pre><code>class Printer {
+    static void show(String s) { }
+    static void show(Integer n) { }
+
+    static void test() {
+        show(null);
+    }
+}</code></pre><div class="choices"><div class="choice">A. String版が呼ばれる</div><div class="choice">B. Integer版が呼ばれる</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>C。nullはStringにもIntegerにも代入できますが、StringとIntegerには継承関係がなく、どちらのオーバーロードがより適切か決められません。そのため呼び出しが曖昧になります。</div></details></div>
+
+<div class="q"><span class="tag">Map / keySet view</span><h2>Q222. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+map.put("A", 1);
+map.put("B", 2);
+
+Set&lt;String&gt; keys = map.keySet();
+keys.remove("A");
+
+System.out.println(map.containsKey("A") + ":" + map.size());</code></pre><div class="choices"><div class="choice">A. true:2</div><div class="choice">B. false:1</div><div class="choice">C. false:2</div></div><details><summary>答え・解説</summary><div>B。false:1。keySet()はコピーではなくMapに結び付いたビューです。ビューからkeyを削除すると、対応するMapのエントリも削除されます。</div></details></div>
+
+<div class="q"><span class="tag">TreeSet / pollFirst</span><h2>Q223. 出力は？</h2><pre><code>TreeSet&lt;Integer&gt; set = new TreeSet&lt;&gt;();
+set.add(4);
+set.add(1);
+set.add(3);
+
+System.out.println(set.pollFirst() + ":" + set.first());</code></pre><div class="choices"><div class="choice">A. 1:3</div><div class="choice">B. 1:1</div><div class="choice">C. 4:3</div></div><details><summary>答え・解説</summary><div>A。1:3。pollFirst()は最小要素を取得すると同時に集合から削除します。その後の最小要素は3なのでfirst()は3を返します。</div></details></div>
+
+<div class="q"><span class="tag">List / subList view</span><h2>Q224. 出力は？</h2><pre><code>List&lt;String&gt; xs =
+    new ArrayList&lt;&gt;(Arrays.asList("A", "B", "C", "D"));
+
+xs.subList(1, 3).clear();
+System.out.println(xs);</code></pre><div class="choices"><div class="choice">A. [A, D]</div><div class="choice">B. [A, B, C, D]</div><div class="choice">C. [B, C]</div></div><details><summary>答え・解説</summary><div>A。[A, D]。subList(1, 3)は元ListのBとCに対応するビューです。そのビューをclear()すると、元のListからもBとCが削除されます。</div></details></div>
+
+<div class="q"><span class="tag">Map / replace</span><h2>Q225. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+map.put("x", 1);
+
+boolean a = map.replace("x", 2, 3);
+boolean b = map.replace("x", 1, 4);
+
+System.out.println(a + ":" + b + ":" + map.get("x"));</code></pre><div class="choices"><div class="choice">A. false:true:4</div><div class="choice">B. true:true:4</div><div class="choice">C. false:false:1</div></div><details><summary>答え・解説</summary><div>A。false:true:4。3引数のreplaceは、現在値が指定した旧値と一致するときだけ置換します。最初は不一致、2回目は1と一致するため4へ更新されます。</div></details></div>
+
+<div class="q"><span class="tag">2次元配列 / null / runtime</span><h2>Q226. 次のコードはどうなる？</h2><pre><code>int[][] table = new int[2][];
+table[0] = new int[] {1, 2};
+
+int total = 0;
+for (int[] row : table) {
+    total += row.length;
+}
+System.out.println(total);</code></pre><div class="choices"><div class="choice">A. 2と表示</div><div class="choice">B. 0と表示</div><div class="choice">C. NullPointerException</div></div><details><summary>答え・解説</summary><div>C。table[1]は内側配列を作っていないためnullです。2回目の反復でrow.lengthを評価するとNullPointerExceptionが発生します。</div></details></div>
+
+<div class="q"><span class="tag">loop / labeled break / trace</span><h2>Q227. 出力は？</h2><pre><code>int total = 0;
+
+outer:
+for (int i = 1; i &lt;= 3; i++) {
+    for (int j = 1; j &lt;= 3; j++) {
+        if (i + j == 4) {
+            break outer;
+        }
+        total += i * j;
+    }
+}
+System.out.println(total);</code></pre><div class="choices"><div class="choice">A. 3</div><div class="choice">B. 6</div><div class="choice">C. 18</div></div><details><summary>答え・解説</summary><div>A。3。i=1ではj=1で1、j=2で2を加えてtotalは3になります。j=3でi+jが4となり、ラベル付きbreakで外側のループまで終了します。</div></details></div>
+
+<div class="q"><span class="tag">array / initializer / compile error</span><h2>Q228. 次の配列宣言はコンパイルできる？</h2><pre><code>int[] values = new int[2] {10, 20};</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。配列生成時に要素を初期化するならnew int[] {10, 20}のように長さを省略します。new int[2]と初期化子を同時には指定できません。</div></details></div>
+
+<div class="q"><span class="tag">cast / array covariance / runtime</span><h2>Q229. 次のコードはどうなる？</h2><pre><code>Object[] values = new String[1];
+values[0] = Integer.valueOf(7);
+System.out.println(values[0]);</code></pre><div class="choices"><div class="choice">A. 7と表示</div><div class="choice">B. コンパイルエラー</div><div class="choice">C. ArrayStoreException</div></div><details><summary>答え・解説</summary><div>C。String[]はObject[]へ代入できますが、実体の配列型はString[]のままです。Integerを格納しようとした時点で実行時にArrayStoreExceptionが発生します。</div></details></div>
+
+<div class="q"><span class="tag">boolean / &amp; / evaluation</span><h2>Q230. 出力は？</h2><pre><code>int n = 0;
+boolean result = false &amp; (++n &gt; 0);
+System.out.println(n + ":" + result);</code></pre><div class="choices"><div class="choice">A. 0:false</div><div class="choice">B. 1:false</div><div class="choice">C. 1:true</div></div><details><summary>答え・解説</summary><div>B。1:false。booleanに対する単一の&amp;は両辺を必ず評価します。左辺がfalseでも++nが実行されるためnは1になります。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / interface / non-final class</span><h2>Q231. 次のコードはどうなる？</h2><pre><code>class Box { }
+
+Box box = new Box();
+System.out.println(box instanceof Runnable);</code></pre><div class="choices"><div class="choice">A. falseと表示</div><div class="choice">B. trueと表示</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。false。Boxはfinalではないため、BoxのサブクラスがRunnableを実装する可能性があり、式自体はコンパイルできます。ただし実体はRunnableではないBoxなので結果はfalseです。</div></details></div>
+
+<div class="q"><span class="tag">Thread / synchronized / lock</span><h2>Q232. 次の説明として正しいものは？</h2><pre><code>class Gate {
+    synchronized void enter() {
+        // shared work
+    }
+}
+
+Gate a = new Gate();
+Gate b = new Gate();</code></pre><div class="choices"><div class="choice">A. a.enter()とb.enter()は必ず同じロックで排他される</div><div class="choice">B. aとbは別インスタンスなので、2つのenter()は同時実行され得る</div><div class="choice">C. synchronizedを付けるとインスタンス生成が1個に制限される</div></div><details><summary>答え・解説</summary><div>B。通常のsynchronizedインスタンスメソッドが使うロックはthisです。aとbは別オブジェクトなのでロックも別であり、異なるスレッドから同時にenter()へ入ることができます。</div></details></div>
+
+<div class="q"><span class="tag">Thread / run / start / join</span><h2>Q233. 出力は？</h2><pre><code>public static void main(String[] args) throws Exception {
+    Runnable job = () -&gt; System.out.print("X");
+    Thread t = new Thread(job);
+
+    t.run();
+    t.start();
+    t.join();
+}</code></pre><div class="choices"><div class="choice">A. X</div><div class="choice">B. XX</div><div class="choice">C. 実行時例外</div></div><details><summary>答え・解説</summary><div>B。XX。t.run()は現在のスレッドで通常のメソッドとして1回実行されます。その後t.start()で新しいスレッドからrun()がもう1回実行され、join()で終了を待ちます。</div></details></div>
+
+<div class="q"><span class="tag">Thread / currentThread</span><h2>Q234. 出力は？</h2><pre><code>public static void main(String[] args) throws Exception {
+    Thread t = new Thread() {
+        public void run() {
+            System.out.print(Thread.currentThread() == this);
+        }
+    };
+    t.start();
+    t.join();
+}</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。true。start()によってこのThreadオブジェクト自身が新しい実行スレッドになります。run()内のThread.currentThread()と、この匿名Threadクラスのthisは同じオブジェクトです。</div></details></div>
+
+<div class="q"><span class="tag">Generics / wildcard / compile error</span><h2>Q235. 次のコードはコンパイルできる？</h2><pre><code>List&lt;? extends Number&gt; nums = new ArrayList&lt;Integer&gt;();
+nums.add(Integer.valueOf(1));</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。? extends Numberの実際の要素型はIntegerとは限らないため、null以外の値を安全に追加できません。Numberとして読み取ることはできますが、このaddはコンパイルエラーです。</div></details></div>
+
+<footer><a href="index.html#quiz">JavaMD 検定チェックへ戻る</a></footer>
+</div></body></html>
