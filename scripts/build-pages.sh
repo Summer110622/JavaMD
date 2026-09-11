@@ -54,7 +54,7 @@ if nav_marker not in html:
     raise SystemExit("Could not find navigation insertion point")
 html = html.replace(nav_marker, nav_replacement, 1)
 
-section = '''<section id="quiz"><div class="kicker">Certification Practice</div><h2>18. Java検定チェック</h2><p>Javaプログラミング能力認定試験2級で問われやすい論点を、オリジナル問題で確認できます。答えと解説は最初は隠してあります。</p><div class="cards"><a class="card" href="quiz.html" style="text-decoration:none;color:inherit"><strong>基本15問</strong><p>interface / static / this / Collection / 配列 / Thread など</p></a><a class="card" href="quiz-batch-001.html" style="text-decoration:none;color:inherit"><strong>追加20問</strong><p>コンパイル可否・出力結果・コード読解を中心に確認</p></a></div></section>'''
+section = '''<section id="quiz"><div class="kicker">Certification Practice</div><h2>18. Java検定チェック</h2><p>Javaプログラミング能力認定試験2級で問われやすい論点を、オリジナル問題で確認できます。答えと解説は最初は隠してあります。</p><div class="cards"><a class="card" href="quiz.html" style="text-decoration:none;color:inherit"><strong>基本15問</strong><p>interface / static / this / Collection / 配列 / Thread など</p></a><a class="card" href="quiz-batch-001.html" style="text-decoration:none;color:inherit"><strong>追加20問 #1</strong><p>Q16〜Q35 · 基礎論点のコード読解</p></a><a class="card" href="quiz-batch-002.html" style="text-decoration:none;color:inherit"><strong>追加20問 #2</strong><p>Q36〜Q55 · コンパイル可否・出力結果</p></a><a class="card" href="quiz-batch-003.html" style="text-decoration:none;color:inherit"><strong>追加20問 #3</strong><p>Q56〜Q75 · 継承・Collection・Threadを横断</p></a><a class="card" href="quiz-batch-004.html" style="text-decoration:none;color:inherit"><strong>追加20問 #4</strong><p>Q76〜Q95 · 新しいコードトレースとコンパイル判定</p></a></div></section>'''
 footer_marker = '<footer>JavaMD — じゃばる！！</footer>'
 if footer_marker not in html:
     raise SystemExit("Could not find footer insertion point")
