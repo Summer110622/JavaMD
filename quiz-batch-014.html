@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #14</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #14</h1><p>Java 2級の問題冊子・正答解説・学習資料で扱われる論点を基に、既存Q1〜Q275と重複しないよう新規作成したQ276〜Q295です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="index.html#quiz">← JavaMD 検定チェック</a> ／ <a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">#1</a> ／ <a href="quiz-batch-002.html">#2</a> ／ <a href="quiz-batch-003.html">#3</a> ／ <a href="quiz-batch-004.html">#4</a> ／ <a href="quiz-batch-005.html">#5</a> ／ <a href="quiz-batch-006.html">#6</a> ／ <a href="quiz-batch-007.html">#7</a> ／ <a href="quiz-batch-008.html">#8</a> ／ <a href="quiz-batch-009.html">#9</a> ／ <a href="quiz-batch-010.html">#10</a> ／ <a href="quiz-batch-011.html">#11</a> ／ <a href="quiz-batch-012.html">#12</a> ／ <a href="quiz-batch-013.html">#13</a></p></header>
+
+<div class="q"><span class="tag">interface / default / inheritance</span><h2>Q276. 出力は？</h2><pre><code>interface Root {
+    default String mark() { return "R"; }
+}
+interface Branch extends Root {
+    default String mark() { return "B"; }
+}
+class Leaf implements Root, Branch { }
+
+System.out.println(new Leaf().mark());</code></pre><div class="choices"><div class="choice">A. R</div><div class="choice">B. B</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>B。B。BranchはRootを継承した、より具体的なinterfaceです。両方が同じdefaultメソッドを持つ場合でも、継承関係があればより具体的なBranch側の実装が選ばれます。</div></details></div>
+
+<div class="q"><span class="tag">inheritance / override / modifiers / compile error</span><h2>Q277. Childはコンパイルできる？</h2><pre><code>class Parent {
+    public void run() { }
+}
+class Child extends Parent {
+    @Override
+    protected void run() { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。オーバーライドでは親メソッドよりアクセス範囲を狭くできません。Parent.run()はpublicなので、Child.run()もpublicである必要があります。</div></details></div>
+
+<div class="q"><span class="tag">inheritance / overload / override / trace</span><h2>Q278. 出力は？</h2><pre><code>class Parent {
+    void show(Object x) { System.out.print("PO"); }
+}
+class Child extends Parent {
+    @Override
+    void show(Object x) { System.out.print("CO"); }
+    void show(String x) { System.out.print("CS"); }
+}
+
+Parent p = new Child();
+p.show("java");</code></pre><div class="choices"><div class="choice">A. PO</div><div class="choice">B. CO</div><div class="choice">C. CS</div></div><details><summary>答え・解説</summary><div>B。CO。まず宣言型Parentを基準にオーバーロード解決され、show(Object)が選ばれます。その後、実体がChildなのでオーバーライドされたChild.show(Object)が実行されます。</div></details></div>
+
+<div class="q"><span class="tag">constructor / this / initializer / trace</span><h2>Q279. 出力は？</h2><pre><code>class Box {
+    { System.out.print("I"); }
+
+    Box() {
+        this(2);
+        System.out.print("A");
+    }
+    Box(int n) {
+        System.out.print(n);
+    }
+}
+
+new Box();</code></pre><div class="choices"><div class="choice">A. I2A</div><div class="choice">B. 2IA</div><div class="choice">C. IIA2</div></div><details><summary>答え・解説</summary><div>A。I2A。同一オブジェクトの生成でインスタンス初期化子は1回だけ実行されます。this(2)で到達したコンストラクタ本体より前にIが出力され、その後2、最後に元のBox()へ戻ってAが出力されます。</div></details></div>
+
+<div class="q"><span class="tag">constructor / this / compile error</span><h2>Q280. 次のクラスはコンパイルできる？</h2><pre><code>class LoopCtor {
+    LoopCtor() {
+        this(1);
+    }
+    LoopCtor(int n) {
+        this();
+    }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。2つのコンストラクタがthis(...)で互いを呼び続けるため、再帰的なコンストラクタ呼び出しになります。コンパイラが検出してエラーにします。</div></details></div>
+
+<div class="q"><span class="tag">static / inheritance / initialization order</span><h2>Q281. 出力は？</h2><pre><code>class Parent {
+    static { System.out.print("P"); }
+    Parent() { System.out.print("p"); }
+}
+class Child extends Parent {
+    static { System.out.print("C"); }
+    Child() { System.out.print("c"); }
+}
+
+new Child();
+new Child();</code></pre><div class="choices"><div class="choice">A. PCpcpc</div><div class="choice">B. PpCcPpCc</div><div class="choice">C. PCPCpcpc</div></div><details><summary>答え・解説</summary><div>A。PCpcpc。クラス初期化は最初の利用時に親P→子Cの順で1回だけ実行されます。各newではParentコンストラクタp→Childコンストラクタcが実行されるため、pcが2回続きます。</div></details></div>
+
+<div class="q"><span class="tag">Map / merge</span><h2>Q282. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+map.put("x", 2);
+
+int a = map.merge("x", 3, Integer::sum);
+int b = map.merge("y", 4, Integer::sum);
+
+System.out.println(a + ":" + b + ":" + map.get("x"));</code></pre><div class="choices"><div class="choice">A. 3:4:3</div><div class="choice">B. 5:4:5</div><div class="choice">C. 5:7:5</div></div><details><summary>答え・解説</summary><div>B。5:4:5。xには既存値2があるのでmergeは2と3を合計して5に更新します。yは未登録なので4がそのまま登録されます。</div></details></div>
+
+<div class="q"><span class="tag">Map / values / view</span><h2>Q283. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new LinkedHashMap&lt;&gt;();
+map.put("a", 1);
+map.put("b", 2);
+map.put("c", 3);
+
+Collection&lt;Integer&gt; values = map.values();
+values.remove(2);
+
+System.out.println(map);</code></pre><div class="choices"><div class="choice">A. {a=1, b=2, c=3}</div><div class="choice">B. {a=1, c=3}</div><div class="choice">C. {b=2}</div></div><details><summary>答え・解説</summary><div>B。{a=1, c=3}。values()はコピーではなくMapに結び付いたビューです。値2をビューから削除すると、その値に対応するbのエントリもMapから削除されます。</div></details></div>
+
+<div class="q"><span class="tag">HashSet / equals / identity</span><h2>Q284. 出力は？</h2><pre><code>class Token {
+    int id;
+    Token(int id) { this.id = id; }
+}
+
+Set&lt;Token&gt; set = new HashSet&lt;&gt;();
+set.add(new Token(1));
+set.add(new Token(1));
+
+System.out.println(set.size());</code></pre><div class="choices"><div class="choice">A. 1</div><div class="choice">B. 2</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>B。2。Tokenはequals()とhashCode()をオーバーライドしていないため、2つのnew Token(1)は別オブジェクトとして扱われます。フィールドidが同じだけではHashSet上の重複にはなりません。</div></details></div>
+
+<div class="q"><span class="tag">TreeSet / natural order / String</span><h2>Q285. 出力は？</h2><pre><code>Set&lt;String&gt; set = new TreeSet&lt;&gt;();
+set.add("10");
+set.add("2");
+set.add("1");
+
+System.out.println(set);</code></pre><div class="choices"><div class="choice">A. [1, 2, 10]</div><div class="choice">B. [1, 10, 2]</div><div class="choice">C. [10, 2, 1]</div></div><details><summary>答え・解説</summary><div>B。[1, 10, 2]。Stringの自然順序は数値としてではなく文字列の辞書順で比較されます。そのため先頭文字が同じ1と10が2より前に並びます。</div></details></div>
+
+<div class="q"><span class="tag">array / 2D / shallow clone</span><h2>Q286. 出力は？</h2><pre><code>int[][] a = { {1, 2}, {3} };
+int[][] b = a.clone();
+
+b[0][0] = 9;
+
+System.out.println(
+    a[0][0] + ":" + (a == b) + ":" + (a[0] == b[0])
+);</code></pre><div class="choices"><div class="choice">A. 1:false:false</div><div class="choice">B. 9:false:true</div><div class="choice">C. 9:true:true</div></div><details><summary>答え・解説</summary><div>B。9:false:true。2次元配列のclone()で複製されるのは外側の配列です。内側のint[]参照は共有されるためa[0]とb[0]は同じ配列を指し、要素変更が両方から見えます。</div></details></div>
+
+<div class="q"><span class="tag">for / multiple variables / trace</span><h2>Q287. 出力は？</h2><pre><code>int sum = 0;
+
+for (int i = 0, j = 4; i &lt; j; i++, j--) {
+    sum += i + j;
+}
+
+System.out.println(sum);</code></pre><div class="choices"><div class="choice">A. 4</div><div class="choice">B. 8</div><div class="choice">C. 12</div></div><details><summary>答え・解説</summary><div>B。8。反復は(i,j)=(0,4)と(1,3)の2回です。それぞれ4を加え、更新後に(2,2)となると条件i &lt; jがfalseになって終了します。</div></details></div>
+
+<div class="q"><span class="tag">do-while / continue / trace</span><h2>Q288. 出力は？</h2><pre><code>int i = 0;
+int sum = 0;
+
+do {
+    i++;
+    if (i % 2 == 0) {
+        continue;
+    }
+    sum += i;
+} while (i &lt; 4);
+
+System.out.println(sum);</code></pre><div class="choices"><div class="choice">A. 4</div><div class="choice">B. 6</div><div class="choice">C. 10</div></div><details><summary>答え・解説</summary><div>A。4。i=1と3だけが加算されます。do-whileでcontinueすると本体の残りを飛ばした後にwhile条件を評価して次の反復へ進むため、偶数2と4は加算されません。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / final class / compile error</span><h2>Q289. 次のコードはどうなる？</h2><pre><code>String s = "java";
+System.out.println(s instanceof Runnable);</code></pre><div class="choices"><div class="choice">A. falseと表示</div><div class="choice">B. trueと表示</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>C。StringはfinalクラスでRunnableを実装していません。StringのサブクラスがRunnableを実装する可能性もないため、このinstanceofは型の関係が成立し得ずコンパイルエラーになります。</div></details></div>
+
+<div class="q"><span class="tag">boolean / precedence / short-circuit</span><h2>Q290. 出力は？</h2><pre><code>int n = 0;
+
+boolean result =
+    (++n &gt; 0) || (++n &gt; 1) &amp;&amp; (++n &gt; 2);
+
+System.out.println(n + ":" + result);</code></pre><div class="choices"><div class="choice">A. 1:true</div><div class="choice">B. 2:true</div><div class="choice">C. 3:true</div></div><details><summary>答え・解説</summary><div>A。1:true。式は左側の条件がtrueになった時点で||が短絡評価するため、右側の&amp;&amp;全体は評価されません。したがってnは最初の++だけで1です。</div></details></div>
+
+<div class="q"><span class="tag">cast / runtime error</span><h2>Q291. 次のコードはどうなる？</h2><pre><code>Number n = Double.valueOf(2.5);
+Integer x = (Integer) n;
+
+System.out.println(x);</code></pre><div class="choices"><div class="choice">A. 2と表示</div><div class="choice">B. コンパイルエラー</div><div class="choice">C. 実行時にClassCastException</div></div><details><summary>答え・解説</summary><div>C。Number型の参照はIntegerへ明示的にキャストできるためコンパイルは通ります。しかし実体はDoubleなので、実行時の型検査でClassCastExceptionになります。</div></details></div>
+
+<div class="q"><span class="tag">Thread / start / runtime error</span><h2>Q292. 次のコードはどうなる？</h2><pre><code>public static void main(String[] args) throws Exception {
+    Thread t = new Thread(() -&gt; { });
+
+    t.start();
+    t.join();
+    t.start();
+}</code></pre><div class="choices"><div class="choice">A. 正常終了する</div><div class="choice">B. 2回目のstart()でIllegalThreadStateException</div><div class="choice">C. 2回目は新しいThreadとして開始する</div></div><details><summary>答え・解説</summary><div>B。同じThreadオブジェクトにstart()を呼べるのは1回だけです。終了後であっても再startはできず、2回目の呼び出しでIllegalThreadStateExceptionが発生します。</div></details></div>
+
+<div class="q"><span class="tag">Thread / join / order</span><h2>Q293. 出力順として確定するものは？</h2><pre><code>public static void main(String[] args) throws Exception {
+    Thread t = new Thread(
+        () -&gt; System.out.print("T")
+    );
+
+    t.start();
+    t.join();
+    System.out.print("A");
+}</code></pre><div class="choices"><div class="choice">A. TA</div><div class="choice">B. AT</div><div class="choice">C. TAまたはAT</div></div><details><summary>答え・解説</summary><div>A。TA。join()は対象スレッドtが終了するまで現在のスレッドを待機させます。tがTを出力して終了した後で、mainスレッドがAを出力します。</div></details></div>
+
+<div class="q"><span class="tag">Thread / isAlive / lifecycle</span><h2>Q294. 出力は？</h2><pre><code>public static void main(String[] args) throws Exception {
+    Thread t = new Thread(() -&gt; { });
+
+    System.out.print(t.isAlive() + ":");
+    t.start();
+    t.join();
+    System.out.println(t.isAlive());
+}</code></pre><div class="choices"><div class="choice">A. false:false</div><div class="choice">B. false:true</div><div class="choice">C. true:false</div></div><details><summary>答え・解説</summary><div>A。false:false。start()前のThreadはまだ生存していません。またjoin()が戻った時点ではtのrun()は終了済みなので、後半のisAlive()もfalseです。</div></details></div>
+
+<div class="q"><span class="tag">Thread / yield / scheduling</span><h2>Q295. 正しい説明は？</h2><pre><code>Thread.yield();
+System.out.println("A");</code></pre><div class="choices"><div class="choice">A. yield()を呼ぶと現在のThreadは終了する</div><div class="choice">B. 他のThreadが必ず1回実行されてからAが表示される</div><div class="choice">C. 実行機会を譲るヒントにはなるが、切り替わる保証はなく、その後Aは実行される</div></div><details><summary>答え・解説</summary><div>C。yield()はスケジューラへ実行機会を譲る意思を示す静的メソッドですが、別Threadへ必ず切り替わる保証はありません。現在のThreadは終了せず、その後のprintlnも続けて実行されます。</div></details></div>
+
+<footer><p><a href="index.html#quiz">JavaMDの検定チェックへ戻る</a></p></footer>
+</div></body></html>
