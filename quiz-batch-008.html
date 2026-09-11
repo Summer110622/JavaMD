@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #8</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #8</h1><p>Java 2級の問題冊子・正答解説・学習資料で扱われる論点を基に、既存Q1〜Q155と重複しないよう新規作成したQ156〜Q175です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="index.html#quiz">← JavaMD 検定チェック</a> ／ <a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">#1</a> ／ <a href="quiz-batch-002.html">#2</a> ／ <a href="quiz-batch-003.html">#3</a> ／ <a href="quiz-batch-004.html">#4</a> ／ <a href="quiz-batch-005.html">#5</a> ／ <a href="quiz-batch-006.html">#6</a> ／ <a href="quiz-batch-007.html">#7</a></p></header>
+
+<div class="q"><span class="tag">interface / static</span><h2>Q156. 次のコードはコンパイルできる？</h2><pre><code>interface Util {
+    static void ping() { System.out.print("U"); }
+}
+class App implements Util { }
+App.ping();</code></pre><div class="choices"><div class="choice">A. でき、Uと表示</div><div class="choice">B. できるが何も表示されない</div><div class="choice">C. できない</div></div><details><summary>答え・解説</summary><div><b>C。</b> interfaceのstaticメソッドは実装クラスへ継承されません。<code>Util.ping()</code> のように宣言したinterface名から呼びます。</div></details></div>
+
+<div class="q"><span class="tag">inheritance / private</span><h2>Q157. 出力は？</h2><pre><code>class Base {
+    private String name() { return "B"; }
+    String read() { return name(); }
+}
+class Child extends Base {
+    String name() { return "C"; }
+}
+System.out.println(new Child().read());</code></pre><div class="choices"><div class="choice">A. B</div><div class="choice">B. C</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。B。</b> <code>Base.name()</code> はprivateなのでオーバーライド対象ではありません。Base内の<code>read()</code>からはBase自身のprivateメソッドが呼ばれます。</div></details></div>
+
+<div class="q"><span class="tag">modifier / abstract</span><h2>Q158. 次のコードはどうなる？</h2><pre><code>abstract class Task {
+    abstract void run();
+}
+Task t = new Task();</code></pre><div class="choices"><div class="choice">A. 正常にコンパイル</div><div class="choice">B. コンパイルエラー</div><div class="choice">C. 実行時にAbstractMethodError</div></div><details><summary>答え・解説</summary><div><b>B。</b> abstractクラスは型として変数宣言には使えますが、<code>new</code> で直接インスタンス化できません。</div></details></div>
+
+<div class="q"><span class="tag">constructor / override</span><h2>Q159. 出力は？</h2><pre><code>class Base {
+    Base() { show(); }
+    void show() { System.out.print(-1); }
+}
+class Child extends Base {
+    int n = 7;
+    void show() { System.out.print(n); }
+}
+new Child();</code></pre><div class="choices"><div class="choice">A. -1</div><div class="choice">B. 0</div><div class="choice">C. 7</div></div><details><summary>答え・解説</summary><div><b>B。0。</b> Baseのコンストラクタから呼んでも、オーバーライドされたChild.show()が動きます。ただしChildのフィールド初期化はsuperコンストラクタ完了後なので、その時点のnは既定値0です。</div></details></div>
+
+<div class="q"><span class="tag">constructor / this</span><h2>Q160. 出力は？</h2><pre><code>class Item {
+    int n;
+    Item() { this(3); n++; }
+    Item(int n) { this.n = n; }
+}
+System.out.println(new Item().n);</code></pre><div class="choices"><div class="choice">A. 3</div><div class="choice">B. 4</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。4。</b> 引数なしコンストラクタは最初に<code>this(3)</code>を呼び、nを3に設定した後で<code>n++</code>を実行します。</div></details></div>
+
+<div class="q"><span class="tag">static / null reference</span><h2>Q161. 出力は？</h2><pre><code>class Box {
+    static int count = 5;
+}
+Box b = null;
+System.out.println(b.count);</code></pre><div class="choices"><div class="choice">A. 5</div><div class="choice">B. NullPointerException</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。5。</b> staticフィールドはオブジェクトではなくクラスに属します。参照変数経由の記述は推奨されませんが、この式では<code>Box.count</code>として解決されます。</div></details></div>
+
+<div class="q"><span class="tag">Map / keySet view</span><h2>Q162. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; m = new HashMap&lt;&gt;();
+m.put("A", 1);
+m.put("B", 2);
+Set&lt;String&gt; keys = m.keySet();
+keys.remove("A");
+System.out.println(m.size() + ":" + m.containsKey("A"));</code></pre><div class="choices"><div class="choice">A. 2:true</div><div class="choice">B. 1:false</div><div class="choice">C. 1:true</div></div><details><summary>答え・解説</summary><div><b>B。1:false。</b> <code>keySet()</code>はMapと連動するビューです。ビューからキーを削除すると対応するMapエントリも削除されます。</div></details></div>
+
+<div class="q"><span class="tag">HashSet / equals hashCode</span><h2>Q163. 出力されるsizeは？</h2><pre><code>class Key {
+    int id;
+    Key(int id) { this.id = id; }
+    public boolean equals(Object o) {
+        return o instanceof Key &amp;&amp; ((Key)o).id == id;
+    }
+    public int hashCode() { return id; }
+}
+Set&lt;Key&gt; s = new HashSet&lt;&gt;();
+s.add(new Key(1));
+s.add(new Key(1));
+System.out.println(s.size());</code></pre><div class="choices"><div class="choice">A. 1</div><div class="choice">B. 2</div><div class="choice">C. 実装依存</div></div><details><summary>答え・解説</summary><div><b>A。1。</b> 2つのKeyは別オブジェクトでも<code>equals()</code>がtrueで、同じidから同じ<code>hashCode()</code>を返します。HashSetでは同一要素として扱われます。</div></details></div>
+
+<div class="q"><span class="tag">TreeMap / order</span><h2>Q164. 出力は？</h2><pre><code>Map&lt;Integer,String&gt; m = new TreeMap&lt;&gt;();
+m.put(3, "C");
+m.put(1, "A");
+m.put(2, "B");
+System.out.println(m.keySet());</code></pre><div class="choices"><div class="choice">A. [3, 1, 2]</div><div class="choice">B. [1, 2, 3]</div><div class="choice">C. 順序は保証されない</div></div><details><summary>答え・解説</summary><div><b>B。[1, 2, 3]。</b> TreeMapはキーを比較順序で管理します。Integerでは自然順序の昇順になります。</div></details></div>
+
+<div class="q"><span class="tag">List / removeIf</span><h2>Q165. 出力は？</h2><pre><code>List&lt;Integer&gt; xs = new ArrayList&lt;&gt;(Arrays.asList(1, 2, 3, 4));
+xs.removeIf(n -&gt; n % 2 == 0);
+System.out.println(xs);</code></pre><div class="choices"><div class="choice">A. [1, 3]</div><div class="choice">B. [2, 4]</div><div class="choice">C. ConcurrentModificationException</div></div><details><summary>答え・解説</summary><div><b>A。[1, 3]。</b> <code>removeIf</code>は条件がtrueになる要素を削除します。この場合は偶数2と4が削除されます。</div></details></div>
+
+<div class="q"><span class="tag">array / Arrays.copyOf</span><h2>Q166. 出力は？</h2><pre><code>int[] a = {1, 2};
+int[] b = Arrays.copyOf(a, 4);
+System.out.println(b[2] + ":" + b.length);</code></pre><div class="choices"><div class="choice">A. 0:4</div><div class="choice">B. 2:4</div><div class="choice">C. ArrayIndexOutOfBoundsException</div></div><details><summary>答え・解説</summary><div><b>A。0:4。</b> コピー先を元より長くすると、追加部分は配列要素の既定値で埋まります。intの既定値は0です。</div></details></div>
+
+<div class="q"><span class="tag">array / enhanced for</span><h2>Q167. 出力は？</h2><pre><code>StringBuilder[] a = {
+    new StringBuilder("A"),
+    new StringBuilder("B")
+};
+for (StringBuilder s : a) {
+    s.append("!");
+}
+System.out.println(a[0] + ":" + a[1]);</code></pre><div class="choices"><div class="choice">A. A:B</div><div class="choice">B. A!:B!</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。A!:B!。</b> 拡張forの変数sには各要素の参照がコピーされます。同じStringBuilderオブジェクトを変更するため、配列から見える内容も変わります。</div></details></div>
+
+<div class="q"><span class="tag">loop / post increment</span><h2>Q168. 出力は？</h2><pre><code>int i = 0;
+int sum = 0;
+while (i++ &lt; 3) {
+    sum += i;
+}
+System.out.println(i + ":" + sum);</code></pre><div class="choices"><div class="choice">A. 3:6</div><div class="choice">B. 4:6</div><div class="choice">C. 4:10</div></div><details><summary>答え・解説</summary><div><b>B。4:6。</b> 条件判定でも後置<code>i++</code>は実行されます。本体では1+2+3を加算し、最後のfalse判定でもiが3から4へ増えます。</div></details></div>
+
+<div class="q"><span class="tag">boolean / &amp;</span><h2>Q169. 出力は？</h2><pre><code>int n = 0;
+boolean b = false &amp; (++n &gt; 0);
+System.out.println(n + ":" + b);</code></pre><div class="choices"><div class="choice">A. 0:false</div><div class="choice">B. 1:false</div><div class="choice">C. 1:true</div></div><details><summary>答え・解説</summary><div><b>B。1:false。</b> booleanの<code>&amp;</code>は短絡評価しないため右辺も評価され、nは1になります。左辺がfalseなので全体はfalseです。</div></details></div>
+
+<div class="q"><span class="tag">cast / runtime</span><h2>Q170. 次のコードはどうなる？</h2><pre><code>class A { }
+class B extends A { }
+class C extends A { }
+
+A x = new B();
+C c = (C) x;</code></pre><div class="choices"><div class="choice">A. 正常に実行</div><div class="choice">B. コンパイルエラー</div><div class="choice">C. 実行時にClassCastException</div></div><details><summary>答え・解説</summary><div><b>C。</b> AからそのサブクラスCへのダウンキャストはコンパイル可能ですが、実体はBなので実行時に<code>ClassCastException</code>になります。</div></details></div>
+
+<div class="q"><span class="tag">boolean / precedence</span><h2>Q171. 出力は？</h2><pre><code>boolean v = true || false &amp;&amp; false;
+System.out.println(v);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。true。</b> <code>&amp;&amp;</code>は<code>||</code>より優先順位が高いので、<code>true || (false &amp;&amp; false)</code>として評価されます。</div></details></div>
+
+<div class="q"><span class="tag">Thread / interrupted</span><h2>Q172. 出力は？</h2><pre><code>Thread.currentThread().interrupt();
+System.out.println(
+    Thread.interrupted() + ":" + Thread.interrupted()
+);</code></pre><div class="choices"><div class="choice">A. true:true</div><div class="choice">B. true:false</div><div class="choice">C. false:false</div></div><details><summary>答え・解説</summary><div><b>B。true:false。</b> <code>Thread.interrupted()</code>は現在のスレッドの割り込み状態を返すと同時に、その状態をクリアします。</div></details></div>
+
+<div class="q"><span class="tag">Thread / sleep / interrupt</span><h2>Q173. 出力は？</h2><pre><code>Thread.currentThread().interrupt();
+try {
+    Thread.sleep(1);
+    System.out.print("A");
+} catch (InterruptedException e) {
+    System.out.print("I");
+}</code></pre><div class="choices"><div class="choice">A. A</div><div class="choice">B. I</div><div class="choice">C. 何も表示されない</div></div><details><summary>答え・解説</summary><div><b>B。I。</b> 割り込み状態のスレッドが<code>sleep()</code>に入ると<code>InterruptedException</code>が送出され、catch側が実行されます。</div></details></div>
+
+<div class="q"><span class="tag">Thread / synchronized</span><h2>Q174. static synchronizedメソッドが取得するロックはどれ？</h2><pre><code>class Gate {
+    static synchronized void enter() { }
+}</code></pre><div class="choices"><div class="choice">A. 呼び出したThreadオブジェクト</div><div class="choice">B. Gate.classのクラスオブジェクト</div><div class="choice">C. 新しく生成された専用ロック</div></div><details><summary>答え・解説</summary><div><b>B。</b> static synchronizedメソッドは、そのクラスの<code>Class</code>オブジェクトをロックします。通常のsynchronizedインスタンスメソッドが<code>this</code>をロックするのとは異なります。</div></details></div>
+
+<div class="q"><span class="tag">compile error / definite assignment</span><h2>Q175. 次のコードはコンパイルできる？</h2><pre><code>int x;
+if (args.length &gt; 0) {
+    x = 10;
+}
+System.out.println(x);</code></pre><div class="choices"><div class="choice">A. できる。引数なしなら0と表示</div><div class="choice">B. できる。引数なしならnullと表示</div><div class="choice">C. できない</div></div><details><summary>答え・解説</summary><div><b>C。</b> ローカル変数には自動の既定値がありません。ifが実行されない経路ではxが未初期化のままなので、使用時にコンパイルエラーになります。</div></details></div>
+
+</div></body></html>
