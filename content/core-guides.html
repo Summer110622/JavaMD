@@ -1,0 +1,300 @@
+<section id="overview"><div class="kicker">Start · Runtime</div><h2>1. Java / JVM / JDK を仕組みから理解する</h2>
+<p>Javaでは、書いたソースコードをそのままOSが実行するのではなく、まず <code>javac</code> で<strong>バイトコード</strong>へコンパイルし、そのバイトコードをJVMが実行します。初心者の段階では「JDKで作る → JVMで動く」という流れを押さえると、コンパイルエラーと実行時エラーを区別しやすくなります。</p>
+<div class="tablewrap"><table><thead><tr><th>用語</th><th>役割</th><th>覚えるポイント</th></tr></thead><tbody><tr><td>JDK</td><td>開発キット</td><td><code>javac</code> など開発用ツールを含む</td></tr><tr><td>JVM</td><td>Javaバイトコードの実行環境</td><td><code>.class</code> の命令を実行する</td></tr><tr><td>バイトコード</td><td>JVM向けの中間命令</td><td>通常は <code>.class</code> ファイルに格納</td></tr><tr><td>JAR</td><td>複数のclassやリソースをまとめる形式</td><td>ライブラリ配布などで使う</td></tr></tbody></table></div>
+<div class="code"><div class="codehead"><span>コンパイルと実行</span><button class="copy">コピー</button></div><pre><code>javac Hello.java
+java Hello</code></pre></div>
+<p><code>javac</code> が成功すれば、基本的には <code>Hello.class</code> が生成されます。<code>java Hello</code> では拡張子 <code>.class</code> を付けません。</p>
+<h3>コンパイル時と実行時を分ける</h3><div class="cards"><div class="card"><strong>コンパイル時</strong><p>型不一致、未定義変数、アクセス違反、構文エラーなどを検査。</p></div><div class="card"><strong>実行時</strong><p><code>NullPointerException</code>、<code>ClassCastException</code> など、実際に動かしたときに起きる問題。</p></div></div>
+<h3>mainメソッド</h3><div class="code"><div class="codehead"><span>エントリーポイント</span><button class="copy">コピー</button></div><pre><code>public static void main(String[] args) {
+    System.out.println("start");
+}</code></pre></div>
+<p>Javaアプリケーションを通常の方法で起動すると、JVMはこの形の <code>main</code> を入口として探します。<code>static</code> なので、起動時にオブジェクトを作らなくても呼び出せます。</p>
+<div class="callout"><strong>試験での見方:</strong> 「コンパイルできるか」「起動できるか」「起動後に例外が出るか」は別問題です。順番に判定します。</div></section>
+
+<section id="syntax"><div class="kicker">Language · Types</div><h2>2. 基本構文・変数・型・配列</h2>
+<h3>プリミティブ型と参照型</h3><div class="tablewrap"><table><thead><tr><th>分類</th><th>代表</th><th>特徴</th></tr></thead><tbody><tr><td>プリミティブ型</td><td><code>byte short int long float double char boolean</code></td><td>値そのものを扱う</td></tr><tr><td>参照型</td><td><code>String</code>、配列、クラス、interface</td><td>オブジェクトへの参照を扱い、<code>null</code> を取り得る</td></tr></tbody></table></div>
+<h3>数値リテラルと型変換</h3><div class="code"><div class="codehead"><span>拡大変換と縮小変換</span><button class="copy">コピー</button></div><pre><code>int a = 10;
+long b = a;        // 拡大変換: 自動
+long c = 100L;
+int d = (int) c;   // 縮小変換: 明示的キャスト</code></pre></div>
+<p>小さい範囲の整数型から大きい範囲へは自動変換できる場合がありますが、情報が失われる可能性がある方向では明示的キャストが必要です。</p>
+<div class="callout warn"><strong>演算時の昇格:</strong> <code>byte</code> や <code>short</code> 同士の算術演算でも結果が通常 <code>int</code> になる点は頻出です。</div>
+<h3>final と var</h3><div class="code"><div class="codehead"><span>変数宣言</span><button class="copy">コピー</button></div><pre><code>final int LIMIT = 10;
+var name = "Java";   // String と推論</code></pre></div>
+<p><code>final</code> 変数は一度代入した参照・値を再代入できません。参照型の場合、参照先オブジェクトの内部まで自動的に不変になるわけではありません。<code>var</code> はローカル変数で使用でき、右辺から型が推論されます。</p>
+<h3>String は不変</h3><div class="code"><div class="codehead"><span>String</span><button class="copy">コピー</button></div><pre><code>String s = "java";
+s.toUpperCase();
+System.out.println(s); // java
+s = s.toUpperCase();
+System.out.println(s); // JAVA</code></pre></div>
+<p><code>String</code> のメソッドは元の文字列を書き換えず、新しい文字列を返すものが多いです。内容比較は <code>equals()</code>、参照比較は <code>==</code> です。</p>
+<h3>配列</h3><div class="code"><div class="codehead"><span>1次元・2次元配列</span><button class="copy">コピー</button></div><pre><code>int[] nums = {10, 20, 30};
+System.out.println(nums.length); // 3
+
+int[][] table = new int[2][];
+table[0] = new int[]{1, 2};
+table[1] = new int[]{3, 4, 5};</code></pre></div>
+<p>Javaの2次元配列は「配列の配列」です。各行の長さは同じでなくても構いませんし、行そのものが <code>null</code> のこともあります。配列は <code>length</code> フィールド、<code>String</code> は <code>length()</code> メソッドという違いにも注意します。</p>
+<h3>ラッパークラスとオートボクシング</h3><div class="code"><div class="codehead"><span>Integer</span><button class="copy">コピー</button></div><pre><code>Integer x = 10; // int → Integer
+int y = x;      // Integer → int</code></pre></div>
+<p>Collectionsはプリミティブ型を型引数にできないため、<code>List&lt;Integer&gt;</code> のようにラッパークラスを使います。</p></section>
+
+<section id="control"><div class="kicker">Language · Control Flow</div><h2>3. if / switch / loop / boolean式</h2>
+<h3>if と比較</h3><div class="code"><div class="codehead"><span>if</span><button class="copy">コピー</button></div><pre><code>if (score &gt;= 80) {
+    System.out.println("A");
+} else if (score &gt;= 60) {
+    System.out.println("B");
+} else {
+    System.out.println("C");
+}</code></pre></div>
+<p>Javaの <code>if</code> 条件は <code>boolean</code> でなければなりません。C系言語のように <code>if (1)</code> は書けません。</p>
+<h3>&amp;&amp; と || は短絡評価</h3><div class="code"><div class="codehead"><span>short-circuit</span><button class="copy">コピー</button></div><pre><code>String text = null;
+if (text != null &amp;&amp; text.length() &gt; 0) {
+    System.out.println(text);
+}</code></pre></div>
+<p><code>&amp;&amp;</code> は左がfalseなら右を評価せず、<code>||</code> は左がtrueなら右を評価しません。nullチェックや安全なキャスト判定で重要です。<code>&amp;</code> / <code>|</code> はbooleanにも使えますが、両辺を評価します。</p>
+<h3>代入式と比較式</h3><div class="code"><div class="codehead"><span>= と ==</span><button class="copy">コピー</button></div><pre><code>boolean flag = true;
+if (flag = false) {    // 代入。式の値は false
+    System.out.println("x");
+}
+if (flag == false) {   // 比較
+    System.out.println("y");
+}</code></pre></div>
+<h3>switch式</h3><div class="code"><div class="codehead"><span>Java 17 switch</span><button class="copy">コピー</button></div><pre><code>String label = switch (day) {
+    case 1 -&gt; "Mon";
+    case 2 -&gt; "Tue";
+    default -&gt; "Other";
+};</code></pre></div>
+<p>矢印形式では従来の <code>case:</code> のような意図しないフォールスルーを避けられます。ブロックから値を返す場合は <code>yield</code> を使います。</p>
+<h3>for / 拡張for / while</h3><div class="code"><div class="codehead"><span>loop</span><button class="copy">コピー</button></div><pre><code>for (int i = 0; i &lt; list.size(); i++) {
+    System.out.println(list.get(i));
+}
+
+for (String s : list) {
+    System.out.println(s);
+}
+
+int n = 0;
+while (n &lt; 3) {
+    n++;
+}</code></pre></div>
+<p><code>break</code> はループを終了し、<code>continue</code> は現在の反復の残りを飛ばして次へ進みます。Listをindexで削除しながら走査すると要素が左へ詰まるため、indexの増分に注意します。</p></section>
+
+<section id="oop"><div class="kicker">Object Oriented</div><h2>4. クラス・オブジェクト・this・static・interface</h2>
+<h3>クラスは設計、オブジェクトは実体</h3><div class="code"><div class="codehead"><span>class</span><button class="copy">コピー</button></div><pre><code>class User {
+    private String name;
+
+    User(String name) {
+        this.name = name;
+    }
+
+    String getName() {
+        return name;
+    }
+}
+
+User u = new User("Alice");</code></pre></div>
+<p><code>this</code> は「現在のオブジェクト」を表します。引数とフィールドが同名のとき、<code>this.name</code> でフィールドを明示できます。</p>
+<h3>インスタンスメンバとstaticメンバ</h3><div class="tablewrap"><table><thead><tr><th></th><th>インスタンス</th><th>static</th></tr></thead><tbody><tr><td>所属</td><td>各オブジェクト</td><td>クラス</td></tr><tr><td>呼出し例</td><td><code>obj.work()</code></td><td><code>Math.max(...)</code></td></tr><tr><td><code>this</code></td><td>使える</td><td>使えない</td></tr></tbody></table></div>
+<div class="callout warn"><strong>頻出:</strong> staticメソッドから、オブジェクトを指定せずにインスタンスフィールドや <code>this</code> を参照することはできません。</div>
+<h3>アクセス修飾子</h3><div class="tablewrap"><table><thead><tr><th>修飾子</th><th>大まかな範囲</th></tr></thead><tbody><tr><td><code>public</code></td><td>どこからでも</td></tr><tr><td><code>protected</code></td><td>同一パッケージ + 継承関係</td></tr><tr><td>指定なし</td><td>同一パッケージ</td></tr><tr><td><code>private</code></td><td>同じトップレベルクラス内</td></tr></tbody></table></div>
+<h3>interface</h3><div class="code"><div class="codehead"><span>interface</span><button class="copy">コピー</button></div><pre><code>interface Runner {
+    void run(); // 暗黙に public abstract
+}
+
+class Dog implements Runner {
+    @Override
+    public void run() {
+        System.out.println("run");
+    }
+}</code></pre></div>
+<p>interfaceの通常の抽象メソッドは暗黙に <code>public abstract</code> なので、実装側でアクセス範囲を狭くできません。<code>default</code> メソッドや <code>static</code> メソッドも定義できます。</p>
+<h3>record と enum</h3><p><code>record</code> は主にデータ保持用の型を簡潔に宣言する仕組み、<code>enum</code> は有限個の定数候補を型安全に表す仕組みです。どちらも通常のクラス同様にメソッドを持てます。</p></section>
+
+<section id="exception"><div class="kicker">Language · Exceptions &amp; Generics</div><h2>6. 例外・try/catch・Generics</h2>
+<h3>checked例外とunchecked例外</h3><div class="tablewrap"><table><thead><tr><th>分類</th><th>例</th><th>特徴</th></tr></thead><tbody><tr><td>checked</td><td><code>IOException</code></td><td>catchするかthrows宣言が必要</td></tr><tr><td>unchecked</td><td><code>NullPointerException</code>, <code>IllegalArgumentException</code></td><td>コンパイラはcatchを強制しない</td></tr></tbody></table></div>
+<h3>throw と throws</h3><div class="code"><div class="codehead"><span>例外を投げる</span><button class="copy">コピー</button></div><pre><code>void load() throws IOException {
+    if (bad) {
+        throw new IOException("failed");
+    }
+}</code></pre></div>
+<p><code>throw</code> は例外オブジェクトを実際に投げ、<code>throws</code> はメソッド宣言で「この例外を呼出し側へ伝える可能性がある」と示します。</p>
+<h3>try / catch / finally</h3><div class="code"><div class="codehead"><span>例外処理</span><button class="copy">コピー</button></div><pre><code>try {
+    int n = Integer.parseInt(text);
+} catch (NumberFormatException e) {
+    System.out.println("数字ではありません");
+} finally {
+    System.out.println("終了処理");
+}</code></pre></div>
+<p><code>finally</code> は原則として正常終了・例外発生のどちらでも実行されます。リソース解放には <code>try-with-resources</code> を優先します。</p>
+<h3>Genericsの目的</h3><div class="code"><div class="codehead"><span>型安全なList</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
+names.add("Alice");
+String name = names.get(0);</code></pre></div>
+<p>Genericsは「中に入る型」をコンパイル時に制約し、不要なキャストや実行時の型エラーを減らします。</p>
+<h3>型パラメータとワイルドカード</h3><div class="code"><div class="codehead"><span>extends / super wildcard</span><button class="copy">コピー</button></div><pre><code>List&lt;? extends Number&gt; src;
+List&lt;? super Integer&gt; dest;</code></pre></div>
+<p><code>? extends Number</code> は主にNumberとして読み出す側、<code>? super Integer</code> はIntegerを書き込む側で使います。覚え方はPECS（Producer Extends, Consumer Super）です。</p>
+<div class="callout warn"><strong>不変性:</strong> <code>List&lt;Integer&gt;</code> は <code>List&lt;Number&gt;</code> のサブタイプではありません。</div></section>
+
+<section id="collections"><div class="kicker">Collections</div><h2>7. Collection Framework 全体像</h2>
+<p>Collection Frameworkでは、目的に応じて「順序」「重複」「キー検索」「取り出し方向」を先に決めると選択しやすくなります。</p>
+<div class="tablewrap"><table><thead><tr><th>目的</th><th>代表</th><th>主な特徴</th></tr></thead><tbody><tr><td>順番付き一覧</td><td><code>ArrayList</code></td><td>重複可・indexあり</td></tr><tr><td>重複排除</td><td><code>HashSet</code></td><td>平均O(1)検索</td></tr><tr><td>ソート済み集合</td><td><code>TreeSet</code></td><td>自然順序/Comparator</td></tr><tr><td>キー→値</td><td><code>HashMap</code></td><td>キー重複不可・値は上書き</td></tr><tr><td>FIFO / Stack</td><td><code>ArrayDeque</code></td><td>両端操作が高速</td></tr></tbody></table></div>
+<h3>equals と hashCode</h3><p><code>HashSet</code> や <code>HashMap</code> は、要素・キーの同一性判定に <code>equals()</code> と <code>hashCode()</code> を使います。値オブジェクトで <code>equals()</code> をオーバーライドするなら、通常 <code>hashCode()</code> も整合するように実装します。</p>
+<h3>Comparable と Comparator</h3><div class="cards"><div class="card"><strong>Comparable</strong><p>型自身が「自然順序」を定義。<code>compareTo</code>。</p></div><div class="card"><strong>Comparator</strong><p>外部から並び順を与える。複数の並び方を使い分けやすい。</p></div></div>
+<div class="callout"><strong>複雑度は目安:</strong> Hash系の検索は平均O(1)、Tree系はO(log n)、ArrayListのindex取得はO(1)が代表的です。</div></section>
+
+<section id="list"><div class="kicker">Collections · List</div><h2>8. List — ArrayList / LinkedList / removeの罠</h2>
+<h3>ArrayList</h3><p>連続したindexで要素を扱う用途の第一候補です。末尾追加やindex参照は扱いやすい一方、中間の挿入・削除では後続要素の移動が発生します。</p>
+<div class="code"><div class="codehead"><span>ArrayList</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
+names.add("A");
+names.add("B");
+names.set(1, "C");
+System.out.println(names.get(0));</code></pre></div>
+<h3>remove(int) と remove(Object)</h3><div class="code"><div class="codehead"><span>Integer Listの注意</span><button class="copy">コピー</button></div><pre><code>List&lt;Integer&gt; nums = new ArrayList&lt;&gt;(List.of(10, 20, 30));
+nums.remove(1);                 // index 1 を削除 → 20
+nums.remove(Integer.valueOf(30)); // 値 30 を削除</code></pre></div>
+<p><code>List&lt;Integer&gt;</code> では数値リテラルがindex版に解決されることがあるため、値削除では <code>Integer.valueOf</code> を明示すると安全です。</p>
+<h3>削除しながら走査</h3><p>拡張for中に構造変更すると <code>ConcurrentModificationException</code> の原因になります。条件削除なら <code>removeIf</code> や <code>Iterator.remove()</code> を検討します。</p>
+<h3>List.of</h3><p><code>List.of(...)</code> が返すListは変更不可です。<code>add</code> や <code>remove</code> を行うと <code>UnsupportedOperationException</code> になります。</p></section>
+
+<section id="set"><div class="kicker">Collections · Set</div><h2>9. Set — HashSet / LinkedHashSet / TreeSet</h2>
+<p>Setは「同じ要素を複数保持しない」集合です。どの順序を必要とするかで実装を選びます。</p>
+<div class="tablewrap"><table><thead><tr><th>実装</th><th>順序</th><th>特徴</th></tr></thead><tbody><tr><td><code>HashSet</code></td><td>保証なし</td><td>平均O(1)の検索</td></tr><tr><td><code>LinkedHashSet</code></td><td>挿入順</td><td>順序も維持したい場合</td></tr><tr><td><code>TreeSet</code></td><td>ソート順</td><td>O(log n)、範囲検索も可能</td></tr></tbody></table></div>
+<h3>TreeSetの代表API</h3><div class="code"><div class="codehead"><span>NavigableSet</span><button class="copy">コピー</button></div><pre><code>TreeSet&lt;Integer&gt; set = new TreeSet&lt;&gt;(List.of(10, 20, 30));
+set.first();      // 10
+set.last();       // 30
+set.lower(20);    // 10
+set.higher(20);   // 30
+set.floor(25);    // 20
+set.ceiling(25);  // 30</code></pre></div>
+<p><code>TreeSet</code> では要素同士を比較できる必要があります。自然順序がない型ならComparatorを与えます。</p></section>
+
+<section id="map"><div class="kicker">Collections · Map</div><h2>10. Map — HashMap / TreeMap / compute / merge</h2>
+<p>Mapはキーと値の対応を保持します。キーは重複できず、同じキーへ <code>put</code> すると値が上書きされます。</p>
+<div class="code"><div class="codehead"><span>基本操作</span><button class="copy">コピー</button></div><pre><code>Map&lt;String, Integer&gt; scores = new HashMap&lt;&gt;();
+scores.put("A", 10);
+scores.put("A", 20); // 上書き
+System.out.println(scores.size());   // 1
+System.out.println(scores.get("A")); // 20</code></pre></div>
+<h3>存在判定</h3><p><code>get(key) == null</code> だけでは「キーがない」のか「null値が入っている」のか区別できない場合があります。必要なら <code>containsKey</code> を使います。</p>
+<h3>entrySetで走査</h3><div class="code"><div class="codehead"><span>Map.Entry</span><button class="copy">コピー</button></div><pre><code>for (Map.Entry&lt;String, Integer&gt; e : scores.entrySet()) {
+    System.out.println(e.getKey() + ":" + e.getValue());
+}</code></pre></div>
+<h3>computeIfAbsent と merge</h3><div class="code"><div class="codehead"><span>集計・初期化</span><button class="copy">コピー</button></div><pre><code>Map&lt;String, List&lt;String&gt;&gt; groups = new HashMap&lt;&gt;();
+groups.computeIfAbsent("A", k -&gt; new ArrayList&lt;&gt;()).add("x");
+
+Map&lt;String, Integer&gt; counts = new HashMap&lt;&gt;();
+counts.merge("apple", 1, Integer::sum);</code></pre></div>
+<p><code>TreeMap</code> はキー順に保持します。キー比較可能性の条件はTreeSetと同様です。</p></section>
+
+<section id="queue"><div class="kicker">Collections · Queue / Deque</div><h2>11. Queue / Deque — FIFO と Stack</h2>
+<p>Queueは先入れ先出し（FIFO）、Dequeは両端キューです。<code>ArrayDeque</code> はQueue用途にもStack用途にも使えます。</p>
+<div class="tablewrap"><table><thead><tr><th>操作</th><th>例外を投げる系</th><th>特別値を返す系</th></tr></thead><tbody><tr><td>追加</td><td><code>add</code></td><td><code>offer</code></td></tr><tr><td>削除して取得</td><td><code>remove</code></td><td><code>poll</code></td></tr><tr><td>先頭を見る</td><td><code>element</code></td><td><code>peek</code></td></tr></tbody></table></div>
+<div class="code"><div class="codehead"><span>Queue</span><button class="copy">コピー</button></div><pre><code>Deque&lt;String&gt; q = new ArrayDeque&lt;&gt;();
+q.offerLast("A");
+q.offerLast("B");
+System.out.println(q.pollFirst()); // A</code></pre></div>
+<div class="code"><div class="codehead"><span>Stackとして使う</span><button class="copy">コピー</button></div><pre><code>Deque&lt;String&gt; stack = new ArrayDeque&lt;&gt;();
+stack.push("A");
+stack.push("B");
+System.out.println(stack.pop()); // B</code></pre></div>
+<p>新規コードで単純なStack用途なら、古い <code>Stack</code> クラスより <code>Deque</code> / <code>ArrayDeque</code> が一般的です。</p></section>
+
+<section id="lambda"><div class="kicker">Functional · Lambda</div><h2>12. ラムダ式を詳しく — 型推論・effectively final・メソッド参照</h2>
+<p>ラムダ式は「処理を値として渡す」ための構文です。ただしラムダ式単独に独立した型があるのではなく、代入先や引数位置から決まる<strong>関数型interface</strong>がターゲット型になります。</p>
+<h3>基本構文</h3><div class="code"><div class="codehead"><span>lambda syntax</span><button class="copy">コピー</button></div><pre><code>Predicate&lt;String&gt; p1 = s -&gt; s.isBlank();
+Predicate&lt;String&gt; p2 = (String s) -&gt; s.isBlank();
+Function&lt;String, Integer&gt; len = s -&gt; s.length();
+Consumer&lt;String&gt; print = s -&gt; System.out.println(s);
+Supplier&lt;String&gt; hello = () -&gt; "hello";</code></pre></div>
+<p>引数が1つで型を省略する場合は丸括弧も省略できます。複数引数では括弧が必要です。処理が1式なら波括弧・<code>return</code> を省略できます。</p>
+<h3>ブロックラムダ</h3><div class="code"><div class="codehead"><span>block lambda</span><button class="copy">コピー</button></div><pre><code>Function&lt;Integer, Integer&gt; doubleIt = n -&gt; {
+    int result = n * 2;
+    return result;
+};</code></pre></div>
+<p>値を返す関数型interfaceでブロック本体を使う場合、必要な経路で値を返さなければコンパイルエラーになります。</p>
+<h3>effectively final</h3><div class="code"><div class="codehead"><span>ローカル変数のキャプチャ</span><button class="copy">コピー</button></div><pre><code>int limit = 3;
+Predicate&lt;String&gt; longEnough = s -&gt; s.length() &gt;= limit;
+// limit = 5; // これを書くと effectively final でなくなり、ラムダから参照不可</code></pre></div>
+<p>ラムダから参照するローカル変数は、<code>final</code> と明記されているか、初期化後に再代入されない<strong>effectively final</strong>である必要があります。フィールドにはこの制約はありません。</p>
+<h3>ラムダ内の this</h3><p>ラムダ式は匿名クラスと異なり、独自の <code>this</code> を作りません。ラムダ内の <code>this</code> は、それを囲むインスタンスの <code>this</code> を指します。</p>
+<h3>メソッド参照</h3><div class="tablewrap"><table><thead><tr><th>種類</th><th>例</th><th>対応するイメージ</th></tr></thead><tbody><tr><td>static</td><td><code>Integer::parseInt</code></td><td><code>s -&gt; Integer.parseInt(s)</code></td></tr><tr><td>特定インスタンス</td><td><code>System.out::println</code></td><td><code>x -&gt; System.out.println(x)</code></td></tr><tr><td>任意インスタンス</td><td><code>String::length</code></td><td><code>s -&gt; s.length()</code></td></tr><tr><td>コンストラクタ</td><td><code>ArrayList::new</code></td><td><code>() -&gt; new ArrayList&lt;&gt;()</code></td></tr></tbody></table></div>
+<h3>ターゲット型が必要</h3><div class="code"><div class="codehead"><span>target typing</span><button class="copy">コピー</button></div><pre><code>// var f = x -&gt; x + 1; // ラムダだけでは型を決められない
+Function&lt;Integer, Integer&gt; f = x -&gt; x + 1;</code></pre></div>
+<h3>例外とラムダ</h3><p>ラムダ本体からchecked例外を外へ投げられるかは、ターゲットとなる関数型interfaceの抽象メソッドの <code>throws</code> 宣言に依存します。標準の <code>Function</code> などは一般にchecked例外を宣言していません。</p>
+<div class="callout warn"><strong>検定での見方:</strong> まず「どの関数型interfaceに代入されるか」を確定し、その抽象メソッドの引数型・戻り値型とラムダ本体が一致するかを確認します。</div></section>
+
+<section id="functional"><div class="kicker">Functional · Interfaces</div><h2>13. 標準の関数型interfaceを使い分ける</h2>
+<div class="tablewrap"><table><thead><tr><th>型</th><th>形</th><th>代表メソッド</th><th>用途</th></tr></thead><tbody><tr><td><code>Predicate&lt;T&gt;</code></td><td>T → boolean</td><td><code>test</code></td><td>条件判定</td></tr><tr><td><code>Function&lt;T,R&gt;</code></td><td>T → R</td><td><code>apply</code></td><td>変換</td></tr><tr><td><code>Consumer&lt;T&gt;</code></td><td>T → void</td><td><code>accept</code></td><td>値を使う</td></tr><tr><td><code>Supplier&lt;T&gt;</code></td><td>() → T</td><td><code>get</code></td><td>値を作る</td></tr><tr><td><code>UnaryOperator&lt;T&gt;</code></td><td>T → T</td><td><code>apply</code></td><td>同じ型へ変換</td></tr><tr><td><code>BinaryOperator&lt;T&gt;</code></td><td>(T,T) → T</td><td><code>apply</code></td><td>同型2値を1値へ</td></tr></tbody></table></div>
+<h3>合成</h3><div class="code"><div class="codehead"><span>Predicate / Function composition</span><button class="copy">コピー</button></div><pre><code>Predicate&lt;String&gt; nonEmpty = s -&gt; !s.isEmpty();
+Predicate&lt;String&gt; shortText = s -&gt; s.length() &lt; 10;
+Predicate&lt;String&gt; ok = nonEmpty.and(shortText);
+
+Function&lt;String, String&gt; trim = String::trim;
+Function&lt;String, Integer&gt; length = String::length;
+Function&lt;String, Integer&gt; trimmedLength = trim.andThen(length);</code></pre></div>
+<h3>Bi系</h3><p>2引数版として <code>BiPredicate&lt;T,U&gt;</code>、<code>BiFunction&lt;T,U,R&gt;</code>、<code>BiConsumer&lt;T,U&gt;</code> があります。</p>
+<h3>プリミティブ特殊化</h3><p><code>IntPredicate</code>、<code>IntFunction</code>、<code>ToIntFunction</code> などは、不要なboxing/unboxingを避けるための特殊化です。</p>
+<div class="callout"><strong>関数型interfaceの条件:</strong> 抽象メソッドが実質1つであること。default/staticメソッドが複数あっても構いません。</div></section>
+
+<section id="stream"><div class="kicker">Functional · Stream</div><h2>14. Stream API — パイプライン・遅延評価・終端操作</h2>
+<p>StreamはCollectionそのものではなく、要素列に対する処理パイプラインです。元データ → 中間操作 → 終端操作という形で考えます。</p>
+<div class="code"><div class="codehead"><span>pipeline</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; result = names.stream()
+    .filter(s -&gt; !s.isBlank())
+    .map(String::trim)
+    .map(String::toUpperCase)
+    .distinct()
+    .sorted()
+    .toList();</code></pre></div>
+<h3>中間操作と終端操作</h3><div class="tablewrap"><table><thead><tr><th>中間操作</th><th>終端操作</th></tr></thead><tbody><tr><td><code>filter</code>, <code>map</code>, <code>flatMap</code>, <code>distinct</code>, <code>sorted</code>, <code>limit</code></td><td><code>toList</code>, <code>collect</code>, <code>count</code>, <code>forEach</code>, <code>reduce</code>, <code>findFirst</code></td></tr></tbody></table></div>
+<p>中間操作は基本的に遅延評価され、終端操作が呼ばれるまで処理が実行されません。Streamは一度終端操作すると再利用できません。</p>
+<h3>map と flatMap</h3><div class="code"><div class="codehead"><span>flatMap</span><button class="copy">コピー</button></div><pre><code>List&lt;List&lt;String&gt;&gt; nested = List.of(List.of("A", "B"), List.of("C"));
+List&lt;String&gt; flat = nested.stream()
+    .flatMap(List::stream)
+    .toList();</code></pre></div>
+<h3>reduce</h3><div class="code"><div class="codehead"><span>合計</span><button class="copy">コピー</button></div><pre><code>int sum = List.of(1, 2, 3).stream()
+    .reduce(0, Integer::sum);</code></pre></div>
+<h3>collect と groupingBy</h3><div class="code"><div class="codehead"><span>groupingBy</span><button class="copy">コピー</button></div><pre><code>Map&lt;Integer, List&lt;String&gt;&gt; byLength = names.stream()
+    .collect(Collectors.groupingBy(String::length));</code></pre></div>
+<h3>Optional</h3><p><code>findFirst()</code> や引数なし <code>reduce()</code> などは、結果が存在しない可能性を表す <code>Optional</code> を返します。無条件に <code>get()</code> するより、<code>orElse</code>、<code>orElseGet</code>、<code>ifPresent</code> などを使います。</p>
+<h3>副作用を減らす</h3><p><code>map</code> や <code>filter</code> の中で外部状態を書き換えると追跡が難しくなります。特にparallel streamでは共有可変状態が競合の原因になります。</p>
+<div class="callout warn"><strong>頻出:</strong> <code>map</code> は「要素を別の値へ変換」、<code>filter</code> は「要素を残すか捨てるか」、<code>forEach</code> は終端操作です。</div></section>
+
+<section id="datetime"><div class="kicker">Practical · Date / Time &amp; Files</div><h2>15. Date / Time・Path・Files</h2>
+<h3>java.time の主要型</h3><div class="tablewrap"><table><thead><tr><th>型</th><th>意味</th></tr></thead><tbody><tr><td><code>LocalDate</code></td><td>日付のみ</td></tr><tr><td><code>LocalTime</code></td><td>時刻のみ</td></tr><tr><td><code>LocalDateTime</code></td><td>日付+時刻、タイムゾーンなし</td></tr><tr><td><code>Instant</code></td><td>UTC基準の瞬間</td></tr><tr><td><code>ZonedDateTime</code></td><td>タイムゾーン付き日時</td></tr><tr><td><code>Period</code></td><td>年月日ベースの差</td></tr><tr><td><code>Duration</code></td><td>時間ベースの差</td></tr></tbody></table></div>
+<p>java.timeの主要クラスは不変です。<code>plusDays</code> などは元の値を変更せず、新しいオブジェクトを返します。</p>
+<div class="code"><div class="codehead"><span>immutable</span><button class="copy">コピー</button></div><pre><code>LocalDate d = LocalDate.of(2026, 9, 11);
+d.plusDays(1);
+System.out.println(d); // 2026-09-11
+d = d.plusDays(1);</code></pre></div>
+<h3>format / parse</h3><div class="code"><div class="codehead"><span>DateTimeFormatter</span><button class="copy">コピー</button></div><pre><code>DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+String text = LocalDate.of(2026, 9, 11).format(f);
+LocalDate parsed = LocalDate.parse("2026/09/11", f);</code></pre></div>
+<h3>Path / Files</h3><div class="code"><div class="codehead"><span>file I/O</span><button class="copy">コピー</button></div><pre><code>Path path = Path.of("data.txt");
+Files.writeString(path, "hello");
+String text = Files.readString(path);</code></pre></div>
+<p>多くのFiles操作は <code>IOException</code> を投げる可能性があり、checked例外として処理が必要です。相対Pathは実行時のカレントディレクトリを基準に解決されます。</p></section>
+
+<section id="thread"><div class="kicker">Practical · Thread</div><h2>16. Thread API — start / run / sleep / join / synchronized</h2>
+<h3>Threadを開始する</h3><div class="code"><div class="codehead"><span>Thread + Runnable</span><button class="copy">コピー</button></div><pre><code>Thread worker = new Thread(() -&gt; {
+    System.out.println("worker");
+});
+worker.start();
+worker.join();</code></pre></div>
+<p><code>start()</code> は新しいスレッドを開始し、その新しいスレッド上で <code>run()</code> が呼ばれます。<code>run()</code> を直接呼ぶだけでは通常のメソッド呼出しです。</p>
+<h3>代表API</h3><div class="tablewrap"><table><thead><tr><th>API</th><th>意味</th></tr></thead><tbody><tr><td><code>start()</code></td><td>新しいスレッドを開始</td></tr><tr><td><code>sleep(ms)</code></td><td>現在実行中のスレッドを一定時間休止</td></tr><tr><td><code>join()</code></td><td>対象スレッドの終了を待つ</td></tr><tr><td><code>interrupt()</code></td><td>割り込みを要求</td></tr><tr><td><code>currentThread()</code></td><td>現在のThreadを取得</td></tr><tr><td><code>isAlive()</code></td><td>開始済みでまだ終了していないか</td></tr></tbody></table></div>
+<h3>sleepは誰を止める？</h3><p><code>Thread.sleep(...)</code> はstaticメソッドで、呼出し元の<strong>現在のスレッド</strong>を休止します。Threadインスタンスを指定して別スレッドを眠らせるAPIではありません。</p>
+<h3>競合状態</h3><div class="code"><div class="codehead"><span>共有状態</span><button class="copy">コピー</button></div><pre><code>class Counter {
+    private int value;
+
+    synchronized void increment() {
+        value++;
+    }
+}</code></pre></div>
+<p>複数スレッドが同じ可変データを同時更新すると、読み取り→計算→書き込みが割り込まれて期待と違う結果になることがあります。<code>synchronized</code> は排他制御と可視性を提供する基本手段です。</p>
+<h3>interrupt</h3><p><code>interrupt()</code> は強制終了ではなく割り込み要求です。<code>sleep</code> や <code>join</code> 中なら <code>InterruptedException</code> で通知される場合があります。</p>
+<h3>実行順序</h3><div class="callout warn"><strong>重要:</strong> 複数スレッドの出力順は、明示的な同期がなければ通常保証されません。「startした順＝終了する順」ではありません。</div></section>
+
+<section id="cheat"><div class="kicker">Reference</div><h2>17. 迷ったときの総合チートシート</h2>
+<div class="tablewrap"><table><thead><tr><th>見たいこと</th><th>第一候補</th><th>確認ポイント</th></tr></thead><tbody><tr><td>継承</td><td><code>extends</code></td><td>宣言型/実体型、override、super</td></tr><tr><td>interface実装</td><td><code>implements</code></td><td>実装メソッドはpublic</td></tr><tr><td>一覧</td><td><code>ArrayList</code></td><td>index、重複可</td></tr><tr><td>重複排除</td><td><code>HashSet</code></td><td>equals/hashCode</td></tr><tr><td>ソート済み集合</td><td><code>TreeSet</code></td><td>比較可能性</td></tr><tr><td>キー検索</td><td><code>HashMap</code></td><td>同じキーは上書き</td></tr><tr><td>FIFO/Stack</td><td><code>ArrayDeque</code></td><td>offer/poll, push/pop</td></tr><tr><td>条件を渡す</td><td><code>Predicate&lt;T&gt;</code></td><td>T→boolean</td></tr><tr><td>値を変換</td><td><code>Function&lt;T,R&gt;</code></td><td>T→R</td></tr><tr><td>要素列変換</td><td><code>Stream</code></td><td>中間操作→終端操作</td></tr><tr><td>日時</td><td><code>java.time</code></td><td>不変オブジェクト</td></tr><tr><td>別スレッド開始</td><td><code>Thread.start()</code></td><td><code>run()</code>直接呼出しとの違い</td></tr></tbody></table></div>
+<h3>コード読解の順番</h3><div class="steps"><div class="step">まずコンパイル可能か確認する。</div><div class="step">変数の宣言型と実体型を分ける。</div><div class="step">staticかinstanceかを分ける。</div><div class="step">Collectionなら要素数・順序・上書きを追う。</div><div class="step">boolean式は短絡評価を左から追う。</div><div class="step">スレッドは順序が保証される箇所だけ断定する。</div></div></section>

@@ -1,0 +1,80 @@
+<section id="deep-guide"><div class="kicker">Deep Dive</div><h2>全章詳説 — 基礎からラムダ・Stream・Threadまで</h2><p>ここからは、各章で「なぜそうなるのか」「どこで間違えやすいか」まで踏み込んで説明します。コードを読むときは、型・評価順序・実行時の実体・変更可能性の4点を意識してください。</p></section>
+
+<section id="deep-jvm"><div class="kicker">Deep Dive · Java Platform</div><h2>Java / JVM / JDK を詳しく</h2><h3>ソースから実行まで</h3><div class="steps"><div class="step"><code>.java</code> にソースを書く。</div><div class="step"><code>javac</code> がバイトコードの <code>.class</code> に変換する。</div><div class="step">JVM がクラスをロードし、バイトコードを実行する。</div></div><div class="tablewrap"><table><thead><tr><th>用語</th><th>役割</th><th>初心者が混同しやすい点</th></tr></thead><tbody><tr><td>JDK</td><td>開発用ツール一式</td><td><code>javac</code> などを含む</td></tr><tr><td>JVM</td><td>バイトコードを実行</td><td>Javaソースを直接実行するものではない</td></tr><tr><td>JRE</td><td>実行環境という概念</td><td>現在のJDK配布では独立製品として意識しないことも多い</td></tr></tbody></table></div><div class="callout"><strong>要点:</strong> Javaは「ソース → バイトコード → JVMで実行」という2段階構造です。</div></section>
+
+<section id="deep-syntax"><div class="kicker">Deep Dive · Syntax</div><h2>変数・型・演算子を詳しく</h2><h3>プリミティブ型と参照型</h3><p><code>int</code> や <code>boolean</code> は値そのものを扱うプリミティブ型です。<code>String</code>、配列、クラスのインスタンスは参照型で、変数にはオブジェクトへの参照が入ります。</p><div class="code"><div class="codehead"><span>参照の共有</span><button class="copy">コピー</button></div><pre><code>StringBuilder a = new StringBuilder("A");
+StringBuilder b = a;
+b.append("B");
+System.out.println(a); // AB</code></pre></div><h3>== と equals</h3><p>プリミティブ型の <code>==</code> は値比較です。参照型の <code>==</code> は同じオブジェクトを指すかを比較します。内容比較は、その型が提供する <code>equals()</code> を使います。</p><h3>暗黙の型変換とキャスト</h3><div class="code"><div class="codehead"><span>数値変換</span><button class="copy">コピー</button></div><pre><code>int n = 10;
+long x = n;        // widening: 自動
+int y = (int) x;  // narrowing: 明示キャスト</code></pre></div><h3>インクリメント</h3><div class="code"><div class="codehead"><span>前置・後置</span><button class="copy">コピー</button></div><pre><code>int i = 1;
+int a = i++; // a=1, i=2
+int b = ++i; // i=3, b=3</code></pre></div><div class="callout warn"><strong>試験で注意:</strong> 代入式、前置/後置インクリメント、短絡評価が組み合わさると追跡ミスが起きやすくなります。</div></section>
+
+<section id="deep-control"><div class="kicker">Deep Dive · Control Flow</div><h2>if / switch / for / while を詳しく</h2><h3>if はboolean式だけ</h3><p>Javaの <code>if</code> 条件には必ず <code>boolean</code> が必要です。C系言語のように数値を真偽として扱えません。</p><h3>&amp;&amp; と || の短絡評価</h3><div class="code"><div class="codehead"><span>short-circuit</span><button class="copy">コピー</button></div><pre><code>String s = null;
+if (s != null && s.length() > 0) {
+    System.out.println(s);
+}</code></pre></div><p><code>&amp;&amp;</code> は左がfalseなら右を評価しません。<code>||</code> は左がtrueなら右を評価しません。</p><h3>for の評価順序</h3><p><code>for (初期化; 条件; 更新)</code> は「初期化 → 条件 → 本体 → 更新 → 条件…」の順です。<code>continue</code> でも更新式へ進みます。</p><h3>break / continue</h3><div class="tablewrap"><table><thead><tr><th>命令</th><th>意味</th></tr></thead><tbody><tr><td><code>break</code></td><td>現在のループまたはswitchを終了</td></tr><tr><td><code>continue</code></td><td>現在回の残りを飛ばして次の反復へ</td></tr></tbody></table></div></section>
+
+<section id="deep-oop"><div class="kicker">Deep Dive · OOP</div><h2>クラス・オブジェクト・this・static を詳しく</h2><h3>クラスとインスタンス</h3><p>クラスは設計図、インスタンスは実体です。インスタンスフィールドは各オブジェクトごとに別々、<code>static</code> フィールドはクラス全体で共有されます。</p><div class="code"><div class="codehead"><span>instance vs static</span><button class="copy">コピー</button></div><pre><code>class Counter {
+    int value;          // 各インスタンスに1つ
+    static int total;   // クラスに1つ
+}</code></pre></div><h3>this</h3><p><code>this</code> は「現在のインスタンス」を指します。<code>static</code> メソッドには現在のインスタンスがないため <code>this</code> は使えません。</p><h3>オーバーロード</h3><p>同じメソッド名でも引数リストが異なれば複数定義できます。戻り値だけ違う定義はオーバーロードになりません。</p><h3>カプセル化</h3><p>フィールドを <code>private</code> にして、必要な操作だけメソッド経由で公開すると、不正な状態変更を防ぎやすくなります。</p></section>
+
+<section id="deep-exception"><div class="kicker">Deep Dive · Exceptions / Generics</div><h2>例外とGenericsを詳しく</h2><h3>checked / unchecked</h3><div class="tablewrap"><table><thead><tr><th>分類</th><th>例</th><th>特徴</th></tr></thead><tbody><tr><td>checked</td><td><code>IOException</code></td><td>捕捉またはthrows宣言が必要</td></tr><tr><td>unchecked</td><td><code>NullPointerException</code>, <code>IllegalArgumentException</code></td><td>コンパイラが捕捉を強制しない</td></tr></tbody></table></div><h3>try / catch / finally</h3><p><code>finally</code> は通常、成功・失敗にかかわらず後処理を行う場所です。ファイルやストリームは <code>try-with-resources</code> を優先します。</p><div class="code"><div class="codehead"><span>try-with-resources</span><button class="copy">コピー</button></div><pre><code>try (var reader = Files.newBufferedReader(path)) {
+    System.out.println(reader.readLine());
+}</code></pre></div><h3>Generics</h3><p><code>List&lt;String&gt;</code> のように要素型を型パラメータとして指定し、コンパイル時に型安全性を高めます。</p><div class="callout warn"><strong>注意:</strong> <code>List&lt;Dog&gt;</code> は <code>List&lt;Animal&gt;</code> のサブタイプではありません。Genericsは基本的に不変です。</div></section>
+
+<section id="deep-collections"><div class="kicker">Deep Dive · Collections</div><h2>Collection Framework を詳しく</h2><h3>まず「順序」「重複」「キー」を見る</h3><div class="tablewrap"><table><thead><tr><th>型</th><th>順序</th><th>重複</th><th>用途</th></tr></thead><tbody><tr><td>List</td><td>あり</td><td>あり</td><td>順番付きデータ</td></tr><tr><td>Set</td><td>実装による</td><td>なし</td><td>一意な集合</td></tr><tr><td>Map</td><td>実装による</td><td>keyは一意</td><td>key→value</td></tr><tr><td>Queue/Deque</td><td>あり</td><td>あり得る</td><td>処理待ち・両端操作</td></tr></tbody></table></div><h3>実装を選ぶ基準</h3><p><code>ArrayList</code> は添字アクセスに強く、<code>HashSet</code>/<code>HashMap</code> は平均的に高速な検索、<code>TreeSet</code>/<code>TreeMap</code> はソート順を保ちます。</p></section>
+
+<section id="deep-list"><div class="kicker">Deep Dive · List</div><h2>Listを詳しく</h2><p>Listは順序を持ち、同じ値を複数保持できます。添字は0から始まります。</p><div class="code"><div class="codehead"><span>removeの違い</span><button class="copy">コピー</button></div><pre><code>List&lt;Integer&gt; list = new ArrayList&lt;&gt;(List.of(10, 20, 30));
+list.remove(1);                  // index 1 を削除 → 20
+list.remove(Integer.valueOf(30)); // 値30を削除</code></pre></div><div class="callout warn"><strong>重要:</strong> <code>List&lt;Integer&gt;</code> では <code>remove(1)</code> が「値1」ではなく「index 1」の削除になる点が典型的なひっかけです。</div><p>途中の要素を削除すると後続要素のindexが詰まるため、indexで走査しながら削除する場合は増分を慎重に扱います。</p></section>
+
+<section id="deep-set-map"><div class="kicker">Deep Dive · Set / Map</div><h2>Set・TreeSet・Map・HashMapを詳しく</h2><h3>HashSet</h3><p>重複要素を保持しません。反復順序は保証されません。</p><h3>TreeSet</h3><p>重複を除外し、自然順序またはComparatorによる順序で保持します。<code>first()</code>、<code>last()</code>、<code>lower()</code>、<code>higher()</code> などのナビゲーション操作が使えます。</p><h3>HashMap</h3><div class="code"><div class="codehead"><span>同じkeyは上書き</span><button class="copy">コピー</button></div><pre><code>Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+map.put("A", 10);
+map.put("A", 20);
+System.out.println(map.size());   // 1
+System.out.println(map.get("A")); // 20</code></pre></div><p>同じkeyへの <code>put</code> は要素数を増やさず、valueを置き換えます。HashMapの反復順序は保証されません。</p></section>
+
+<section id="deep-lambda"><div class="kicker">Deep Dive · Lambda</div><h2>ラムダ式を詳しく</h2><p>ラムダ式は「処理をオブジェクトとして渡す」ための簡潔な記法です。ラムダ式単体に型があるのではなく、代入先や引数位置から<strong>対象となる関数型interface</strong>が決まります。</p><h3>基本形</h3><div class="code"><div class="codehead"><span>lambda syntax</span><button class="copy">コピー</button></div><pre><code>() -&gt; System.out.println("run")
+x -&gt; x * 2
+(a, b) -&gt; a + b
+(String s) -&gt; s.length()</code></pre></div><h3>式ラムダとブロックラムダ</h3><div class="code"><div class="codehead"><span>expression / block</span><button class="copy">コピー</button></div><pre><code>Function&lt;String, Integer&gt; a = s -&gt; s.length();
+Function&lt;String, Integer&gt; b = s -&gt; {
+    int n = s.length();
+    return n;
+};</code></pre></div><p>式が1つなら中括弧と <code>return</code> を省略できます。ブロック形式で値を返すなら <code>return</code> が必要です。</p><h3>関数型interface</h3><p>抽象メソッドを1つだけ持つinterfaceを関数型interfaceとしてラムダの対象にできます。<code>default</code> や <code>static</code> メソッドがあっても、抽象メソッドが1つなら利用できます。</p><h3>effectively final</h3><div class="code"><div class="codehead"><span>captured local variable</span><button class="copy">コピー</button></div><pre><code>int base = 10;
+Function&lt;Integer, Integer&gt; add = x -&gt; x + base;
+// base = 20; // 再代入するとラムダから参照できない</code></pre></div><p>ラムダから参照するローカル変数は <code>final</code> または effectively final である必要があります。</p><h3>this の意味</h3><p>ラムダ式の <code>this</code> はラムダ自身ではなく、ラムダを囲んでいるインスタンスの <code>this</code> です。匿名クラスとは挙動が異なります。</p><h3>メソッド参照</h3><div class="tablewrap"><table><thead><tr><th>形</th><th>例</th></tr></thead><tbody><tr><td>static method</td><td><code>Integer::parseInt</code></td></tr><tr><td>特定インスタンスのmethod</td><td><code>System.out::println</code></td></tr><tr><td>任意インスタンスのmethod</td><td><code>String::length</code></td></tr><tr><td>constructor</td><td><code>ArrayList::new</code></td></tr></tbody></table></div><div class="callout"><strong>読み方:</strong> ラムダ問題では「入力型」「戻り値型」「副作用の有無」の3点を先に確認します。</div></section>
+
+<section id="deep-functional"><div class="kicker">Deep Dive · Functional Interface</div><h2>Predicate / Function / Consumer / Supplier を詳しく</h2><div class="tablewrap"><table><thead><tr><th>interface</th><th>抽象メソッド</th><th>入力→出力</th><th>典型用途</th></tr></thead><tbody><tr><td><code>Predicate&lt;T&gt;</code></td><td><code>test</code></td><td>T → boolean</td><td>条件判定</td></tr><tr><td><code>Function&lt;T,R&gt;</code></td><td><code>apply</code></td><td>T → R</td><td>変換</td></tr><tr><td><code>Consumer&lt;T&gt;</code></td><td><code>accept</code></td><td>T → void</td><td>消費・出力</td></tr><tr><td><code>Supplier&lt;T&gt;</code></td><td><code>get</code></td><td>() → T</td><td>生成</td></tr></tbody></table></div><h3>合成</h3><div class="code"><div class="codehead"><span>compose</span><button class="copy">コピー</button></div><pre><code>Predicate&lt;String&gt; notBlank = s -&gt; !s.isBlank();
+Predicate&lt;String&gt; longEnough = s -&gt; s.length() &gt;= 3;
+Predicate&lt;String&gt; valid = notBlank.and(longEnough);
+
+Function&lt;String, String&gt; trim = String::trim;
+Function&lt;String, Integer&gt; len = String::length;
+Function&lt;String, Integer&gt; trimThenLen = trim.andThen(len);</code></pre></div><p><code>Predicate</code> は <code>and/or/negate</code>、<code>Function</code> は <code>andThen/compose</code> で処理を組み合わせられます。</p></section>
+
+<section id="deep-stream"><div class="kicker">Deep Dive · Stream</div><h2>Stream APIを詳しく</h2><p>Streamはコレクションそのものではなく、データ列に対する処理パイプラインです。元のListを自動で書き換えるものではありません。</p><h3>中間操作と終端操作</h3><div class="tablewrap"><table><thead><tr><th>分類</th><th>例</th><th>特徴</th></tr></thead><tbody><tr><td>中間操作</td><td><code>filter</code>, <code>map</code>, <code>sorted</code>, <code>distinct</code></td><td>Streamを返す。遅延評価</td></tr><tr><td>終端操作</td><td><code>toList</code>, <code>count</code>, <code>forEach</code>, <code>collect</code></td><td>処理を実行して結果を確定</td></tr></tbody></table></div><div class="code"><div class="codehead"><span>pipeline</span><button class="copy">コピー</button></div><pre><code>List&lt;String&gt; result = names.stream()
+    .filter(s -&gt; !s.isBlank())
+    .map(String::trim)
+    .filter(s -&gt; s.length() &gt;= 3)
+    .sorted()
+    .toList();</code></pre></div><h3>map と flatMap</h3><p><code>map</code> は1要素を1要素へ変換します。<code>flatMap</code> は「各要素からStreamを作り、それを1本に平坦化」します。</p><h3>reduce</h3><div class="code"><div class="codehead"><span>reduce</span><button class="copy">コピー</button></div><pre><code>int total = numbers.stream()
+    .reduce(0, Integer::sum);</code></pre></div><h3>Streamは再利用できない</h3><p>終端操作を一度行ったStreamをもう一度使うと <code>IllegalStateException</code> になります。必要なら元コレクションから新しいStreamを作ります。</p><div class="callout warn"><strong>試験で注意:</strong> <code>filter</code> は要素を残す/落とす、<code>map</code> は要素を変換、<code>forEach</code> は終端操作です。</div></section>
+
+<section id="deep-datetime"><div class="kicker">Deep Dive · Date/Time / Files</div><h2>java.time と Filesを詳しく</h2><h3>LocalDate / LocalDateTime / Instant</h3><div class="tablewrap"><table><thead><tr><th>型</th><th>表すもの</th></tr></thead><tbody><tr><td><code>LocalDate</code></td><td>日付のみ。タイムゾーンなし</td></tr><tr><td><code>LocalDateTime</code></td><td>日付+時刻。タイムゾーンなし</td></tr><tr><td><code>Instant</code></td><td>UTC基準の時点</td></tr><tr><td><code>ZonedDateTime</code></td><td>タイムゾーン込みの日時</td></tr></tbody></table></div><p><code>java.time</code> の主要クラスは不変です。<code>plusDays()</code> などは元オブジェクトを書き換えず、新しい値を返します。</p><div class="code"><div class="codehead"><span>immutable</span><button class="copy">コピー</button></div><pre><code>LocalDate d1 = LocalDate.of(2026, 9, 11);
+LocalDate d2 = d1.plusDays(1);
+// d1 は 2026-09-11 のまま</code></pre></div><h3>Path / Files</h3><p><code>Path</code> はパスを表し、<code>Files</code> は読み書き・存在確認・ディレクトリ操作などを提供します。I/Oでは <code>IOException</code> を意識します。</p></section>
+
+<section id="deep-thread"><div class="kicker">Deep Dive · Thread</div><h2>Thread / Runnable / synchronized を詳しく</h2><h3>start と run</h3><div class="code"><div class="codehead"><span>start vs run</span><button class="copy">コピー</button></div><pre><code>Thread t = new Thread(() -&gt; System.out.println("worker"));
+t.start(); // 新しいスレッドを開始
+// t.run(); // 単なるメソッド呼び出し</code></pre></div><h3>sleep / join / yield</h3><div class="tablewrap"><table><thead><tr><th>API</th><th>意味</th></tr></thead><tbody><tr><td><code>sleep(ms)</code></td><td>現在のスレッドを一定時間休止</td></tr><tr><td><code>join()</code></td><td>対象スレッドの終了を待つ</td></tr><tr><td><code>yield()</code></td><td>実行権を他スレッドへ譲るヒント。保証ではない</td></tr></tbody></table></div><h3>共有データと競合</h3><p>複数スレッドが同じ可変データを同時更新すると、読み書きが競合することがあります。</p><div class="code"><div class="codehead"><span>synchronized</span><button class="copy">コピー</button></div><pre><code>class Counter {
+    private int value;
+    synchronized void increment() {
+        value++;
+    }
+}</code></pre></div><p><code>synchronized</code> は同じモニタを使う同期区間への同時侵入を制御します。ただし、並行処理設計全体が自動で安全になるわけではありません。</p><h3>InterruptedException</h3><p><code>sleep</code> や <code>join</code> は割り込みを受ける可能性があり、<code>InterruptedException</code> を扱う必要があります。</p><div class="callout"><strong>初心者向け順序:</strong> まず <code>new Thread(task)</code> → <code>start()</code> → 必要なら <code>join()</code>。その後に共有状態と同期を学ぶと整理しやすいです。</div></section>
+
+<section id="deep-summary"><div class="kicker">Deep Dive · Exam Reading</div><h2>コード読解の共通チェック手順</h2><div class="steps"><div class="step"><strong>コンパイル可能か</strong> — 型、アクセス修飾子、継承、コンストラクタ、returnを確認。</div><div class="step"><strong>変数の型を分ける</strong> — 宣言型と実体型を区別。</div><div class="step"><strong>評価順序を追う</strong> — 代入、前置/後置、短絡評価、ループ更新。</div><div class="step"><strong>コレクションの性質を適用</strong> — Listは順序、Setは重複なし、Mapは同じkeyを上書き。</div><div class="step"><strong>ラムダの入出力型を確認</strong> — Predicate/Function/Consumer/Supplierを判定。</div><div class="step"><strong>Streamの終端操作まで追う</strong> — 中間操作だけでは結果は確定しない。</div><div class="step"><strong>Threadはstartかrunかを見る</strong> — 新規スレッド開始か単なる呼び出しかを区別。</div></div></section>

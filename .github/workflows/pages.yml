@@ -33,6 +33,9 @@ jobs:
       - name: Expand inheritance guide
         run: python3 scripts/expand-inheritance.py
 
+      - name: Expand all beginner topics
+        run: python3 scripts/expand-all-topics.py _site/index.html content/all-topics-deep-dive.html
+
       - name: Verify root and project-site asset paths
         run: node scripts/test-pages-paths.mjs
 
