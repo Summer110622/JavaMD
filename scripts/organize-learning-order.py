@@ -19,10 +19,9 @@ sections = [
     ("deep-lambda", "10", "ラムダ式", "処理を値として扱う"),
     ("deep-functional", "11", "関数型interface", "Predicate / Function / Consumer / Supplier"),
     ("deep-stream", "12", "Stream API", "filter / map / reduce / 遅延評価"),
-    ("deep-datetime", "13", "Date / Time", "日時型と不変オブジェクト"),
-    ("deep-files", "14", "Path / Files", "ファイルI/Oの基本"),
-    ("deep-thread", "15", "Thread", "並行処理・start / join / synchronized"),
-    ("deep-reading", "16", "コード読解手順", "最後に全分野を横断して確認"),
+    ("deep-datetime", "13", "Date / Time・Path / Files", "日時とファイルI/Oの基本"),
+    ("deep-thread", "14", "Thread", "並行処理・start / join / synchronized"),
+    ("deep-summary", "15", "コード読解手順", "最後に全分野を横断して確認"),
 ]
 
 missing = [sid for sid, *_ in sections if f'id="{sid}"' not in html]
@@ -46,8 +45,8 @@ phases = [
     ("STEP 2 · オブジェクト指向", sections[3:6]),
     ("STEP 3 · データ構造", sections[6:9]),
     ("STEP 4 · 関数型", sections[9:12]),
-    ("STEP 5 · 実用API", sections[12:15]),
-    ("STEP 6 · 総仕上げ", sections[15:16]),
+    ("STEP 5 · 実用API", sections[12:14]),
+    ("STEP 6 · 総仕上げ", sections[14:15]),
 ]
 for phase, items in phases:
     links = ''.join(
@@ -80,8 +79,8 @@ nav = (
     '<a href="#deep-oop">4–6 OOP・例外</a>'
     '<a href="#deep-collections">7–9 Collection</a>'
     '<a href="#deep-lambda">10–12 ラムダ・Stream</a>'
-    '<a href="#deep-datetime">13–15 実用API</a>'
-    '<a href="#deep-reading">16 コード読解</a>'
+    '<a href="#deep-datetime">13–14 実用API</a>'
+    '<a href="#deep-summary">15 コード読解</a>'
 )
 if nav_marker not in html:
     raise SystemExit("Could not find Practice navigation marker")
@@ -89,4 +88,4 @@ if 'href="#learning-order"' not in html:
     html = html.replace(nav_marker, nav + nav_marker, 1)
 
 path.write_text(html, encoding="utf-8")
-print("Organized detailed guide into 6 phases / 16 ordered sections.")
+print("Organized detailed guide into 6 phases / 15 ordered sections.")
