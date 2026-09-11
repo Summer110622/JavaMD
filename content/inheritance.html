@@ -1,0 +1,359 @@
+<section id="inheritance"><div class="kicker">Object Oriented · Inheritance</div><h2>5. 継承を詳しく — extends / super / override</h2>
+<p>継承は、既存クラスの性質を利用して新しいクラスを作る仕組みです。継承される側を<strong>スーパークラス（親クラス）</strong>、継承する側を<strong>サブクラス（子クラス）</strong>と呼びます。Javaの継承問題では「何を引き継げるか」「どのメソッドが呼ばれるか」「どのコンストラクタが先に動くか」「変数の型と実体の型が何か」を分けて考えるのが重要です。</p>
+
+<h3>1. まず基本形</h3>
+<div class="code"><div class="codehead"><span>class → class は extends</span><button class="copy">コピー</button></div><pre><code>class Animal {
+    String name;
+
+    void speak() {
+        System.out.println("sound");
+    }
+}
+
+class Cat extends Animal {
+    void meow() {
+        System.out.println("meow");
+    }
+}</code></pre></div>
+<p><code>Cat</code> は <code>Animal</code> のサブクラスです。<code>Cat</code> のオブジェクトは、自分で定義した <code>meow()</code> に加えて、継承した <code>name</code> や <code>speak()</code> を利用できます。</p>
+<div class="callout good"><strong>is-a 関係:</strong> <code>Cat extends Animal</code> は「Cat は Animal の一種」と考えます。継承は単なるコードコピーではなく、型の親子関係も作ります。</div>
+
+<h3>2. extends / implements の使い分け</h3>
+<div class="tablewrap"><table><thead><tr><th>左側</th><th>右側</th><th>キーワード</th><th>例</th></tr></thead><tbody>
+<tr><td>class</td><td>class</td><td><code>extends</code></td><td><code>class Cat extends Animal</code></td></tr>
+<tr><td>class</td><td>interface</td><td><code>implements</code></td><td><code>class Cat implements Runner</code></td></tr>
+<tr><td>interface</td><td>interface</td><td><code>extends</code></td><td><code>interface FastRunner extends Runner</code></td></tr>
+</tbody></table></div>
+<div class="callout warn"><strong>頻出:</strong> class が interface を使うときは <code>implements</code>。interface 同士は <code>extends</code> です。</div>
+
+<h3>3. Javaのclassは多重継承できない</h3>
+<div class="code"><div class="codehead"><span>これは不可</span><button class="copy">コピー</button></div><pre><code>class C extends A, B {  // コンパイルエラー
+}</code></pre></div>
+<p>1つのclassが直接 <code>extends</code> できるclassは1つだけです。一方で、interfaceは複数実装できます。</p>
+<div class="code"><div class="codehead"><span>interfaceは複数implements可能</span><button class="copy">コピー</button></div><pre><code>class Robot implements Runnable, AutoCloseable {
+    public void run() {}
+    public void close() {}
+}</code></pre></div>
+
+<h3>4. 何が継承される？</h3>
+<div class="tablewrap"><table><thead><tr><th>メンバ</th><th>サブクラスから扱える？</th><th>注意点</th></tr></thead><tbody>
+<tr><td><code>public</code></td><td>○</td><td>どこからでもアクセス可能</td></tr>
+<tr><td><code>protected</code></td><td>○</td><td>サブクラスから利用できる。別パッケージでは参照方法に制約あり</td></tr>
+<tr><td>package-private</td><td>同一パッケージなら○</td><td>別パッケージのサブクラスからはアクセス不可</td></tr>
+<tr><td><code>private</code></td><td>直接は×</td><td>privateメンバはサブクラスに継承されず、名前で直接アクセスできない</td></tr>
+<tr><td>コンストラクタ</td><td>×</td><td>コンストラクタは継承されない。<code>super(...)</code> で呼び出す</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>privateに注意:</strong> 親クラスのprivateフィールドがオブジェクト内に存在していても、子クラスのコードから <code>this.privateField</code> のように直接触ることはできません。必要なら親側のpublic/protectedメソッドを通します。</div>
+
+<h3>5. コンストラクタは継承されない</h3>
+<p>メソッドやフィールドとは違い、コンストラクタそのものはサブクラスへ継承されません。サブクラスは自分自身のコンストラクタを持ち、その開始時にスーパークラスのコンストラクタを呼びます。</p>
+<div class="code"><div class="codehead"><span>super(...)</span><button class="copy">コピー</button></div><pre><code>class Animal {
+    String name;
+
+    Animal(String name) {
+        this.name = name;
+    }
+}
+
+class Cat extends Animal {
+    Cat(String name) {
+        super(name);
+    }
+}</code></pre></div>
+<p><code>super(name)</code> は <code>Animal(String name)</code> を呼びます。Java 17では明示的な <code>super(...)</code> / <code>this(...)</code> はコンストラクタ本体の先頭に置きます。</p>
+
+<h3>6. super() は省略されることがある</h3>
+<div class="code"><div class="codehead"><span>暗黙の super()</span><button class="copy">コピー</button></div><pre><code>class Parent {
+    Parent() {
+        System.out.println("Parent");
+    }
+}
+
+class Child extends Parent {
+    Child() {
+        // 先頭に super(); が暗黙に入る
+        System.out.println("Child");
+    }
+}</code></pre></div>
+<p>この場合の出力順は <code>Parent</code> → <code>Child</code> です。子の初期化より前に親のコンストラクタが実行されます。</p>
+<div class="callout warn"><strong>コンパイルエラーの定番:</strong> 親に引数付きコンストラクタしかなく、子のコンストラクタで適切な <code>super(引数)</code> を書かなければ、暗黙の <code>super()</code> が成立せずコンパイルエラーです。</div>
+
+<h3>7. this(...) と super(...) はどちらか一方</h3>
+<p>同じコンストラクタから別の自クラスコンストラクタを呼ぶなら <code>this(...)</code>、親コンストラクタを直接呼ぶなら <code>super(...)</code> を使います。どちらも先頭のコンストラクタ呼出しになるため、同じコンストラクタで両方を直接書くことはできません。</p>
+<div class="code"><div class="codehead"><span>this(...) から最終的に super(...)</span><button class="copy">コピー</button></div><pre><code>class Cat extends Animal {
+    Cat() {
+        this("no-name");
+    }
+
+    Cat(String name) {
+        super(name);
+    }
+}</code></pre></div>
+
+<h3>8. オーバーライドとは</h3>
+<p>サブクラスが、親から継承したインスタンスメソッドと同じシグネチャのメソッドを定義して動作を差し替えることを<strong>オーバーライド</strong>と呼びます。</p>
+<div class="code"><div class="codehead"><span>@Override</span><button class="copy">コピー</button></div><pre><code>class Animal {
+    void speak() {
+        System.out.println("animal");
+    }
+}
+
+class Cat extends Animal {
+    @Override
+    void speak() {
+        System.out.println("cat");
+    }
+}</code></pre></div>
+<p><code>@Override</code> は必須ではありませんが、スペルミスや引数違いで「実はオーバーライドできていない」問題をコンパイラに検出してもらえるため、基本的に付けます。</p>
+
+<h3>9. オーバーロードとオーバーライドを混同しない</h3>
+<div class="tablewrap"><table><thead><tr><th></th><th>オーバーライド</th><th>オーバーロード</th></tr></thead><tbody>
+<tr><td>目的</td><td>親の動作を差し替える</td><td>同名メソッドを引数違いで増やす</td></tr>
+<tr><td>引数</td><td>同じ</td><td>異なる必要がある</td></tr>
+<tr><td>継承</td><td>継承関係が前提</td><td>同一クラス内でも可能</td></tr>
+<tr><td>呼出し決定</td><td>実体の型が重要</td><td>コンパイル時の引数型が重要</td></tr>
+</tbody></table></div>
+
+<h3>10. オーバーライドのアクセス修飾子</h3>
+<p>オーバーライド後のメソッドは、親よりアクセス範囲を狭くできません。</p>
+<div class="code"><div class="codehead"><span>public → protected は不可</span><button class="copy">コピー</button></div><pre><code>class Parent {
+    public void work() {}
+}
+
+class Child extends Parent {
+    // protected void work() {} // コンパイルエラー
+    public void work() {}       // OK
+}</code></pre></div>
+<p>逆に、<code>protected</code> を <code>public</code> に広げることはできます。</p>
+
+<h3>11. finalメソッドはオーバーライドできない</h3>
+<div class="code"><div class="codehead"><span>final method</span><button class="copy">コピー</button></div><pre><code>class Parent {
+    final void fixed() {}
+}
+
+class Child extends Parent {
+    // void fixed() {} // コンパイルエラー
+}</code></pre></div>
+<p><code>final class</code> はクラス自体の継承を禁止し、<code>final method</code> はそのメソッドのオーバーライドを禁止します。</p>
+
+<h3>12. staticメソッドはオーバーライドではなく隠蔽</h3>
+<p><code>static</code> メソッドはインスタンスではなくクラスに属するため、子クラスで同じシグネチャを宣言してもインスタンスメソッドのオーバーライドとは扱われません。これは<strong>メソッド隠蔽（hiding）</strong>です。</p>
+<div class="code"><div class="codehead"><span>static method hiding</span><button class="copy">コピー</button></div><pre><code>class Parent {
+    static void show() { System.out.println("Parent"); }
+}
+
+class Child extends Parent {
+    static void show() { System.out.println("Child"); }
+}
+
+Parent p = new Child();
+p.show(); // Parent</code></pre></div>
+<div class="callout"><strong>違い:</strong> インスタンスメソッドは実体の型に応じて動的に選ばれますが、staticメソッドは変数・式の型を基に選ばれます。</div>
+
+<h3>13. フィールドもオーバーライドされない</h3>
+<p>子クラスが親と同名のフィールドを宣言すると、フィールドは<strong>隠蔽</strong>されます。メソッドのような動的ディスパッチは起きません。</p>
+<div class="code"><div class="codehead"><span>field hiding</span><button class="copy">コピー</button></div><pre><code>class Parent {
+    String label = "P";
+}
+
+class Child extends Parent {
+    String label = "C";
+}
+
+Parent x = new Child();
+System.out.println(x.label); // P</code></pre></div>
+<p>フィールド参照は参照変数の型で決まるため、上の <code>x.label</code> は親側です。</p>
+
+<h3>14. 動的ディスパッチ：変数の型と実体の型を分ける</h3>
+<div class="code"><div class="codehead"><span>Parent型変数にChildを入れる</span><button class="copy">コピー</button></div><pre><code>class Parent {
+    void hello() { System.out.println("Parent"); }
+}
+
+class Child extends Parent {
+    @Override
+    void hello() { System.out.println("Child"); }
+    void childOnly() {}
+}
+
+Parent p = new Child();
+p.hello();       // Child
+// p.childOnly(); // コンパイルエラー</code></pre></div>
+<p><code>p</code> の<strong>宣言型</strong>は <code>Parent</code>、実際に入っているオブジェクトの<strong>実体型</strong>は <code>Child</code> です。呼べるメソッド候補は宣言型で決まり、オーバーライドされたメソッドの実装は実体型で決まります。</p>
+<div class="callout good"><strong>超重要:</strong> 「何を呼べるか＝左辺の型」「オーバーライド後のどの処理が動くか＝実体の型」と分けると解きやすくなります。</div>
+
+<h3>15. アップキャスト</h3>
+<div class="code"><div class="codehead"><span>Child → Parent</span><button class="copy">コピー</button></div><pre><code>Child child = new Child();
+Parent parent = child; // 明示的キャスト不要</code></pre></div>
+<p>子クラスは親クラスの一種なので、サブクラス型からスーパークラス型への変換（アップキャスト）は暗黙にできます。</p>
+
+<h3>16. ダウンキャスト</h3>
+<p>親型の参照を子型へ戻すときは明示的キャストが必要です。ただし、実体がその子型でない場合は実行時に <code>ClassCastException</code> が発生します。</p>
+<div class="code"><div class="codehead"><span>downcast</span><button class="copy">コピー</button></div><pre><code>Parent p = new Child();
+Child c = (Child) p; // OK
+
+Parent other = new Parent();
+// Child bad = (Child) other; // 実行時 ClassCastException</code></pre></div>
+
+<h3>17. instanceof で安全に型を確認</h3>
+<div class="code"><div class="codehead"><span>instanceof</span><button class="copy">コピー</button></div><pre><code>if (p instanceof Child) {
+    Child c = (Child) p;
+    c.childOnly();
+}</code></pre></div>
+<p><code>instanceof</code> は、その参照先オブジェクトが指定型として扱えるかを確認します。継承やinterface実装も考慮されます。</p>
+
+<h3>18. super.method() で親の実装を呼ぶ</h3>
+<div class="code"><div class="codehead"><span>super method</span><button class="copy">コピー</button></div><pre><code>class Child extends Parent {
+    @Override
+    void hello() {
+        super.hello();
+        System.out.println("Child");
+    }
+}</code></pre></div>
+<p>オーバーライド後でも <code>super.hello()</code> と書けば親クラス側の実装を明示的に呼べます。</p>
+
+<h3>19. super.field で親の同名フィールドを指定</h3>
+<div class="code"><div class="codehead"><span>this と super</span><button class="copy">コピー</button></div><pre><code>class Parent {
+    int value = 10;
+}
+
+class Child extends Parent {
+    int value = 20;
+
+    void print() {
+        System.out.println(this.value);  // 20
+        System.out.println(super.value); // 10
+    }
+}</code></pre></div>
+<p><code>this</code> は現在のオブジェクトの子クラス側メンバ、<code>super</code> は直接の親クラス側メンバを明示するために使えます。</p>
+
+<h3>20. abstract class と継承</h3>
+<div class="code"><div class="codehead"><span>abstract</span><button class="copy">コピー</button></div><pre><code>abstract class Shape {
+    abstract double area();
+
+    void printType() {
+        System.out.println("shape");
+    }
+}
+
+class Circle extends Shape {
+    double radius;
+
+    Circle(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    double area() {
+        return Math.PI * radius * radius;
+    }
+}</code></pre></div>
+<p>抽象クラスはインスタンス化できませんが、通常メソッドやフィールド、コンストラクタを持てます。抽象メソッドを継承した具象クラスは、その抽象メソッドを実装する必要があります。</p>
+
+<h3>21. abstract classのコンストラクタも呼ばれる</h3>
+<p>abstract classは直接 <code>new</code> できませんが、コンストラクタは持てます。具象サブクラスを生成するとき、その初期化の一部としてabstractな親クラスのコンストラクタも実行されます。</p>
+
+<h3>22. interface実装はサブクラスにも引き継がれる</h3>
+<div class="code"><div class="codehead"><span>間接的なimplements</span><button class="copy">コピー</button></div><pre><code>interface Runner {
+    void run();
+}
+
+class Animal implements Runner {
+    public void run() {
+        System.out.println("run");
+    }
+}
+
+class Cat extends Animal {
+}
+
+Runner r = new Cat(); // OK</code></pre></div>
+<p><code>Cat</code> 自身に <code>implements Runner</code> と書いていなくても、親の <code>Animal</code> が実装しているため <code>Cat</code> も <code>Runner</code> として扱えます。</p>
+
+<h3>23. interfaceメソッド実装ではpublicが必要</h3>
+<div class="code"><div class="codehead"><span>interface method</span><button class="copy">コピー</button></div><pre><code>interface Runner {
+    void run(); // 暗黙に public abstract
+}
+
+class Cat implements Runner {
+    public void run() { // public が必要
+    }
+}</code></pre></div>
+<p>interfaceの通常の抽象メソッドは暗黙に <code>public abstract</code> です。実装側でアクセス範囲を狭めることはできないため、<code>public</code> が必要です。</p>
+
+<h3>24. Object はclass階層の頂点</h3>
+<p>明示的に別の親クラスを指定しないclassは、最終的に <code>java.lang.Object</code> を継承しています。そのため <code>toString()</code>、<code>equals()</code>、<code>hashCode()</code> などObject由来のメソッドを利用できます。</p>
+<div class="code"><div class="codehead"><span>暗黙の Object 継承</span><button class="copy">コピー</button></div><pre><code>class User {
+    // 実質的には class User extends Object
+}</code></pre></div>
+
+<h3>25. instanceof と null</h3>
+<div class="code"><div class="codehead"><span>null instanceof</span><button class="copy">コピー</button></div><pre><code>Parent p = null;
+System.out.println(p instanceof Parent); // false</code></pre></div>
+<p><code>null instanceof 型</code> は例外ではなく <code>false</code> です。型判定問題で出やすいポイントです。</p>
+
+<h3>26. 継承チェーンを追う</h3>
+<div class="code"><div class="codehead"><span>3段階の継承</span><button class="copy">コピー</button></div><pre><code>class A {}
+class B extends A {}
+class C extends B {}
+
+C c = new C();
+System.out.println(c instanceof C); // true
+System.out.println(c instanceof B); // true
+System.out.println(c instanceof A); // true
+System.out.println(c instanceof Object); // true</code></pre></div>
+<p>サブクラスは直接の親だけでなく、祖先クラスの型としても扱えます。</p>
+
+<h3>27. オーバーライドと例外</h3>
+<p>オーバーライドするメソッドは、親メソッドより広い範囲のchecked例外を新しく投げる宣言にはできません。実務では細かな規則がありますが、初心者段階では「子側が親より危険な契約へ勝手に広げられない」と押さえてください。</p>
+
+<h3>28. 戻り値の共変</h3>
+<p>オーバーライドでは、参照型の戻り値を親より具体的なサブタイプへ狭められる場合があります。</p>
+<div class="code"><div class="codehead"><span>covariant return</span><button class="copy">コピー</button></div><pre><code>class AnimalFactory {
+    Animal create() { return new Animal(); }
+}
+
+class CatFactory extends AnimalFactory {
+    @Override
+    Cat create() { return new Cat(); }
+}</code></pre></div>
+
+<h3>29. 継承よりコンポジションが適する場合もある</h3>
+<p>「AはBの一種（is-a）」なら継承が自然ですが、「AはBを持っている（has-a）」だけなら、フィールドとして別オブジェクトを持つコンポジションの方が適切なことがあります。</p>
+<div class="code"><div class="codehead"><span>has-a</span><button class="copy">コピー</button></div><pre><code>class Engine {}
+
+class Car {
+    private final Engine engine = new Engine();
+}</code></pre></div>
+<p><code>Car extends Engine</code> は意味的に不自然ですが、<code>Car</code> が <code>Engine</code> を持つのは自然です。</p>
+
+<h3>30. 問題を解くときの順番</h3>
+<div class="steps">
+<div class="step"><strong>クラス図を頭の中で作る</strong> — 誰が誰をextends / implementsしているか整理する。</div>
+<div class="step"><strong>コンストラクタを追う</strong> — <code>this(...)</code> → <code>super(...)</code> → 親の初期化順を見る。</div>
+<div class="step"><strong>左辺の宣言型を見る</strong> — その変数からコンパイル上何を呼べるか決める。</div>
+<div class="step"><strong>右辺の実体型を見る</strong> — オーバーライドされたインスタンスメソッドの実行先を決める。</div>
+<div class="step"><strong>static / fieldを別扱いにする</strong> — 動的ディスパッチされない。</div>
+<div class="step"><strong>キャストの向きを確認する</strong> — upcastは暗黙、downcastは明示＋実体型確認。</div>
+</div>
+
+<h3>検定での典型的な引っかけ一覧</h3>
+<div class="tablewrap"><table><thead><tr><th>記述</th><th>判定</th><th>理由</th></tr></thead><tbody>
+<tr><td>class → interface は extends</td><td>×</td><td><code>implements</code></td></tr>
+<tr><td>interface → interface は implements</td><td>×</td><td><code>extends</code></td></tr>
+<tr><td>classは2つのclassを直接継承できる</td><td>×</td><td>classの直接の親は1つ</td></tr>
+<tr><td>コンストラクタは子へ継承される</td><td>×</td><td>継承されず、<code>super(...)</code> で呼ぶ</td></tr>
+<tr><td>子→親への代入にはキャストが必要</td><td>×</td><td>アップキャストは暗黙</td></tr>
+<tr><td>親→子への代入は常に安全</td><td>×</td><td>実体型が違うとClassCastException</td></tr>
+<tr><td>オーバーライドされたメソッドは実体型で選ばれる</td><td>○</td><td>動的ディスパッチ</td></tr>
+<tr><td>同名フィールドも実体型で選ばれる</td><td>×</td><td>フィールドは参照型で決まる</td></tr>
+<tr><td>staticメソッドは通常のオーバーライド</td><td>×</td><td>メソッド隠蔽</td></tr>
+<tr><td>final classは継承できる</td><td>×</td><td>継承禁止</td></tr>
+<tr><td>final methodは子で上書きできる</td><td>×</td><td>オーバーライド禁止</td></tr>
+<tr><td>abstract classはコンストラクタを持てない</td><td>×</td><td>持てる</td></tr>
+<tr><td>abstract classは直接newできる</td><td>×</td><td>インスタンス化不可</td></tr>
+<tr><td>interface実装メソッドはpublicを省略できる</td><td>×</td><td>publicより狭くできない</td></tr>
+<tr><td>null instanceof 型 は例外になる</td><td>×</td><td>falseになる</td></tr>
+</tbody></table></div>
+
+<div class="callout good"><strong>最終整理:</strong> 継承問題は「継承関係」「アクセス可能性」「コンストラクタ連鎖」「宣言型」「実体型」「instance/static/fieldの違い」の6項目に分けて読むと、長いコードでも追いやすくなります。</div>
+</section>
