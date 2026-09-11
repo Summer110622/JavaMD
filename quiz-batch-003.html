@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #3</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #3</h1><p>Java 2級の出題論点と学習資料を基に、既存Q1〜Q55と重複しないよう新規作成したQ56〜Q75です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">追加20問 #1</a> ／ <a href="quiz-batch-002.html">追加20問 #2</a></p></header>
+
+<div class="q"><span class="tag">interface / default</span><h2>Q56. 次のクラスCは、そのままではコンパイルできる？</h2><pre><code>interface A {
+    default void show() { System.out.print("A"); }
+}
+interface B {
+    default void show() { System.out.print("B"); }
+}
+class C implements A, B { }</code></pre><div class="choices"><div class="choice">A. できる。Aのshow()が優先される</div><div class="choice">B. できる。Bのshow()が優先される</div><div class="choice">C. できない</div></div><details><summary>答え・解説</summary><div><b>C。</b> 同じシグネチャのdefaultメソッドを複数interfaceから継承すると競合するため、C側でshow()をオーバーライドして解決する必要があります。</div></details></div>
+
+<div class="q"><span class="tag">final / override</span><h2>Q57. 次のコードはコンパイルできる？</h2><pre><code>class Base {
+    final void save() { }
+}
+class Child extends Base {
+    void save() { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>final</code> メソッドはサブクラスでオーバーライドできません。final classが継承不可なのと同様に、final methodは再定義不可です。</div></details></div>
+
+<div class="q"><span class="tag">private / inheritance</span><h2>Q58. 次のChildのread()はコンパイルできる？</h2><pre><code>class Base {
+    private int value = 7;
+}
+class Child extends Base {
+    int read() { return value; }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>private</code> メンバは宣言したクラスの外から直接参照できません。サブクラスでも同様です。必要ならprotected/publicのメソッドなどを介します。</div></details></div>
+
+<div class="q"><span class="tag">constructor / void</span><h2>Q59. 次のコードはどうなる？</h2><pre><code>class Coin {
+    void Coin() { System.out.print("method"); }
+}
+Coin c = new Coin();</code></pre><div class="choices"><div class="choice">A. コンパイルエラー</div><div class="choice">B. コンパイルでき、何も表示されない</div><div class="choice">C. methodと表示される</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>void Coin()</code> はコンストラクタではなく通常のメソッドです。明示的なコンストラクタがないため、引数なしデフォルトコンストラクタが自動生成されます。</div></details></div>
+
+<div class="q"><span class="tag">this / super</span><h2>Q60. 次のコンストラクタはコンパイルできる？</h2><pre><code>class Child extends Parent {
+    Child() {
+        this(1);
+        super();
+    }
+    Child(int n) { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> 明示的な <code>this(...)</code> または <code>super(...)</code> はコンストラクタの先頭に置きます。1つのコンストラクタで両方を直接呼ぶことはできません。</div></details></div>
+
+<div class="q"><span class="tag">static / hiding</span><h2>Q61. 出力は？</h2><pre><code>class Base {
+    static String name() { return "Base"; }
+}
+class Child extends Base {
+    static String name() { return "Child"; }
+}
+Base x = new Child();
+System.out.println(x.name());</code></pre><div class="choices"><div class="choice">A. Base</div><div class="choice">B. Child</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。Base。</b> staticメソッドはインスタンスメソッドのように動的ディスパッチされず、ここでは変数の宣言型Baseに基づいて解決されます。これはオーバーライドではなく隠蔽です。</div></details></div>
+
+<div class="q"><span class="tag">List / set</span><h2>Q62. 出力は？</h2><pre><code>List&lt;String&gt; xs = new ArrayList&lt;&gt;();
+xs.add("A");
+xs.add("B");
+System.out.println(xs.set(1, "C"));
+System.out.println(xs);</code></pre><div class="choices"><div class="choice">A. C / [A, C]</div><div class="choice">B. B / [A, C]</div><div class="choice">C. B / [A, B, C]</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>set(index, value)</code> は指定位置を置換し、置換前の要素を返します。要素数は増えません。</div></details></div>
+
+<div class="q"><span class="tag">HashMap / null</span><h2>Q63. 出力は？</h2><pre><code>Map&lt;String, Integer&gt; m = new HashMap&lt;&gt;();
+m.put("A", null);
+System.out.println(m.get("A"));
+System.out.println(m.containsKey("A"));
+System.out.println(m.containsKey("B"));</code></pre><div class="choices"><div class="choice">A. null / true / false</div><div class="choice">B. null / false / false</div><div class="choice">C. NullPointerException</div></div><details><summary>答え・解説</summary><div><b>A。</b> HashMapではvalueにnullを保持できます。<code>get()</code> がnullだけでは「未登録」か「nullを登録済み」か区別できませんが、<code>containsKey()</code> なら区別できます。</div></details></div>
+
+<div class="q"><span class="tag">TreeSet / first last</span><h2>Q64. 出力は？</h2><pre><code>TreeSet&lt;Integer&gt; s = new TreeSet&lt;&gt;();
+s.add(8); s.add(3); s.add(5); s.add(3);
+System.out.println(s.first() + ":" + s.last() + ":" + s.size());</code></pre><div class="choices"><div class="choice">A. 8:3:4</div><div class="choice">B. 3:8:3</div><div class="choice">C. 3:8:4</div></div><details><summary>答え・解説</summary><div><b>B。3:8:3。</b> TreeSetは重複を保持せず自然順序で管理します。最小値がfirst()、最大値がlast()です。</div></details></div>
+
+<div class="q"><span class="tag">array / enhanced for</span><h2>Q65. 出力は？</h2><pre><code>int[] a = {1, 2, 3};
+for (int v : a) {
+    v *= 10;
+}
+System.out.println(a[1]);</code></pre><div class="choices"><div class="choice">A. 2</div><div class="choice">B. 20</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。2。</b> プリミティブ配列の拡張forで変数vに入るのは各要素の値のコピーです。vを書き換えても配列要素そのものは変わりません。</div></details></div>
+
+<div class="q"><span class="tag">2次元配列 / default</span><h2>Q66. 出力は？</h2><pre><code>int[][] table = new int[2][];
+System.out.println(table.length);
+System.out.println(table[0]);</code></pre><div class="choices"><div class="choice">A. 2 / null</div><div class="choice">B. 2 / []</div><div class="choice">C. NullPointerException</div></div><details><summary>答え・解説</summary><div><b>A。</b> 外側の配列は長さ2で作られますが、各要素は <code>int[]</code> 型の参照で、まだ内側配列を作っていないため既定値nullです。</div></details></div>
+
+<div class="q"><span class="tag">do-while / tracing</span><h2>Q67. 出力は？</h2><pre><code>int n = 5;
+do {
+    System.out.print(n);
+    n++;
+} while (n &lt; 5);</code></pre><div class="choices"><div class="choice">A. 何も表示されない</div><div class="choice">B. 5</div><div class="choice">C. 56</div></div><details><summary>答え・解説</summary><div><b>B。5。</b> do-whileは条件判定より先に本体を1回実行します。その後nは6になり、条件がfalseなので終了します。</div></details></div>
+
+<div class="q"><span class="tag">nested loop / break</span><h2>Q68. 出力は？</h2><pre><code>int count = 0;
+for (int i = 0; i &lt; 3; i++) {
+    for (int j = 0; j &lt; 3; j++) {
+        if (j == 1) break;
+        count++;
+    }
+}
+System.out.println(count);</code></pre><div class="choices"><div class="choice">A. 1</div><div class="choice">B. 3</div><div class="choice">C. 6</div></div><details><summary>答え・解説</summary><div><b>B。3。</b> ラベルなしのbreakが終了するのは最も内側のループだけです。各iでj=0の1回だけcount++され、合計3回です。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / compile error</span><h2>Q69. 次のコードはコンパイルできる？</h2><pre><code>String s = "java";
+System.out.println(s instanceof Integer);</code></pre><div class="choices"><div class="choice">A. でき、falseと表示</div><div class="choice">B. でき、trueと表示</div><div class="choice">C. できない</div></div><details><summary>答え・解説</summary><div><b>C。</b> StringとIntegerは互いに継承関係がなく、どちらも別系統のfinalクラスです。この式は成立し得ない型関係なのでコンパイルエラーになります。</div></details></div>
+
+<div class="q"><span class="tag">cast / inheritance</span><h2>Q70. 出力は？</h2><pre><code>class Animal { }
+class Dog extends Animal {
+    void bark() { System.out.print("wan"); }
+}
+Animal a = new Dog();
+Dog d = (Dog) a;
+d.bark();</code></pre><div class="choices"><div class="choice">A. wan</div><div class="choice">B. ClassCastException</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。wan。</b> aの宣言型はAnimalですが実体はDogです。Dogへのダウンキャストは実体型と整合するため成功します。</div></details></div>
+
+<div class="q"><span class="tag">boolean / ||</span><h2>Q71. 出力は？</h2><pre><code>int n = 0;
+boolean ok = true || (++n &gt; 0);
+System.out.println(n + ":" + ok);</code></pre><div class="choices"><div class="choice">A. 0:true</div><div class="choice">B. 1:true</div><div class="choice">C. 1:false</div></div><details><summary>答え・解説</summary><div><b>A。0:true。</b> <code>||</code> は左辺がtrueなら右辺を評価しません。そのため <code>++n</code> は実行されません。</div></details></div>
+
+<div class="q"><span class="tag">boolean / &amp;</span><h2>Q72. 出力は？</h2><pre><code>int n = 0;
+boolean ok = false &amp; (++n &gt; 0);
+System.out.println(n + ":" + ok);</code></pre><div class="choices"><div class="choice">A. 0:false</div><div class="choice">B. 1:false</div><div class="choice">C. 1:true</div></div><details><summary>答え・解説</summary><div><b>B。1:false。</b> booleanに対する単一の <code>&amp;</code> は両辺を評価します。左辺がfalseでも右辺の <code>++n</code> が実行されます。短絡する <code>&amp;&amp;</code> との違いに注意します。</div></details></div>
+
+<div class="q"><span class="tag">Thread / start</span><h2>Q73. 次のコードはどうなる？</h2><pre><code>Thread t = new Thread(() -&gt; { });
+t.start();
+t.join();
+t.start();</code></pre><div class="choices"><div class="choice">A. 同じThreadがもう一度開始される</div><div class="choice">B. 2回目のstart()でIllegalThreadStateException</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。</b> 1つのThreadオブジェクトをstart()できるのは1回だけです。終了済みでも再startはできず、実行時に <code>IllegalThreadStateException</code> になります。</div></details></div>
+
+<div class="q"><span class="tag">Thread.sleep / lock</span><h2>Q74. synchronizedブロック内でThread.sleep()した場合、保持中のモニタロックはどうなる？</h2><div class="choices"><div class="choice">A. sleep中は自動的に解放される</div><div class="choice">B. sleepしても保持したまま</div><div class="choice">C. synchronizedが解除されるためコンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>Thread.sleep()</code> は現在のスレッドを一定時間休止させますが、保持しているモニタロックは解放しません。</div></details></div>
+
+<div class="q"><span class="tag">static synchronized</span><h2>Q75. static synchronizedメソッドが同期に使うロックとして正しいものは？</h2><pre><code>class Counter {
+    static synchronized void inc() { }
+}</code></pre><div class="choices"><div class="choice">A. 呼び出した各インスタンスのthis</div><div class="choice">B. Counter.classに対応するClassオブジェクト</div><div class="choice">C. 新しく作られた専用Threadオブジェクト</div></div><details><summary>答え・解説</summary><div><b>B。</b> 通常のsynchronizedインスタンスメソッドはthisをロックしますが、<code>static synchronized</code> はそのクラスのClassオブジェクトをロックします。</div></details></div>
+
+<p><a href="quiz-batch-002.html">← 追加20問 #2へ戻る</a> ／ <a href="quiz.html">最初の15問へ</a></p>
+</div></body></html>
