@@ -19,11 +19,14 @@ for asset in ("threads.html", "quiz.html", "README.md", "LICENSE", "favicon.svg"
     if path.read_bytes() != (repo / asset).read_bytes():
         raise SystemExit(f"Pages asset differs from source: {asset}")
 
-# Every generated quiz batch must be included in the Pages artifact.
+# Every generated quiz batch must be included in the Pages artifact and contain exactly 20 questions.
 quiz_batches = sorted(repo.glob("quiz-batch-*.html"))
 if not quiz_batches:
     raise SystemExit("No quiz batch files found in repository")
 for source in quiz_batches:
+    source_text = source.read_text(encoding="utf-8")
+    if source_text.count('<div class="q">') != 20:
+        raise SystemExit(f"Quiz batch must contain exactly 20 questions: {source.name}")
     deployed = site / source.name
     if not deployed.is_file() or deployed.read_bytes() != source.read_bytes():
         raise SystemExit(f"Missing or altered quiz batch in Pages artifact: {source.name}")
@@ -33,7 +36,7 @@ index = site / "index.html"
 if not index.is_file() or not index.stat().st_size:
     raise SystemExit("Missing Pages index.html")
 index_text = index.read_text(encoding="utf-8")
-for required in ('id="quiz"', 'href="quiz.html"', 'href="quiz-batch-001.html"', 'href="quiz-batch-007.html"', '>検定チェック<'):
+for required in ('id="quiz"', 'href="quiz.html"', 'href="quiz-batch-001.html"', 'href="quiz-batch-009.html"', '>検定チェック<'):
     if required not in index_text:
         raise SystemExit(f"Beginner document is missing certification link/content: {required}")
 

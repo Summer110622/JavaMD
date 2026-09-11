@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #9</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #9</h1><p>Java 2級の問題冊子・正答解説・学習資料で扱われる論点を基に、既存Q1〜Q175と重複しないよう新規作成したQ176〜Q195です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="index.html#quiz">← JavaMD 検定チェック</a> ／ <a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">#1</a> ／ <a href="quiz-batch-002.html">#2</a> ／ <a href="quiz-batch-003.html">#3</a> ／ <a href="quiz-batch-004.html">#4</a> ／ <a href="quiz-batch-005.html">#5</a> ／ <a href="quiz-batch-006.html">#6</a> ／ <a href="quiz-batch-007.html">#7</a> ／ <a href="quiz-batch-008.html">#8</a></p></header>
+
+<div class="q"><span class="tag">interface / default / inheritance</span><h2>Q176. 出力は？</h2><pre><code>interface Named {
+    default String name() { return "I"; }
+}
+class Base {
+    public String name() { return "B"; }
+}
+class Child extends Base implements Named { }
+System.out.println(new Child().name());</code></pre><div class="choices"><div class="choice">A. I</div><div class="choice">B. B</div><div class="choice">C. defaultメソッド競合でコンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。B。</b> interfaceのdefaultメソッドと継承したクラスのインスタンスメソッドが競合する場合、クラス側のメソッドが優先されます。</div></details></div>
+
+<div class="q"><span class="tag">interface / field / compile error</span><h2>Q177. 次のBothはコンパイルできる？</h2><pre><code>interface Left  { int CODE = 1; }
+interface Right { int CODE = 2; }
+class Both implements Left, Right {
+    int value() { return CODE; }
+}</code></pre><div class="choices"><div class="choice">A. でき、1を返す</div><div class="choice">B. でき、2を返す</div><div class="choice">C. できない</div></div><details><summary>答え・解説</summary><div><b>C。</b> 両interfaceから同名の定数<code>CODE</code>が見えるため単純名では曖昧です。<code>Left.CODE</code>や<code>Right.CODE</code>のように修飾する必要があります。</div></details></div>
+
+<div class="q"><span class="tag">modifier / abstract / static</span><h2>Q178. 次の宣言は有効？</h2><pre><code>abstract class Worker {
+    static abstract void run();
+}</code></pre><div class="choices"><div class="choice">A. 有効</div><div class="choice">B. 無効でコンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>abstract</code>はサブクラスでのオーバーライドを前提としますが、<code>static</code>メソッドはオーバーライドではなく隠蔽の対象です。両者を同じメソッドに指定できません。</div></details></div>
+
+<div class="q"><span class="tag">constructor / super / access</span><h2>Q179. 次のChildはコンパイルできる？</h2><pre><code>class Parent {
+    private Parent() { }
+}
+class Child extends Parent {
+    Child() { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>Child()</code>には暗黙の<code>super()</code>が入りますが、Parentの引数なしコンストラクタはprivateなのでサブクラスから呼べません。</div></details></div>
+
+<div class="q"><span class="tag">static / initializer / constructor</span><h2>Q180. 出力は？</h2><pre><code>class Demo {
+    static { System.out.print("S"); }
+    { System.out.print("I"); }
+    Demo() { System.out.print("C"); }
+}
+new Demo();
+new Demo();</code></pre><div class="choices"><div class="choice">A. SICSIC</div><div class="choice">B. SICIC</div><div class="choice">C. ICIC</div></div><details><summary>答え・解説</summary><div><b>B。SICIC。</b> static初期化ブロックはクラス初期化時に1回だけ実行されます。インスタンス初期化ブロックとコンストラクタはオブジェクト生成ごとに実行されます。</div></details></div>
+
+<div class="q"><span class="tag">this / shadowing</span><h2>Q181. 出力は？</h2><pre><code>class Box {
+    int n = 5;
+    Box(int n) {
+        n = n + 1;
+    }
+}
+System.out.println(new Box(9).n);</code></pre><div class="choices"><div class="choice">A. 5</div><div class="choice">B. 9</div><div class="choice">C. 10</div></div><details><summary>答え・解説</summary><div><b>A。5。</b> コンストラクタ引数<code>n</code>がフィールド名を隠しています。代入しているのはローカルの引数であり、フィールドを変更するなら<code>this.n = ...</code>と書きます。</div></details></div>
+
+<div class="q"><span class="tag">Collections / reverse</span><h2>Q182. 出力は？</h2><pre><code>List&lt;String&gt; xs = new ArrayList&lt;&gt;(Arrays.asList("A", "B", "C"));
+Collections.reverse(xs);
+System.out.println(xs);</code></pre><div class="choices"><div class="choice">A. [A, B, C]</div><div class="choice">B. [C, B, A]</div><div class="choice">C. reverse()は新しいListを返すのでコンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。[C, B, A]。</b> <code>Collections.reverse</code>は渡したList自身の要素順を反転します。</div></details></div>
+
+<div class="q"><span class="tag">List / subList</span><h2>Q183. 出力は？</h2><pre><code>List&lt;Integer&gt; xs = new ArrayList&lt;&gt;(Arrays.asList(1, 2, 3, 4));
+List&lt;Integer&gt; mid = xs.subList(1, 3);
+mid.set(0, 9);
+System.out.println(xs);</code></pre><div class="choices"><div class="choice">A. [1, 2, 3, 4]</div><div class="choice">B. [1, 9, 3, 4]</div><div class="choice">C. [9, 2, 3, 4]</div></div><details><summary>答え・解説</summary><div><b>B。[1, 9, 3, 4]。</b> <code>subList</code>は元Listの範囲ビューです。ビューの要素を変更すると元のListにも反映されます。</div></details></div>
+
+<div class="q"><span class="tag">TreeSet / navigation</span><h2>Q184. 出力は？</h2><pre><code>TreeSet&lt;Integer&gt; s = new TreeSet&lt;&gt;(Arrays.asList(10, 20, 30));
+System.out.println(s.floor(25) + ":" + s.higher(20));</code></pre><div class="choices"><div class="choice">A. 20:30</div><div class="choice">B. 30:20</div><div class="choice">C. 20:20</div></div><details><summary>答え・解説</summary><div><b>A。20:30。</b> <code>floor(25)</code>は25以下で最大の要素20、<code>higher(20)</code>は20より大きい最小の要素30を返します。</div></details></div>
+
+<div class="q"><span class="tag">Map / remove</span><h2>Q185. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; m = new HashMap&lt;&gt;();
+m.put("A", 1);
+boolean x = m.remove("A", 2);
+boolean y = m.remove("A", 1);
+System.out.println(x + ":" + y + ":" + m.size());</code></pre><div class="choices"><div class="choice">A. false:true:0</div><div class="choice">B. true:true:0</div><div class="choice">C. false:false:1</div></div><details><summary>答え・解説</summary><div><b>A。false:true:0。</b> 2引数の<code>remove</code>はkeyとvalueの両方が一致した場合だけ削除します。最初は値が違うのでfalse、次は削除できてtrueです。</div></details></div>
+
+<div class="q"><span class="tag">2次元配列 / clone</span><h2>Q186. 出力は？</h2><pre><code>int[][] a = { {1}, {2} };
+int[][] b = a.clone();
+b[0][0] = 9;
+System.out.println(a[0][0] + ":" + (a == b) + ":" + (a[0] == b[0]));</code></pre><div class="choices"><div class="choice">A. 1:false:false</div><div class="choice">B. 9:false:true</div><div class="choice">C. 9:true:true</div></div><details><summary>答え・解説</summary><div><b>B。9:false:true。</b> 2次元配列の<code>clone()</code>で複製されるのは外側配列です。内側配列への参照は共有されるため、内側要素の変更は両方から見えます。</div></details></div>
+
+<div class="q"><span class="tag">array / Arrays.fill</span><h2>Q187. 出力は？</h2><pre><code>int[] a = {1, 2, 3, 4};
+Arrays.fill(a, 1, 3, 9);
+System.out.println(Arrays.toString(a));</code></pre><div class="choices"><div class="choice">A. [1, 9, 9, 4]</div><div class="choice">B. [1, 9, 9, 9]</div><div class="choice">C. [9, 9, 3, 4]</div></div><details><summary>答え・解説</summary><div><b>A。[1, 9, 9, 4]。</b> 範囲指定の<code>Arrays.fill</code>は開始indexを含み、終了indexを含みません。この場合はindex 1と2だけが9になります。</div></details></div>
+
+<div class="q"><span class="tag">for / code trace</span><h2>Q188. sumはいくつ？</h2><pre><code>int sum = 0;
+for (int i = 0, j = 4; i &lt; j; i++, j--) {
+    sum += i + j;
+}
+System.out.println(sum);</code></pre><div class="choices"><div class="choice">A. 4</div><div class="choice">B. 8</div><div class="choice">C. 12</div></div><details><summary>答え・解説</summary><div><b>B。8。</b> 反復は<code>(i,j)=(0,4)</code>と<code>(1,3)</code>の2回です。それぞれ4を加算し、次の<code>(2,2)</code>では条件がfalseになります。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / short circuit / cast</span><h2>Q189. 出力は？</h2><pre><code>Object o = null;
+boolean ok = o instanceof String
+    &amp;&amp; ((String) o).length() &gt; 0;
+System.out.println(ok);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. NullPointerException</div></div><details><summary>答え・解説</summary><div><b>B。false。</b> <code>null instanceof String</code>はfalseです。さらに<code>&amp;&amp;</code>は短絡評価するため右辺のキャストと<code>length()</code>は実行されません。</div></details></div>
+
+<div class="q"><span class="tag">boolean / XOR</span><h2>Q190. 出力は？</h2><pre><code>boolean a = true;
+boolean b = false;
+boolean c = true;
+System.out.println(a ^ b ^ c);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。false。</b> booleanの<code>^</code>は排他的ORです。<code>true ^ false</code>はtrue、そのtrueとtrueのXORはfalseです。</div></details></div>
+
+<div class="q"><span class="tag">boolean / conditional operator</span><h2>Q191. 次のコードはどうなる？</h2><pre><code>int n = 0;
+int x = true ? 7 : 10 / n;
+System.out.println(x);</code></pre><div class="choices"><div class="choice">A. 7と表示</div><div class="choice">B. ArithmeticException</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。7。</b> 条件演算子<code>?:</code>は選択された側だけを実行します。条件がtrueなので<code>10 / n</code>は評価されず、0除算は発生しません。</div></details></div>
+
+<div class="q"><span class="tag">Thread / isInterrupted</span><h2>Q192. 出力は？</h2><pre><code>Thread t = Thread.currentThread();
+t.interrupt();
+System.out.println(t.isInterrupted() + ":" + t.isInterrupted());</code></pre><div class="choices"><div class="choice">A. true:true</div><div class="choice">B. true:false</div><div class="choice">C. false:false</div></div><details><summary>答え・解説</summary><div><b>A。true:true。</b> <code>isInterrupted()</code>は割り込み状態を確認するだけでクリアしません。状態を確認してクリアするstaticメソッド<code>Thread.interrupted()</code>とは異なります。</div></details></div>
+
+<div class="q"><span class="tag">Thread / sleep / synchronized</span><h2>Q193. t1がsleep中、t2は同じlockのsynchronizedブロックへ入れる？</h2><pre><code>Object lock = new Object();
+Thread t1 = new Thread(() -&gt; {
+    synchronized (lock) {
+        try { Thread.sleep(100); }
+        catch (InterruptedException e) { }
+    }
+});
+Thread t2 = new Thread(() -&gt; {
+    synchronized (lock) {
+        System.out.print("B");
+    }
+});</code></pre><div class="choices"><div class="choice">A. sleepした瞬間に入れる</div><div class="choice">B. t1がsynchronizedブロックを抜けるまで入れない</div><div class="choice">C. sleepを使うとlock自体が無効になる</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>Thread.sleep()</code>は現在のスレッドを休止しますが、保持中のモニターロックを解放しません。同じlockを必要とするt2は待機します。</div></details></div>
+
+<div class="q"><span class="tag">Thread / isAlive / join</span><h2>Q194. 出力は？</h2><pre><code>public static void main(String[] args) throws Exception {
+    Thread t = new Thread(() -&gt; { });
+    System.out.print(t.isAlive() + ":");
+    t.start();
+    t.join();
+    System.out.println(t.isAlive());
+}</code></pre><div class="choices"><div class="choice">A. false:false</div><div class="choice">B. false:true</div><div class="choice">C. true:false</div></div><details><summary>答え・解説</summary><div><b>A。false:false。</b> start前はまだ生存していません。<code>join()</code>から戻った時点では対象スレッドは終了済みなので、再び<code>isAlive()</code>はfalseです。</div></details></div>
+
+<div class="q"><span class="tag">code trace / overload / numeric promotion</span><h2>Q195. 出力は？</h2><pre><code>static void pick(int x)  { System.out.print("I"); }
+static void pick(long x) { System.out.print("L"); }
+
+byte b = 1;
+pick(b);</code></pre><div class="choices"><div class="choice">A. I</div><div class="choice">B. L</div><div class="choice">C. 呼び出しが曖昧でコンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。I。</b> byteはintにもlongにも拡大変換できますが、より近いint版が選択されます。算術やメソッド呼び出しでの基本型の昇格・拡大変換は頻出の確認点です。</div></details></div>
+
+</div></body></html>
