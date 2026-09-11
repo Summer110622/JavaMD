@@ -36,6 +36,9 @@ jobs:
       - name: Expand all beginner topics
         run: python3 scripts/expand-all-topics.py _site/index.html content/all-topics-deep-dive.html
 
+      - name: Organize learning order
+        run: python3 scripts/organize-learning-order.py _site/index.html
+
       - name: Verify root and project-site asset paths
         run: node scripts/test-pages-paths.mjs
 
