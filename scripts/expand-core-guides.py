@@ -29,6 +29,18 @@ for section_id in expected_ids:
     if count != 1:
         raise SystemExit(f"Could not replace section: {section_id}")
 
+quiz_section_match = re.search(r'<section id="quiz">.*?</section>', html, re.DOTALL)
+if not quiz_section_match:
+    raise SystemExit("Could not find certification practice section")
+quiz_section = quiz_section_match.group(0)
+quiz_card = '<a class="card" href="quiz-batch-018.html" style="text-decoration:none;color:inherit"><strong>追加20問 #18</strong><p>Q356〜Q375 · interface・constructor/static・Map/Set・配列/ループ・cast/boolean・Threadの総合確認</p></a>'
+if 'href="quiz-batch-018.html"' not in quiz_section:
+    end_marker = '</div></section>'
+    if end_marker not in quiz_section:
+        raise SystemExit("Could not find certification card insertion point")
+    updated_quiz_section = quiz_section.replace(end_marker, quiz_card + end_marker, 1)
+    html = html[:quiz_section_match.start()] + updated_quiz_section + html[quiz_section_match.end():]
+
 required_text = (
     "プリミティブ型と参照型",
     "短絡評価",
@@ -48,6 +60,7 @@ required_text = (
     "DateTimeFormatter",
     "synchronized",
     "コード読解の順番",
+    'href="quiz-batch-018.html"',
 )
 for text in required_text:
     if text not in html:
