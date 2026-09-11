@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #16</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #16</h1><p>Java 2級の問題冊子・正答解説・学習資料で扱われる論点を基に、既存Q1〜Q315と重複しないよう新規作成したQ316〜Q335です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="index.html#quiz">← JavaMD 検定チェック</a> ／ <a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">#1</a> ／ <a href="quiz-batch-002.html">#2</a> ／ <a href="quiz-batch-003.html">#3</a> ／ <a href="quiz-batch-004.html">#4</a> ／ <a href="quiz-batch-005.html">#5</a> ／ <a href="quiz-batch-006.html">#6</a> ／ <a href="quiz-batch-007.html">#7</a> ／ <a href="quiz-batch-008.html">#8</a> ／ <a href="quiz-batch-009.html">#9</a> ／ <a href="quiz-batch-010.html">#10</a> ／ <a href="quiz-batch-011.html">#11</a> ／ <a href="quiz-batch-012.html">#12</a> ／ <a href="quiz-batch-013.html">#13</a> ／ <a href="quiz-batch-014.html">#14</a> ／ <a href="quiz-batch-015.html">#15</a></p></header>
+
+<div class="q"><span class="tag">interface / static / inheritance</span><h2>Q316. 出力は？</h2><pre><code>interface Audit {
+    static String tag() { return "I"; }
+}
+class Box implements Audit {
+    String tag() { return "C"; }
+}
+
+System.out.println(new Box().tag() + ":" + Audit.tag());</code></pre><div class="choices"><div class="choice">A. C:I</div><div class="choice">B. I:I</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。C:I。interfaceのstaticメソッドは実装クラスへ継承されません。そのためBoxのtag()は別のインスタンスメソッドとして定義でき、Audit.tag()はinterface名で呼び出します。</div></details></div>
+
+<div class="q"><span class="tag">interface / default / multiple implements</span><h2>Q317. 出力は？</h2><pre><code>interface Left {
+    default int value() { return 1; }
+}
+interface Right {
+    default int value() { return 2; }
+}
+class Both implements Left, Right {
+    public int value() {
+        return Left.super.value() + Right.super.value();
+    }
+}
+
+System.out.println(new Both().value());</code></pre><div class="choices"><div class="choice">A. 1</div><div class="choice">B. 2</div><div class="choice">C. 3</div><div class="choice">D. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>C。3。同じシグネチャのdefaultメソッドを複数interfaceから受ける場合は実装クラス側で解決が必要です。ここではInterfaceName.superの形で両方を明示的に呼び、その合計を返しています。</div></details></div>
+
+<div class="q"><span class="tag">inheritance / private / method dispatch</span><h2>Q318. 出力は？</h2><pre><code>class Base {
+    private String mark() { return "B"; }
+    String call() { return mark(); }
+}
+class Sub extends Base {
+    public String mark() { return "S"; }
+}
+
+System.out.println(new Sub().call());</code></pre><div class="choices"><div class="choice">A. B</div><div class="choice">B. S</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。B。Baseのprivateメソッドmark()はSubへ継承されず、オーバーライドの対象にもなりません。Base.call()内のmark()はBase自身のprivateメソッドを呼びます。</div></details></div>
+
+<div class="q"><span class="tag">constructor / this / static / final</span><h2>Q319. 出力は？</h2><pre><code>class Key {
+    static int created = 0;
+    final int id;
+
+    Key() { this(++created); }
+    Key(int id) { this.id = id; }
+}
+
+Key a = new Key();
+Key b = new Key();
+System.out.println(a.id + ":" + b.id + ":" + Key.created);</code></pre><div class="choices"><div class="choice">A. 1:2:2</div><div class="choice">B. 1:1:2</div><div class="choice">C. 2:2:2</div></div><details><summary>答え・解説</summary><div>A。1:2:2。引数なしコンストラクタはthis(++created)で別コンストラクタへ委譲します。createdは各生成時に1ずつ増え、その値がfinalフィールドidへ一度だけ代入されます。</div></details></div>
+
+<div class="q"><span class="tag">static / final / class initialization</span><h2>Q320. 出力は？</h2><pre><code>class Limits {
+    static { System.out.print("I"); }
+    static final int MAX = 3;
+}
+
+System.out.print(Limits.MAX);</code></pre><div class="choices"><div class="choice">A. I3</div><div class="choice">B. 3</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>B。3。MAXはプリミティブ型のコンパイル時定数なので参照箇所へ値が埋め込まれます。この参照だけではLimitsのクラス初期化は発生せず、static初期化子Iは実行されません。</div></details></div>
+
+<div class="q"><span class="tag">constructor / implicit super / compile error</span><h2>Q321. Childはコンパイルできる？</h2><pre><code>class Parent {
+    Parent(int n) { }
+}
+class Child extends Parent {
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。できません。Childにはデフォルトコンストラクタが補われますが、その先頭にはsuper()が暗黙挿入されます。Parentには引数なしコンストラクタがないため呼び出せません。</div></details></div>
+
+<div class="q"><span class="tag">Map / entrySet / view</span><h2>Q322. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+map.put("a", 1);
+
+Map.Entry&lt;String,Integer&gt; entry =
+    map.entrySet().iterator().next();
+entry.setValue(7);
+
+System.out.println(map.get("a"));</code></pre><div class="choices"><div class="choice">A. 1</div><div class="choice">B. 7</div><div class="choice">C. null</div></div><details><summary>答え・解説</summary><div>B。7。entrySet()のEntryはMapの内容に対応するビューです。setValue(7)でEntryの値を変更すると、元のMapに格納されている値も7へ更新されます。</div></details></div>
+
+<div class="q"><span class="tag">TreeMap / navigation</span><h2>Q323. 出力は？</h2><pre><code>TreeMap&lt;Integer,String&gt; map = new TreeMap&lt;&gt;();
+map.put(10, "A");
+map.put(20, "B");
+map.put(30, "C");
+
+System.out.println(map.floorKey(20) + ":" + map.higherKey(20));</code></pre><div class="choices"><div class="choice">A. 10:20</div><div class="choice">B. 20:30</div><div class="choice">C. 20:20</div></div><details><summary>答え・解説</summary><div>B。20:30。floorKey(20)は20以下で最大のキーなので20、higherKey(20)は20より大きい最小のキーなので30です。</div></details></div>
+
+<div class="q"><span class="tag">Set / retainAll / return value</span><h2>Q324. 出力は？</h2><pre><code>Set&lt;String&gt; set = new HashSet&lt;&gt;(
+    Arrays.asList("A", "B", "C")
+);
+boolean changed = set.retainAll(
+    Arrays.asList("B", "C", "D")
+);
+
+System.out.println(changed + ":" + set.size() + ":" + set.contains("A"));</code></pre><div class="choices"><div class="choice">A. true:2:false</div><div class="choice">B. false:2:false</div><div class="choice">C. true:3:true</div></div><details><summary>答え・解説</summary><div>A。true:2:false。retainAll()は指定Collectionにも含まれる要素だけを残します。Aが削除されるため内容は変化し、戻り値はtrue、残る要素数は2です。</div></details></div>
+
+<div class="q"><span class="tag">List / Collections.reverse / mutation</span><h2>Q325. 出力は？</h2><pre><code>List&lt;Integer&gt; list = new ArrayList&lt;&gt;(
+    Arrays.asList(1, 2, 3)
+);
+Collections.reverse(list);
+list.set(1, 9);
+
+System.out.println(list);</code></pre><div class="choices"><div class="choice">A. [1, 9, 3]</div><div class="choice">B. [3, 9, 1]</div><div class="choice">C. [3, 2, 1, 9]</div></div><details><summary>答え・解説</summary><div>B。[3, 9, 1]。reverse()はList自身の要素順を反転します。その後set(1, 9)でインデックス1の要素2が9へ置き換わります。</div></details></div>
+
+<div class="q"><span class="tag">array / 2D array / enhanced for</span><h2>Q326. 出力は？</h2><pre><code>int[][] data = {
+    {1, 2, 3},
+    {},
+    {4, 5}
+};
+int cells = 0;
+for (int[] row : data) {
+    cells += row.length;
+}
+System.out.println(data.length + ":" + cells);</code></pre><div class="choices"><div class="choice">A. 3:5</div><div class="choice">B. 5:3</div><div class="choice">C. 3:6</div></div><details><summary>答え・解説</summary><div>A。3:5。data.lengthは行数3です。各行の長さは3、0、2なので、拡張forで合計すると5になります。2次元配列の各行は同じ長さである必要はありません。</div></details></div>
+
+<div class="q"><span class="tag">for / multiple variables / trace</span><h2>Q327. 出力は？</h2><pre><code>int sum = 0;
+for (int i = 0, j = 7; i &lt; j; i += 2, j--) {
+    sum += i + j;
+}
+System.out.println(sum);</code></pre><div class="choices"><div class="choice">A. 15</div><div class="choice">B. 24</div><div class="choice">C. 30</div></div><details><summary>答え・解説</summary><div>B。24。ループ本体に入る組は(0,7)、(2,6)、(4,5)で、加算値は7、8、9です。次の(6,4)では条件i &lt; jがfalseになり終了します。</div></details></div>
+
+<div class="q"><span class="tag">loop / switch / fall-through</span><h2>Q328. 出力は？</h2><pre><code>int score = 0;
+for (int i = 1; i &lt;= 3; i++) {
+    switch (i) {
+        case 1: score += 1;
+        case 2: score += 2; break;
+        default: score += 4;
+    }
+}
+System.out.println(score);</code></pre><div class="choices"><div class="choice">A. 7</div><div class="choice">B. 9</div><div class="choice">C. 12</div></div><details><summary>答え・解説</summary><div>B。9。i=1ではbreakがcase 1にないためcase 2までフォールスルーして3加算します。i=2で2、i=3でdefaultの4を加え、合計9です。</div></details></div>
+
+<div class="q"><span class="tag">cast / null</span><h2>Q329. 出力は？</h2><pre><code>Object value = null;
+String text = (String) value;
+System.out.println(text == null);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. ClassCastException</div></div><details><summary>答え・解説</summary><div>A。true。nullは参照型へキャストしても実体の型チェックで失敗しません。結果はnullのままなのでtext == nullはtrueです。</div></details></div>
+
+<div class="q"><span class="tag">cast / runtime exception</span><h2>Q330. 実行結果として正しいものは？</h2><pre><code>Object value = Integer.valueOf(4);
+Number number = (Number) value;
+Double d = (Double) number;
+System.out.println(d);</code></pre><div class="choices"><div class="choice">A. 4.0と表示される</div><div class="choice">B. DoubleへのキャストでClassCastException</div><div class="choice">C. Numberへのキャストでコンパイルエラー</div></div><details><summary>答え・解説</summary><div>B。実体はIntegerです。IntegerはNumberなので最初のキャストは成功しますが、Integerの実体をDoubleへ変換することはできないためClassCastExceptionになります。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / compile error / type relation</span><h2>Q331. 次のコードはコンパイルできる？</h2><pre><code>String text = "java";
+boolean result = text instanceof Integer;
+System.out.println(result);</code></pre><div class="choices"><div class="choice">A. でき、falseと表示される</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。できません。StringとIntegerは互いに継承関係がなく、どちらもfinalなので、textがIntegerの実体である可能性はありません。成立し得ないinstanceof判定はコンパイル時に拒否されます。</div></details></div>
+
+<div class="q"><span class="tag">boolean / operator precedence</span><h2>Q332. 出力は？</h2><pre><code>boolean result = true | false &amp;&amp; false;
+System.out.println(result);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>B。false。booleanの|は&&より優先順位が高いため、(true | false) && falseとして評価されます。左側はtrueですが、true && falseなので最終結果はfalseです。</div></details></div>
+
+<div class="q"><span class="tag">Thread / Runnable / override / run</span><h2>Q333. 何が表示される？</h2><pre><code>Thread t = new Thread(
+    () -&gt; System.out.print("R")
+) {
+    @Override
+    public void run() {
+        System.out.print("M");
+    }
+};
+
+t.start();
+t.join();</code></pre><div class="choices"><div class="choice">A. R</div><div class="choice">B. M</div><div class="choice">C. RM</div><div class="choice">D. MR</div></div><details><summary>答え・解説</summary><div>B。M。Thread(Runnable)へRunnableを渡していても、この匿名サブクラスはrun()自体をオーバーライドしています。start()後に動くのはオーバーライドされたrun()で、super.run()を呼んでいないためRunnable側のRは実行されません。InterruptedExceptionへの対応は済んでいるものとします。</div></details></div>
+
+<div class="q"><span class="tag">Thread / Runnable / synchronized / shared lock</span><h2>Q334. 必ず表示される値は？</h2><pre><code>class Job implements Runnable {
+    int count = 0;
+    public synchronized void run() {
+        int old = count;
+        count = old + 1;
+    }
+}
+
+Job job = new Job();
+Thread t1 = new Thread(job);
+Thread t2 = new Thread(job);
+t1.start();
+t2.start();
+t1.join();
+t2.join();
+System.out.println(job.count);</code></pre><div class="choices"><div class="choice">A. 必ず1</div><div class="choice">B. 必ず2</div><div class="choice">C. 1または2</div></div><details><summary>答え・解説</summary><div>B。必ず2。同じJobインスタンスを2つのThreadが共有し、run()はinstance synchronizedなので同じjobのロックを使います。2回の更新は同時実行されず、join()後には両方が完了しています。InterruptedExceptionへの対応は済んでいるものとします。</div></details></div>
+
+<div class="q"><span class="tag">Thread / join / checked exception / compile error</span><h2>Q335. 次のメソッドはコンパイルできる？</h2><pre><code>void waitFor(Thread t) {
+    t.join();
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。できません。join()はInterruptedExceptionを投げる可能性があり、これはチェック例外です。catchするか、waitFor側でthrows InterruptedExceptionを宣言する必要があります。</div></details></div>
+
+<footer><p><a href="index.html#quiz">JavaMDの検定チェックへ戻る</a></p></footer>
+</div></body></html>
