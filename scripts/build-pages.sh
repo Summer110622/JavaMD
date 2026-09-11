@@ -9,7 +9,7 @@ trap 'rm -rf -- "$CLASSES_DIR"' EXIT
 
 rm -rf -- "$SITE_DIR"
 mkdir -p "$SITE_DIR/vendor"
-for asset in index.html threads.html quiz.html README.md LICENSE favicon.svg favicon.ico; do
+for asset in index.html threads.html quiz.html README.md LICENSE favicon.svg favicon.ico turbo-compile.js; do
   cp "$REPO_DIR/$asset" "$SITE_DIR/$asset"
 done
 for quiz in "$REPO_DIR"/quiz-batch-*.html; do
@@ -66,6 +66,11 @@ PY
 # maintainable detailed fragments. These scripts also assert required teaching points.
 python3 "$REPO_DIR/scripts/expand-inheritance.py"
 python3 "$REPO_DIR/scripts/expand-core-guides.py"
+
+# Add the runtime accelerator only to the built site so the source document remains
+# easy to read while Pages gets warmup, speculative compilation and an LRU class cache.
+python3 "$REPO_DIR/scripts/inject-turbo-compile.py" "$SITE_DIR/index.html"
+node "$REPO_DIR/scripts/test-turbo-compile.mjs" "$SITE_DIR/index.html"
 
 curl --fail --location --retry 3 --retry-all-errors \
   --connect-timeout 15 --max-time 120 \

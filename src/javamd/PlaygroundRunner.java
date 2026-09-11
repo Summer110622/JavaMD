@@ -16,6 +16,8 @@ import java.util.Map;
 
 /** Compiles and runs one editor submission inside a fresh CheerpJ process. */
 public final class PlaygroundRunner {
+    private static boolean runtimeConfigured;
+
     private PlaygroundRunner() {}
 
     /** Runs in the persistent library JVM, so ECJ's JRT index survives edits. */
@@ -26,7 +28,13 @@ public final class PlaygroundRunner {
         try (PrintWriter diagnostics = new PrintWriter(
                 new FileOutputStream(logPath), true, StandardCharsets.UTF_8)) {
             try {
-                configureCurrentRuntime();
+                // Reflection into ECJ's JRT caches is only needed once per persistent
+                // library JVM. Keeping it off the hot path makes speculative/repeated
+                // compiles cheaper while preserving the existing Java 17 setup.
+                if (!runtimeConfigured) {
+                    configureCurrentRuntime();
+                    runtimeConfigured = true;
+                }
                 return org.eclipse.jdt.internal.compiler.batch.Main.compile(
                     new String[] {
                         "-17", "-proc:none", "-encoding", "UTF-8",
