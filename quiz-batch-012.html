@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #12</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #12</h1><p>Java 2級の問題冊子・正答解説・学習資料で扱われる論点を基に、既存Q1〜Q235と重複しないよう新規作成したQ236〜Q255です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="index.html#quiz">← JavaMD 検定チェック</a> ／ <a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">#1</a> ／ <a href="quiz-batch-002.html">#2</a> ／ <a href="quiz-batch-003.html">#3</a> ／ <a href="quiz-batch-004.html">#4</a> ／ <a href="quiz-batch-005.html">#5</a> ／ <a href="quiz-batch-006.html">#6</a> ／ <a href="quiz-batch-007.html">#7</a> ／ <a href="quiz-batch-008.html">#8</a> ／ <a href="quiz-batch-009.html">#9</a> ／ <a href="quiz-batch-010.html">#10</a> ／ <a href="quiz-batch-011.html">#11</a></p></header>
+
+<div class="q"><span class="tag">interface / default</span><h2>Q236. 出力は？</h2><pre><code>interface Left {
+    default String value() { return "L"; }
+}
+interface Right {
+    default String value() { return "R"; }
+}
+class Both implements Left, Right {
+    public String value() {
+        return Left.super.value() + Right.super.value();
+    }
+}
+
+System.out.println(new Both().value());</code></pre><div class="choices"><div class="choice">A. L</div><div class="choice">B. R</div><div class="choice">C. LR</div></div><details><summary>答え・解説</summary><div>C。LR。複数interfaceのdefaultメソッドが競合する場合、実装クラスでオーバーライドして解決できます。<code>InterfaceName.super.method()</code>で各default実装を明示的に呼び出せます。</div></details></div>
+
+<div class="q"><span class="tag">interface / static / compile error</span><h2>Q237. 次のHammerはコンパイルできる？</h2><pre><code>interface Tool {
+    static void info() { System.out.print("I"); }
+}
+class Hammer implements Tool {
+    void test() {
+        info();
+    }
+}</code></pre><div class="choices"><div class="choice">A. でき、Iと表示できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。interfaceのstaticメソッドは実装クラスへ継承されません。<code>Tool.info()</code>のようにinterface名で呼び出す必要があります。</div></details></div>
+
+<div class="q"><span class="tag">inheritance / private / trace</span><h2>Q238. 出力は？</h2><pre><code>class Base {
+    private String tag() { return "B"; }
+    String show() { return tag(); }
+}
+class Child extends Base {
+    String tag() { return "C"; }
+}
+
+Base x = new Child();
+System.out.println(x.show());</code></pre><div class="choices"><div class="choice">A. B</div><div class="choice">B. C</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。B。BaseのprivateメソッドはChildへ継承されず、Childのtag()はオーバーライドではありません。Base.show()内のtag()はBase自身のprivateメソッドを呼びます。</div></details></div>
+
+<div class="q"><span class="tag">override / throws / modifiers</span><h2>Q239. 次のオーバーライドはコンパイルできる？</h2><pre><code>import java.io.*;
+
+class Parent {
+    void load() throws IOException { }
+}
+class Child extends Parent {
+    @Override
+    void load() throws FileNotFoundException { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>A。オーバーライド側は、親メソッドが宣言したchecked例外と同じ型またはそのサブクラスを宣言できます。<code>FileNotFoundException</code>は<code>IOException</code>のサブクラスです。</div></details></div>
+
+<div class="q"><span class="tag">constructor / initialization order</span><h2>Q240. 出力は？</h2><pre><code>class Parent {
+    Parent() { System.out.print("P"); }
+}
+class Child extends Parent {
+    int x = mark("F");
+    { mark("I"); }
+
+    Child() { System.out.print("C"); }
+
+    int mark(String s) {
+        System.out.print(s);
+        return 1;
+    }
+}
+
+new Child();</code></pre><div class="choices"><div class="choice">A. PFIC</div><div class="choice">B. FIPC</div><div class="choice">C. PIFC</div></div><details><summary>答え・解説</summary><div>A。PFIC。まずスーパークラスの初期化とコンストラクタが実行され、その後にサブクラスのフィールド初期化子、インスタンス初期化ブロック、コンストラクタ本体の順で進みます。</div></details></div>
+
+<div class="q"><span class="tag">super / static / constructor trace</span><h2>Q241. 出力は？</h2><pre><code>class Parent {
+    Parent(int n) { System.out.print(n); }
+}
+class Child extends Parent {
+    static int make() {
+        System.out.print("M");
+        return 7;
+    }
+
+    Child() {
+        super(make());
+        System.out.print("C");
+    }
+}
+
+new Child();</code></pre><div class="choices"><div class="choice">A. 7MC</div><div class="choice">B. M7C</div><div class="choice">C. MC7</div></div><details><summary>答え・解説</summary><div>B。M7C。<code>super(make())</code>では、親コンストラクタへ渡す引数を先に評価します。そのためmake()のM、Parent(int)の7、Child()本体のCの順です。</div></details></div>
+
+<div class="q"><span class="tag">static / null reference</span><h2>Q242. 次のコードはどうなる？</h2><pre><code>class Counter {
+    static int value = 4;
+}
+
+Counter c = null;
+System.out.println(c.value);</code></pre><div class="choices"><div class="choice">A. 4と表示</div><div class="choice">B. NullPointerException</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。4。staticフィールドはインスタンスではなくクラスに属します。変数cがnullでも、この式ではインスタンスを参照せずCounter.valueとして解決されます。ただしクラス名で参照する書き方が推奨です。</div></details></div>
+
+<div class="q"><span class="tag">constructor / inheritance / compile error</span><h2>Q243. 次のコードはコンパイルできる？</h2><pre><code>class Parent {
+    Parent(int n) { }
+}
+class Child extends Parent {
+    Child() { super(1); }
+}
+
+Child c = new Child(2);</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div>B。コンストラクタは継承されません。Childに宣言されているのは引数なしの<code>Child()</code>だけなので、<code>new Child(2)</code>に対応するコンストラクタは存在しません。</div></details></div>
+
+<div class="q"><span class="tag">Map / computeIfAbsent</span><h2>Q244. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; map = new HashMap&lt;&gt;();
+int[] calls = {0};
+
+map.put("a", 10);
+int x = map.computeIfAbsent("a", k -&gt; {
+    calls[0]++;
+    return 20;
+});
+int y = map.computeIfAbsent("b", k -&gt; {
+    calls[0]++;
+    return 30;
+});
+
+System.out.println(x + ":" + y + ":" + calls[0]);</code></pre><div class="choices"><div class="choice">A. 10:30:1</div><div class="choice">B. 20:30:2</div><div class="choice">C. 10:30:2</div></div><details><summary>答え・解説</summary><div>A。10:30:1。aにはすでに値10があるため計算処理は呼ばれません。bだけ関数が実行されて30が登録されるので、呼び出し回数は1です。</div></details></div>
+
+<div class="q"><span class="tag">TreeMap / navigation</span><h2>Q245. 出力は？</h2><pre><code>TreeMap&lt;Integer,String&gt; map = new TreeMap&lt;&gt;();
+map.put(10, "A");
+map.put(20, "B");
+map.put(40, "C");
+
+System.out.println(
+    map.floorKey(25) + ":" + map.ceilingKey(25)
+);</code></pre><div class="choices"><div class="choice">A. 10:40</div><div class="choice">B. 20:40</div><div class="choice">C. 20:null</div></div><details><summary>答え・解説</summary><div>B。20:40。<code>floorKey(25)</code>は25以下で最大のkey、<code>ceilingKey(25)</code>は25以上で最小のkeyを返します。</div></details></div>
+
+<div class="q"><span class="tag">List / removeIf</span><h2>Q246. 出力は？</h2><pre><code>List&lt;Integer&gt; xs =
+    new ArrayList&lt;&gt;(Arrays.asList(1, 2, 3, 4));
+
+boolean changed = xs.removeIf(n -&gt; n % 2 == 0);
+System.out.println(changed + ":" + xs);</code></pre><div class="choices"><div class="choice">A. true:[1, 3]</div><div class="choice">B. false:[1, 3]</div><div class="choice">C. true:[2, 4]</div></div><details><summary>答え・解説</summary><div>A。true:[1, 3]。removeIfは条件に一致する要素を削除し、1件以上削除した場合にtrueを返します。この例では偶数の2と4が削除されます。</div></details></div>
+
+<div class="q"><span class="tag">Arrays.asList / backing array</span><h2>Q247. 出力は？</h2><pre><code>String[] a = {"A", "B"};
+List&lt;String&gt; list = Arrays.asList(a);
+
+list.set(0, "X");
+a[1] = "Y";
+
+System.out.println(a[0] + ":" + list.get(1));</code></pre><div class="choices"><div class="choice">A. A:B</div><div class="choice">B. X:B</div><div class="choice">C. X:Y</div></div><details><summary>答え・解説</summary><div>C。X:Y。Arrays.asListで得られるListは元配列を背後に持つ固定長ビューです。List側のsetと配列側の代入は互いに反映されます。</div></details></div>
+
+<div class="q"><span class="tag">array / clone</span><h2>Q248. 出力は？</h2><pre><code>int[] a = {1, 2};
+int[] b = a.clone();
+
+b[0] = 9;
+System.out.println(a[0] + ":" + (a == b));</code></pre><div class="choices"><div class="choice">A. 1:false</div><div class="choice">B. 9:true</div><div class="choice">C. 9:false</div></div><details><summary>答え・解説</summary><div>A。1:false。一次元のプリミティブ配列をcloneすると別の配列オブジェクトが作られ、要素値がコピーされます。bを書き換えてもaは変わらず、参照も異なります。</div></details></div>
+
+<div class="q"><span class="tag">switch / fall-through / trace</span><h2>Q249. totalはいくつ？</h2><pre><code>int total = 0;
+
+for (int i = 1; i &lt;= 3; i++) {
+    switch (i) {
+        case 1:
+            total += 1;
+        case 2:
+            total += 2;
+            break;
+        default:
+            total += 4;
+    }
+}
+
+System.out.println(total);</code></pre><div class="choices"><div class="choice">A. 7</div><div class="choice">B. 9</div><div class="choice">C. 12</div></div><details><summary>答え・解説</summary><div>B。9。i=1ではbreakがないためcase 2までフォールスルーして3加算、i=2で2加算、i=3でdefaultの4加算となり合計9です。</div></details></div>
+
+<div class="q"><span class="tag">enhanced for / reference trace</span><h2>Q250. 出力は？</h2><pre><code>StringBuilder[] a = {
+    new StringBuilder("A"),
+    new StringBuilder("B")
+};
+
+for (StringBuilder s : a) {
+    s.append("!");
+    s = new StringBuilder("X");
+}
+
+System.out.println(a[0] + ":" + a[1]);</code></pre><div class="choices"><div class="choice">A. A:B</div><div class="choice">B. A!:B!</div><div class="choice">C. X:X</div></div><details><summary>答え・解説</summary><div>B。A!:B!。拡張forの変数sは配列要素の参照のコピーです。参照先のStringBuilderを変更すると配列からも見えますが、s自体を別オブジェクトへ再代入しても配列要素の参照は置き換わりません。</div></details></div>
+
+<div class="q"><span class="tag">boolean / XOR</span><h2>Q251. 出力は？</h2><pre><code>boolean a = true;
+boolean b = false;
+boolean c = true;
+
+System.out.println(a ^ b ^ c);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>B。false。booleanの<code>^</code>は排他的ORです。true ^ false はtrue、その結果とtrueの排他的ORはfalseになります。</div></details></div>
+
+<div class="q"><span class="tag">conditional operator / evaluation</span><h2>Q252. 出力は？</h2><pre><code>int n = 0;
+int x = true ? ++n : (n += 10);
+
+System.out.println(n + ":" + x);</code></pre><div class="choices"><div class="choice">A. 1:1</div><div class="choice">B. 11:1</div><div class="choice">C. 10:10</div></div><details><summary>答え・解説</summary><div>A。1:1。条件演算子<code>?:</code>では選択された側だけが評価されます。条件がtrueなので<code>++n</code>だけが実行され、右側の<code>n += 10</code>は評価されません。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / array / cast</span><h2>Q253. 出力は？</h2><pre><code>Object value = new int[] {3, 4};
+
+System.out.println(
+    (value instanceof int[]) + ":" + ((int[]) value).length
+);</code></pre><div class="choices"><div class="choice">A. true:2</div><div class="choice">B. false:2</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div>A。true:2。配列もObjectとして扱えます。実体がint[]なのでinstanceofはtrueとなり、int[]へダウンキャストすればlengthを取得できます。</div></details></div>
+
+<div class="q"><span class="tag">Thread / interrupt flag</span><h2>Q254. 2行の出力は？</h2><pre><code>Thread.currentThread().interrupt();
+
+System.out.println(Thread.interrupted());
+System.out.println(
+    Thread.currentThread().isInterrupted()
+);</code></pre><div class="choices"><div class="choice">A. true / true</div><div class="choice">B. true / false</div><div class="choice">C. false / false</div></div><details><summary>答え・解説</summary><div>B。true / false。<code>interrupt()</code>で割り込み状態が立ちます。staticメソッド<code>Thread.interrupted()</code>は現在のスレッドの状態を返すと同時にその状態をクリアするため、続くisInterrupted()はfalseです。</div></details></div>
+
+<div class="q"><span class="tag">Thread / synchronized / lock</span><h2>Q255. 次のwork()について正しい説明は？</h2><pre><code>class Service {
+    void work() {
+        synchronized (new Object()) {
+            // shared data を更新
+        }
+    }
+}</code></pre><div class="choices"><div class="choice">A. Serviceの全インスタンスで同じロックを共有する</div><div class="choice">B. 同じServiceインスタンスへの複数呼び出しを確実に排他する</div><div class="choice">C. 呼び出しごとに別ロックが作られるため、共有データの排他には通常使えない</div></div><details><summary>答え・解説</summary><div>C。<code>new Object()</code>はwork()を呼ぶたびに新しいオブジェクトを作ります。別々の呼び出しは同じmonitorを共有しないため、共有データを守るロックとしては機能しません。</div></details></div>
+
+<footer><p><a href="index.html#quiz">JavaMDの検定チェックへ戻る</a></p></footer>
+</div></body></html>
