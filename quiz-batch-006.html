@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>じゃばる！！ 検定チェック 追加20問 #6</title><style>:root{--bg:#f7f8fb;--surface:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--primary:#3157d5;--soft:#eef2ff;--good:#eaf8f2;--code:#101722}*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.wrap{width:min(920px,calc(100% - 28px));margin:auto;padding:40px 0 80px}header,.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin:14px 0}.tag{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:3px 9px;font-size:.75rem;font-weight:800}.q h2{font-size:1.13rem;margin:7px 0 12px}.choices{display:grid;gap:7px;margin:12px 0}.choice{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fafbfc}details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--good)}summary{cursor:pointer;font-weight:800;padding:10px 12px}details>div{padding:0 12px 12px}pre{background:var(--code);color:#e5edf7;padding:14px 16px;border-radius:10px;overflow:auto;font-size:.87rem}code{font-family:Consolas,monospace}a{color:var(--primary)}</style></head>
+<body><div class="wrap">
+<header><span class="tag">JAVA 2級対策 · ORIGINAL QUIZ</span><h1>追加20問 #6</h1><p>Java 2級の問題冊子・正答解説・学習資料で扱われる論点を基に、既存Q1〜Q115と重複しないよう新規作成したQ116〜Q135です。実問題文は転載していません。答えを決めてから「答え・解説」を開いてください。</p><p><a href="index.html#quiz">← JavaMD 検定チェック</a> ／ <a href="quiz.html">最初の15問</a> ／ <a href="quiz-batch-001.html">#1</a> ／ <a href="quiz-batch-002.html">#2</a> ／ <a href="quiz-batch-003.html">#3</a> ／ <a href="quiz-batch-004.html">#4</a> ／ <a href="quiz-batch-005.html">#5</a></p></header>
+
+<div class="q"><span class="tag">interface / static</span><h2>Q116. 次のAppはコンパイルできる？</h2><pre><code>interface Util {
+    static void ping() { System.out.print("P"); }
+}
+class App implements Util {
+    void run() {
+        ping();
+    }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> interfaceのstaticメソッドは実装クラスへ継承されません。呼び出すなら <code>Util.ping()</code> のようにinterface名で指定します。</div></details></div>
+
+<div class="q"><span class="tag">abstract / final</span><h2>Q117. 次のクラス宣言は有効？</h2><pre><code>abstract final class Base {
+    abstract void work();
+}</code></pre><div class="choices"><div class="choice">A. 有効</div><div class="choice">B. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。</b> abstractクラスはサブクラスで未実装部分を完成させる前提ですが、finalクラスは継承禁止です。この2つを同じクラスに指定できません。</div></details></div>
+
+<div class="q"><span class="tag">private / override</span><h2>Q118. 次のChildはコンパイルできる？</h2><pre><code>class Parent {
+    private void show() { }
+}
+class Child extends Parent {
+    @Override
+    public void show() { }
+}</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> ParentのprivateメソッドはChildへ継承されないため、Child.show()はオーバーライドではありません。<code>@Override</code> があるのでコンパイルエラーです。</div></details></div>
+
+<div class="q"><span class="tag">constructor / overload</span><h2>Q119. 出力は？</h2><pre><code>class Box {
+    Box(long n) { System.out.print("L"); }
+    Box(Integer n) { System.out.print("I"); }
+}
+new Box(1);</code></pre><div class="choices"><div class="choice">A. L</div><div class="choice">B. I</div><div class="choice">C. 呼び出しが曖昧でコンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。L。</b> intからlongへのプリミティブ拡大変換が、Integerへのボクシングより先に適用されるため <code>Box(long)</code> が選ばれます。</div></details></div>
+
+<div class="q"><span class="tag">super / initialization order</span><h2>Q120. 出力順は？</h2><pre><code>class A {
+    A() { System.out.print("A"); }
+}
+class B extends A {
+    int n = init();
+    int init() { System.out.print("I"); return 1; }
+    B() { System.out.print("B"); }
+}
+new B();</code></pre><div class="choices"><div class="choice">A. AIB</div><div class="choice">B. IAB</div><div class="choice">C. ABI</div></div><details><summary>答え・解説</summary><div><b>A。AIB。</b> サブクラス生成時は、まず親コンストラクタ、その後に子のインスタンスフィールド初期化、最後に子コンストラクタ本体の順で進みます。</div></details></div>
+
+<div class="q"><span class="tag">static / null reference</span><h2>Q121. 次のコードはどうなる？</h2><pre><code>class Counter {
+    static int n = 7;
+}
+Counter c = null;
+System.out.println(c.n);</code></pre><div class="choices"><div class="choice">A. 7</div><div class="choice">B. NullPointerException</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。7。</b> staticフィールドはインスタンスではなくクラスに属します。インスタンス変数経由の記述は推奨されませんが、この式ではnullをデリファレンスせずstaticフィールドが参照されます。</div></details></div>
+
+<div class="q"><span class="tag">Map / keySet</span><h2>Q122. 出力は？</h2><pre><code>Map&lt;String,Integer&gt; m = new HashMap&lt;&gt;();
+m.put("A", 1);
+m.put("B", 2);
+Set&lt;String&gt; keys = m.keySet();
+keys.remove("A");
+System.out.println(m.containsKey("A") + ":" + m.size());</code></pre><div class="choices"><div class="choice">A. true:2</div><div class="choice">B. false:1</div><div class="choice">C. false:2</div></div><details><summary>答え・解説</summary><div><b>B。false:1。</b> <code>keySet()</code> はMapと連動するビューです。そのビューからキーを削除すると、対応するMapエントリも削除されます。</div></details></div>
+
+<div class="q"><span class="tag">TreeMap / order</span><h2>Q123. 出力は？</h2><pre><code>TreeMap&lt;Integer,String&gt; m = new TreeMap&lt;&gt;();
+m.put(3, "C");
+m.put(1, "A");
+m.put(2, "B");
+System.out.println(m.firstKey() + ":" + m.lastKey());</code></pre><div class="choices"><div class="choice">A. 3:2</div><div class="choice">B. 1:3</div><div class="choice">C. 3:1</div></div><details><summary>答え・解説</summary><div><b>B。1:3。</b> TreeMapはキーを自然順序で管理します。firstKey()は最小キー、lastKey()は最大キーを返します。</div></details></div>
+
+<div class="q"><span class="tag">HashSet / equals</span><h2>Q124. 出力されるsizeは？</h2><pre><code>Set&lt;String&gt; s = new HashSet&lt;&gt;();
+s.add(new String("A"));
+s.add("A");
+System.out.println(s.size());</code></pre><div class="choices"><div class="choice">A. 1</div><div class="choice">B. 2</div><div class="choice">C. 実装依存</div></div><details><summary>答え・解説</summary><div><b>A。1。</b> Stringのequals()とhashCode()は文字列内容に基づくため、別インスタンスでも同じ"A"はSet上では重複と判定されます。</div></details></div>
+
+<div class="q"><span class="tag">Collections.sort</span><h2>Q125. 出力は？</h2><pre><code>List&lt;Integer&gt; xs = new ArrayList&lt;&gt;(Arrays.asList(3, 1, 2));
+Collections.sort(xs);
+System.out.println(xs.get(0) + ":" + xs.get(2));</code></pre><div class="choices"><div class="choice">A. 3:2</div><div class="choice">B. 1:3</div><div class="choice">C. 1:2</div></div><details><summary>答え・解説</summary><div><b>B。1:3。</b> <code>Collections.sort</code> はList自体を自然順序で並べ替えます。結果は [1, 2, 3] です。</div></details></div>
+
+<div class="q"><span class="tag">array / enhanced for</span><h2>Q126. 出力は？</h2><pre><code>StringBuilder[] a = { new StringBuilder("A") };
+for (StringBuilder s : a) {
+    s.append("B");
+}
+System.out.println(a[0]);</code></pre><div class="choices"><div class="choice">A. A</div><div class="choice">B. AB</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>B。AB。</b> 拡張forの変数sは参照のコピーですが、同じStringBuilderオブジェクトを指しています。オブジェクト自体を変更すると配列からも変更が見えます。</div></details></div>
+
+<div class="q"><span class="tag">for / tracing</span><h2>Q127. countはいくつ？</h2><pre><code>int count = 0;
+for (int i = 0, j = 4; i &lt; j; i++, j--) {
+    count++;
+}
+System.out.println(count);</code></pre><div class="choices"><div class="choice">A. 2</div><div class="choice">B. 3</div><div class="choice">C. 4</div></div><details><summary>答え・解説</summary><div><b>A。2。</b> 条件成立は (i,j)=(0,4) と (1,3) の2回です。更新後に (2,2) となり <code>i &lt; j</code> がfalseになります。</div></details></div>
+
+<div class="q"><span class="tag">array / clone</span><h2>Q128. 出力は？</h2><pre><code>int[] a = {1, 2};
+int[] b = a.clone();
+b[0] = 9;
+System.out.println(a[0] + ":" + (a == b));</code></pre><div class="choices"><div class="choice">A. 9:true</div><div class="choice">B. 1:true</div><div class="choice">C. 1:false</div></div><details><summary>答え・解説</summary><div><b>C。1:false。</b> clone()は別の配列オブジェクトを作ります。プリミティブ要素は値としてコピーされるため、b[0]の変更はa[0]へ影響しません。</div></details></div>
+
+<div class="q"><span class="tag">instanceof / array</span><h2>Q129. 出力は？</h2><pre><code>Object o = new String[] { "A" };
+System.out.println(o instanceof Object[]);</code></pre><div class="choices"><div class="choice">A. true</div><div class="choice">B. false</div><div class="choice">C. コンパイルエラー</div></div><details><summary>答え・解説</summary><div><b>A。true。</b> String[]は参照型配列でありObject[]のサブタイプです。変数の宣言型がObjectでも、instanceofは実行時の実体を確認します。</div></details></div>
+
+<div class="q"><span class="tag">cast / runtime</span><h2>Q130. 次のコードはどうなる？</h2><pre><code>Number n = Integer.valueOf(3);
+Double d = (Double) n;
+System.out.println(d);</code></pre><div class="choices"><div class="choice">A. 3.0と表示</div><div class="choice">B. コンパイルエラー</div><div class="choice">C. 実行時にClassCastException</div></div><details><summary>答え・解説</summary><div><b>C。</b> NumberからDoubleへのダウンキャストは構文上可能ですが、実体はIntegerです。キャストは実体の型を変換しないため実行時例外になります。</div></details></div>
+
+<div class="q"><span class="tag">boolean / &amp;</span><h2>Q131. 出力は？</h2><pre><code>int n = 0;
+boolean r = false &amp; (++n &gt; 0);
+System.out.println(n + ":" + r);</code></pre><div class="choices"><div class="choice">A. 0:false</div><div class="choice">B. 1:false</div><div class="choice">C. 1:true</div></div><details><summary>答え・解説</summary><div><b>B。1:false。</b> booleanに対する単一の <code>&amp;</code> は両辺を評価します。左辺がfalseでも右辺の++nは実行されます。<code>&amp;&amp;</code> との違いが重要です。</div></details></div>
+
+<div class="q"><span class="tag">Thread / isAlive</span><h2>Q132. 出力は？</h2><pre><code>public static void main(String[] args) throws Exception {
+    Thread t = new Thread(() -&gt; { });
+    System.out.print(t.isAlive() + ":");
+    t.start();
+    t.join();
+    System.out.println(t.isAlive());
+}</code></pre><div class="choices"><div class="choice">A. false:false</div><div class="choice">B. true:false</div><div class="choice">C. false:true</div></div><details><summary>答え・解説</summary><div><b>A。false:false。</b> start前はまだスレッドが生存していません。join後は処理終了が保証されるため、その時点でもisAlive()はfalseです。</div></details></div>
+
+<div class="q"><span class="tag">synchronized / null</span><h2>Q133. 次のコードはどうなる？</h2><pre><code>Object lock = null;
+synchronized (lock) {
+    System.out.println("run");
+}</code></pre><div class="choices"><div class="choice">A. runと表示</div><div class="choice">B. コンパイルエラー</div><div class="choice">C. 実行時にNullPointerException</div></div><details><summary>答え・解説</summary><div><b>C。</b> synchronizedブロックのロック式は参照型としてコンパイルできますが、実行時にnullのモニタを取得できないためNullPointerExceptionになります。</div></details></div>
+
+<div class="q"><span class="tag">Thread.yield / compile error</span><h2>Q134. 次のコードはコンパイルできる？</h2><pre><code>boolean yielded = Thread.yield();</code></pre><div class="choices"><div class="choice">A. できる</div><div class="choice">B. できない</div></div><details><summary>答え・解説</summary><div><b>B。</b> <code>Thread.yield()</code> の戻り値はvoidです。実行機会を他スレッドへ譲るヒントを出すメソッドですが、成功・失敗をbooleanでは返しません。</div></details></div>
+
+<div class="q"><span class="tag">boolean / definite assignment</span><h2>Q135. 次のコードはコンパイルできる？</h2><pre><code>int x;
+boolean ok = false &amp;&amp; ((x = 1) &gt; 0);
+System.out.println(x);</code></pre><div class="choices"><div class="choice">A. でき、1と表示</div><div class="choice">B. でき、0と表示</div><div class="choice">C. できない</div></div><details><summary>答え・解説</summary><div><b>C。</b> <code>&amp;&amp;</code> は左辺がfalseなら右辺を評価しないため、xへの代入は実行されない可能性があります。ローカル変数xはprintln時点で確実に初期化済みとは判定されません。</div></details></div>
+
+<p><a href="index.html#quiz">JavaMDの検定チェックへ戻る</a></p>
+</div></body></html>
